@@ -1,53 +1,56 @@
 package co.edu.unbosque.proyecto.supermercado.modelo.dto;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/**
- * Datos que el cliente del API envía para registrar o actualizar un
- * Supervisor. idAlmacen es el id del almacén donde trabaja (se envía
- * como id simple, no como objeto completo).
- */
 public class SupervisorRequestDTO {
 
-    @NotBlank
+    @NotNull(message = "La cedula (id de usuario) es obligatoria")
+    private Long idUsuario;
+
+    @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(max = 30)
     private String nombreUsuario;
 
-    @NotBlank
+    @NotBlank(message = "La contrasenia es obligatoria")
     @Size(max = 30)
     private String contrasenia;
 
-    @NotBlank
-    @Size(max = 30)
-    private String cedula;
-
-    @Email(message = "El correo no tiene un formato válido")
+    @Email(message = "El correo no tiene un formato valido")
     @Size(max = 30)
     private String correo;
 
     @Size(max = 30)
     private String telefono;
 
-    @NotBlank
+    @NotBlank(message = "El primer nombre es obligatorio")
     @Size(max = 30)
     private String primerNombre;
 
     @Size(max = 30)
     private String segundoNombre;
 
-    @NotBlank
+    @NotBlank(message = "El primer apellido es obligatorio")
     @Size(max = 30)
     private String primerApellido;
 
     @Size(max = 30)
     private String segundoApellido;
 
-    @NotNull(message = "Debe indicar el almacén donde trabaja")
+    @NotNull(message = "Debe indicar el almacen donde trabaja")
     private Long idAlmacen;
 
     public SupervisorRequestDTO() {
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombreUsuario() {
@@ -64,14 +67,6 @@ public class SupervisorRequestDTO {
 
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getCorreo() {

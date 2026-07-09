@@ -40,7 +40,11 @@ public class SupervisorController {
         return ResponseEntity.ok(supervisorService.obtenerPorId(id));
     }
 
-    // Todos los supervisores que trabajan en un almacén (relación Trabajar)
+    @GetMapping
+    public ResponseEntity<List<SupervisorResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(supervisorService.listarTodos());
+    }
+
     @GetMapping("/almacen/{idAlmacen}")
     public ResponseEntity<List<SupervisorResponseDTO>> listarPorAlmacen(@PathVariable Long idAlmacen) {
         return ResponseEntity.ok(supervisorService.listarPorAlmacen(idAlmacen));

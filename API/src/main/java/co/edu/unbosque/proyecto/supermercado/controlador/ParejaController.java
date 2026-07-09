@@ -40,7 +40,11 @@ public class ParejaController {
         return ResponseEntity.ok(parejaService.obtenerPorId(id));
     }
 
-    // Todas las parejas de un cliente titular (relación Poseer)
+    @GetMapping
+    public ResponseEntity<List<ParejaResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(parejaService.listarTodos());
+    }
+
     @GetMapping("/cliente/{idUsuarioCliente}")
     public ResponseEntity<List<ParejaResponseDTO>> listarPorCliente(@PathVariable Long idUsuarioCliente) {
         return ResponseEntity.ok(parejaService.listarPorCliente(idUsuarioCliente));

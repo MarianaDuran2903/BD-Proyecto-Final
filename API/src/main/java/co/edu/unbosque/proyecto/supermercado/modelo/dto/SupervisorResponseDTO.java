@@ -1,14 +1,9 @@
 package co.edu.unbosque.proyecto.supermercado.modelo.dto;
 
-/**
- * Datos que se devuelven al consultar un Supervisor.
- * Incluye el nombre del almacén ya resuelto (no solo el id).
- */
 public class SupervisorResponseDTO {
 
     private Long idUsuario;
     private String nombreUsuario;
-    private String cedula;
     private String correo;
     private String telefono;
     private String primerNombre;
@@ -36,14 +31,6 @@ public class SupervisorResponseDTO {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getCorreo() {

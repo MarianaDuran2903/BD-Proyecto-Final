@@ -1,16 +1,11 @@
 package co.edu.unbosque.proyecto.supermercado.modelo.dto;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/**
- * DTO único para RestriccionHorario: se usa tanto para crear como para
- * consultar. No tiene datos sensibles, así que no se justifica
- * separarlo en Request/Response.
- */
 public class RestriccionHorarioDTO {
 
     private Long idRestriccion;
@@ -18,9 +13,8 @@ public class RestriccionHorarioDTO {
     @Size(max = 30)
     private String motivo;
 
-    @NotBlank(message = "El día de bloqueo es obligatorio")
-    @Size(max = 30)
-    private String diaBloqueo;
+    @NotNull(message = "El dia de bloqueo es obligatorio")
+    private LocalDate diaBloqueo;
 
     @NotNull(message = "La hora de inicio del bloqueo es obligatoria")
     private LocalTime horaBloqueoInicio;
@@ -28,7 +22,7 @@ public class RestriccionHorarioDTO {
     @NotNull(message = "La hora de fin del bloqueo es obligatoria")
     private LocalTime horaBloqueoFin;
 
-    @NotNull(message = "Debe indicar la pareja a la que aplica la restricción")
+    @NotNull(message = "Debe indicar la pareja a la que aplica la restriccion")
     private Long idUsuarioPareja;
 
     public RestriccionHorarioDTO() {
@@ -50,11 +44,11 @@ public class RestriccionHorarioDTO {
         this.motivo = motivo;
     }
 
-    public String getDiaBloqueo() {
+    public LocalDate getDiaBloqueo() {
         return diaBloqueo;
     }
 
-    public void setDiaBloqueo(String diaBloqueo) {
+    public void setDiaBloqueo(LocalDate diaBloqueo) {
         this.diaBloqueo = diaBloqueo;
     }
 

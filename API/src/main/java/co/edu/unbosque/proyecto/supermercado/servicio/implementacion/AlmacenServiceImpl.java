@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 public class AlmacenServiceImpl implements AlmacenService {
 
@@ -51,13 +52,14 @@ public class AlmacenServiceImpl implements AlmacenService {
         almacen.setUbicacionCiudad(dto.getUbicacionCiudad());
         almacen.setUbicacionAvenida(dto.getUbicacionAvenida());
         almacen.setUbicacionCalle(dto.getUbicacionCalle());
-        return mm.map(almacenRepository.save(almacen), AlmacenDTO.class);
+        return mm.map(almacenRepository.update(almacen), AlmacenDTO.class);
     }
 
     @Override
     @Transactional
     public void eliminar(Long idAlmacen) {
-        almacenRepository.delete(buscarPorIdOLanzarError(idAlmacen));
+        buscarPorIdOLanzarError(idAlmacen);
+        almacenRepository.deleteById(idAlmacen);
     }
 
     private Almacen buscarPorIdOLanzarError(Long idAlmacen) {

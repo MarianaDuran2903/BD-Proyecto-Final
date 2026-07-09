@@ -1,17 +1,12 @@
 package co.edu.unbosque.proyecto.supermercado.modelo.dto;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Datos que se devuelven al consultar una Compra.
- * Trae los nombres ya resueltos de pareja, almacén y supervisor
- * (si aplica), para que el frontend no tenga que hacer consultas
- * adicionales por cada id.
- */
 public class CompraResponseDTO {
 
-    private Long idCompra;
+    private Long codCompra;
     private BigDecimal monto;
     private LocalDate fecha;
     private LocalTime hora;
@@ -29,12 +24,12 @@ public class CompraResponseDTO {
     public CompraResponseDTO() {
     }
 
-    public Long getIdCompra() {
-        return idCompra;
+    public Long getCodCompra() {
+        return codCompra;
     }
 
-    public void setIdCompra(Long idCompra) {
-        this.idCompra = idCompra;
+    public void setCodCompra(Long codCompra) {
+        this.codCompra = codCompra;
     }
 
     public BigDecimal getMonto() {

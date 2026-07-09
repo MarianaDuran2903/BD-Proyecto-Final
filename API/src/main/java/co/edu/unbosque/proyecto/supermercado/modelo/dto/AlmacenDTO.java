@@ -3,12 +3,6 @@ package co.edu.unbosque.proyecto.supermercado.modelo.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * DTO único para Almacen: se usa tanto para crear/actualizar como para
- * consultar, porque no tiene datos sensibles ni campos que difieran
- * entre entrada y salida (aparte del id, que simplemente viene null
- * al crear).
- */
 public class AlmacenDTO {
 
     private Long idAlmacen;

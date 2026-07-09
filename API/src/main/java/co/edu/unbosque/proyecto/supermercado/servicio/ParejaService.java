@@ -11,6 +11,8 @@ public interface ParejaService {
 
     ParejaResponseDTO obtenerPorId(Long idUsuario);
 
+    List<ParejaResponseDTO> listarTodos();
+
     List<ParejaResponseDTO> listarPorCliente(Long idUsuarioCliente);
 
     ParejaResponseDTO actualizar(Long idUsuario, ParejaRequestDTO dto);

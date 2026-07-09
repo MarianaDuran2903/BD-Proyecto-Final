@@ -7,38 +7,35 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/**
- * Datos que el cliente del API envía para registrar o actualizar una
- * Pareja. idUsuarioCliente es el id del Cliente titular al que
- * pertenece (se envía como id simple, no como objeto completo).
- */
 public class ParejaRequestDTO {
 
-    @NotBlank
+    @NotNull(message = "La cedula (id de usuario) es obligatoria")
+    private Long idUsuario;
+
+    @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(max = 30)
     private String nombreUsuario;
 
-    @NotBlank
+    @NotBlank(message = "La contrasenia es obligatoria")
     @Size(max = 30)
     private String contrasenia;
 
-    @NotBlank
-    @Size(max = 30)
-    private String cedula;
-
-    @NotBlank
+    @NotBlank(message = "El primer nombre es obligatorio")
     @Size(max = 30)
     private String primerNombre;
 
     @Size(max = 30)
     private String segundoNombre;
 
-    @NotBlank
+    @NotBlank(message = "El primer apellido es obligatorio")
     @Size(max = 30)
     private String primerApellido;
 
     @Size(max = 30)
     private String segundoApellido;
+
+    @Size(max = 30)
+    private String telefono;
 
     @NotNull(message = "El cupo asignado es obligatorio")
     @DecimalMin(value = "0.0", message = "El cupo asignado no puede ser negativo")
@@ -48,6 +45,14 @@ public class ParejaRequestDTO {
     private Long idUsuarioCliente;
 
     public ParejaRequestDTO() {
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombreUsuario() {
@@ -64,14 +69,6 @@ public class ParejaRequestDTO {
 
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getPrimerNombre() {
@@ -104,6 +101,14 @@ public class ParejaRequestDTO {
 
     public void setSegundoApellido(String segundoApellido) {
         this.segundoApellido = segundoApellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public BigDecimal getCupoAsignado() {

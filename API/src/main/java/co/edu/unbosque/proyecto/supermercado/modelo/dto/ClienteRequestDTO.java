@@ -1,4 +1,5 @@
 package co.edu.unbosque.proyecto.supermercado.modelo.dto;
+
 import java.math.BigDecimal;
 
 import jakarta.validation.constraints.DecimalMin;
@@ -6,12 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/**
- * Datos que el cliente del API envía para registrar o actualizar un Cliente.
- * Incluye la contrasenia porque es lo único que se recibe en texto plano
- * al momento de crear la cuenta (nunca se devuelve en el Response).
- */
 public class ClienteRequestDTO {
+
+    @NotNull(message = "La cedula (id de usuario) es obligatoria")
+    private Long idUsuario;
 
     @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(max = 30)
@@ -21,18 +20,14 @@ public class ClienteRequestDTO {
     @Size(max = 30)
     private String contrasenia;
 
-    @NotBlank(message = "La cedula es obligatoria")
-    @Size(max = 30)
-    private String cedula;
-
-    @NotBlank
+    @NotBlank(message = "El primer nombre es obligatorio")
     @Size(max = 30)
     private String primerNombre;
 
     @Size(max = 30)
     private String segundoNombre;
 
-    @NotBlank
+    @NotBlank(message = "El primer apellido es obligatorio")
     @Size(max = 30)
     private String primerApellido;
 
@@ -49,6 +44,14 @@ public class ClienteRequestDTO {
     public ClienteRequestDTO() {
     }
 
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -63,14 +66,6 @@ public class ClienteRequestDTO {
 
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getPrimerNombre() {

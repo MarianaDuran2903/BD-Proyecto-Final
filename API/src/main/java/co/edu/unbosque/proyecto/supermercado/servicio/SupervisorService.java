@@ -5,12 +5,13 @@ import co.edu.unbosque.proyecto.supermercado.modelo.dto.SupervisorResponseDTO;
 
 import java.util.List;
 
-
 public interface SupervisorService {
 
     SupervisorResponseDTO crear(SupervisorRequestDTO dto);
 
     SupervisorResponseDTO obtenerPorId(Long idUsuario);
+
+    List<SupervisorResponseDTO> listarTodos();
 
     List<SupervisorResponseDTO> listarPorAlmacen(Long idAlmacen);
 

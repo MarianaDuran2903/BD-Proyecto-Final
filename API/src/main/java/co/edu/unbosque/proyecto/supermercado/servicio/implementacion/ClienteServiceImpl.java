@@ -10,16 +10,13 @@ import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.RecursoNoEncontr
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.ReglaNegocioException;
 import co.edu.unbosque.proyecto.supermercado.repositorio.ClienteRepository;
 import co.edu.unbosque.proyecto.supermercado.servicio.ClienteService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
-    private final ModelMapper mm = new ModelMapper();
 
     public ClienteServiceImpl(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
@@ -28,39 +25,16 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public ClienteResponseDTO crear(ClienteRequestDTO dto) {
-        if (clienteRepository.existsByCedula(dto.getCedula())) {
-            throw new ReglaNegocioException("Ya existe un cliente registrado con la cédula " + dto.getCedula());
+        if (clienteRepository.existsById(dto.getIdUsuario())) {
+            throw new ReglaNegocioException(
+                    "Ya existe un usuario registrado con la cedula " + dto.getIdUsuario());
         }
 
-        Cliente cliente = mm.map(dto, Cliente.class);
-        cliente.setIdUsuario(null); // aseguramos que lo genere la BD
-        cliente.setEstado("Activo");
-
-        Cliente guardado = clienteRepository.save(cliente);
-        return mm.map(guardado, ClienteResponseDTO.class);
-    }
-
-    @Override
-    public ClienteResponseDTO obtenerPorId(Long idUsuario) {
-        Cliente cliente = buscarPorIdOLanzarError(idUsuario);
-        return mm.map(cliente, ClienteResponseDTO.class);
-    }
-
-    @Override
-    public List<ClienteResponseDTO> listarTodos() {
-        return clienteRepository.findAll().stream()
-                .map(cliente -> mm.map(cliente, ClienteResponseDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public ClienteResponseDTO actualizar(Long idUsuario, ClienteRequestDTO dto) {
-        Cliente cliente = buscarPorIdOLanzarError(idUsuario);
-
+        Cliente cliente = new Cliente();
+        cliente.setIdUsuario(dto.getIdUsuario());
         cliente.setNombreUsuario(dto.getNombreUsuario());
         cliente.setContrasenia(dto.getContrasenia());
-        cliente.setCedula(dto.getCedula());
+        cliente.setEstado("Activo");
         cliente.setPrimerNombre(dto.getPrimerNombre());
         cliente.setSegundoNombre(dto.getSegundoNombre());
         cliente.setPrimerApellido(dto.getPrimerApellido());
@@ -68,20 +42,62 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setTelefono(dto.getTelefono());
         cliente.setCupoTotalAutorizado(dto.getCupoTotalAutorizado());
 
-        Cliente actualizado = clienteRepository.save(cliente);
-        return mm.map(actualizado, ClienteResponseDTO.class);
+        return toResponseDTO(clienteRepository.save(cliente));
+    }
+
+    @Override
+    public ClienteResponseDTO obtenerPorId(Long idUsuario) {
+        return toResponseDTO(buscarOLanzarError(idUsuario));
+    }
+
+    @Override
+    public List<ClienteResponseDTO> listarTodos() {
+        return clienteRepository.findAll().stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public ClienteResponseDTO actualizar(Long idUsuario, ClienteRequestDTO dto) {
+        Cliente cliente = buscarOLanzarError(idUsuario);
+
+        cliente.setNombreUsuario(dto.getNombreUsuario());
+        cliente.setContrasenia(dto.getContrasenia());
+        cliente.setPrimerNombre(dto.getPrimerNombre());
+        cliente.setSegundoNombre(dto.getSegundoNombre());
+        cliente.setPrimerApellido(dto.getPrimerApellido());
+        cliente.setSegundoApellido(dto.getSegundoApellido());
+        cliente.setTelefono(dto.getTelefono());
+        cliente.setCupoTotalAutorizado(dto.getCupoTotalAutorizado());
+
+        return toResponseDTO(clienteRepository.update(cliente));
     }
 
     @Override
     @Transactional
     public void eliminar(Long idUsuario) {
-        Cliente cliente = buscarPorIdOLanzarError(idUsuario);
-        clienteRepository.delete(cliente);
+        buscarOLanzarError(idUsuario);
+        clienteRepository.deleteById(idUsuario);
     }
 
-    private Cliente buscarPorIdOLanzarError(Long idUsuario) {
+    private Cliente buscarOLanzarError(Long idUsuario) {
         return clienteRepository.findById(idUsuario)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró un cliente con id " + idUsuario));
+                        "No se encontro un cliente con id " + idUsuario));
+    }
+
+    private ClienteResponseDTO toResponseDTO(Cliente c) {
+        ClienteResponseDTO dto = new ClienteResponseDTO();
+        dto.setIdUsuario(c.getIdUsuario());
+        dto.setNombreUsuario(c.getNombreUsuario());
+        dto.setPrimerNombre(c.getPrimerNombre());
+        dto.setSegundoNombre(c.getSegundoNombre());
+        dto.setPrimerApellido(c.getPrimerApellido());
+        dto.setSegundoApellido(c.getSegundoApellido());
+        dto.setTelefono(c.getTelefono());
+        dto.setCupoTotalAutorizado(c.getCupoTotalAutorizado());
+        dto.setEstado(c.getEstado());
+        return dto;
     }
 }

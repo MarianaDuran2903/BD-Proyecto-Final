@@ -4,35 +4,37 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Datos que se devuelven al consultar una AutorizacionSobrecupo.
- * Trae los nombres ya resueltos de cliente y supervisor, para que
- * el frontend no tenga que hacer consultas adicionales.
- */
-public class AutorizacionSobrecupoResponseDTO {
+public class SolicitudSobrecupoResponseDTO {
 
-    private Long idAutorizacion;
+    private Long codSolicitud;
     private LocalDate fecha;
     private LocalTime hora;
-    private BigDecimal montoAutorizado;
-
-    private Long idCompra;
+    private BigDecimal montoSolicitado;
+    private BigDecimal montoAutorizado;  // null si todavia no fue aprobada
+    private String estado;
+    private Long idCompra;               // null hasta que la compra se registre
 
     private Long idUsuarioCliente;
     private String nombreClienteCompleto;
 
-    private Long idUsuarioSupervisor;
+    private Long idUsuarioPareja;
+    private String nombreParejaCompleto;
+
+    private Long idUsuarioSupervisor;    // null si no intervino supervisor
     private String nombreSupervisorCompleto;
 
-    public AutorizacionSobrecupoResponseDTO() {
+    private Long idAlmacen;
+    private String nombreAlmacen;
+
+    public SolicitudSobrecupoResponseDTO() {
     }
 
-    public Long getIdAutorizacion() {
-        return idAutorizacion;
+    public Long getCodSolicitud() {
+        return codSolicitud;
     }
 
-    public void setIdAutorizacion(Long idAutorizacion) {
-        this.idAutorizacion = idAutorizacion;
+    public void setCodSolicitud(Long codSolicitud) {
+        this.codSolicitud = codSolicitud;
     }
 
     public LocalDate getFecha() {
@@ -51,12 +53,28 @@ public class AutorizacionSobrecupoResponseDTO {
         this.hora = hora;
     }
 
+    public BigDecimal getMontoSolicitado() {
+        return montoSolicitado;
+    }
+
+    public void setMontoSolicitado(BigDecimal montoSolicitado) {
+        this.montoSolicitado = montoSolicitado;
+    }
+
     public BigDecimal getMontoAutorizado() {
         return montoAutorizado;
     }
 
     public void setMontoAutorizado(BigDecimal montoAutorizado) {
         this.montoAutorizado = montoAutorizado;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public Long getIdCompra() {
@@ -83,6 +101,22 @@ public class AutorizacionSobrecupoResponseDTO {
         this.nombreClienteCompleto = nombreClienteCompleto;
     }
 
+    public Long getIdUsuarioPareja() {
+        return idUsuarioPareja;
+    }
+
+    public void setIdUsuarioPareja(Long idUsuarioPareja) {
+        this.idUsuarioPareja = idUsuarioPareja;
+    }
+
+    public String getNombreParejaCompleto() {
+        return nombreParejaCompleto;
+    }
+
+    public void setNombreParejaCompleto(String nombreParejaCompleto) {
+        this.nombreParejaCompleto = nombreParejaCompleto;
+    }
+
     public Long getIdUsuarioSupervisor() {
         return idUsuarioSupervisor;
     }
@@ -97,5 +131,21 @@ public class AutorizacionSobrecupoResponseDTO {
 
     public void setNombreSupervisorCompleto(String nombreSupervisorCompleto) {
         this.nombreSupervisorCompleto = nombreSupervisorCompleto;
+    }
+
+    public Long getIdAlmacen() {
+        return idAlmacen;
+    }
+
+    public void setIdAlmacen(Long idAlmacen) {
+        this.idAlmacen = idAlmacen;
+    }
+
+    public String getNombreAlmacen() {
+        return nombreAlmacen;
+    }
+
+    public void setNombreAlmacen(String nombreAlmacen) {
+        this.nombreAlmacen = nombreAlmacen;
     }
 }

@@ -1,46 +1,16 @@
 package co.edu.unbosque.proyecto.supermercado.modelo;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
-/**
- * Franja de bloqueo configurada por el cliente para restringir las
- * compras de una Pareja en días u horas específicas.
- */
-@Entity
-@Table(name = "restriccion_horario")
 public class RestriccionHorario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_restriccion")
     private Long idRestriccion;
-
-    @Column(name = "motivo", length = 30)
     private String motivo;
-
-    @Column(name = "dia_bloqueo", length = 30, nullable = false)
-    private String diaBloqueo;
-
-    @Column(name = "hora_bloqueo_inicio", nullable = false)
+    private LocalDate diaBloqueo;
     private LocalTime horaBloqueoInicio;
-
-    @Column(name = "hora_bloqueo_fin", nullable = false)
     private LocalTime horaBloqueoFin;
-
-    // Lado dueño de la relación Tener (RestriccionHorario N - 1 Pareja)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario_pareja", nullable = false)
-    private Pareja pareja;
+    private Long idUsuarioPareja;
 
     public RestriccionHorario() {
     }
@@ -61,11 +31,11 @@ public class RestriccionHorario {
         this.motivo = motivo;
     }
 
-    public String getDiaBloqueo() {
+    public LocalDate getDiaBloqueo() {
         return diaBloqueo;
     }
 
-    public void setDiaBloqueo(String diaBloqueo) {
+    public void setDiaBloqueo(LocalDate diaBloqueo) {
         this.diaBloqueo = diaBloqueo;
     }
 
@@ -85,11 +55,11 @@ public class RestriccionHorario {
         this.horaBloqueoFin = horaBloqueoFin;
     }
 
-    public Pareja getPareja() {
-        return pareja;
+    public Long getIdUsuarioPareja() {
+        return idUsuarioPareja;
     }
 
-    public void setPareja(Pareja pareja) {
-        this.pareja = pareja;
+    public void setIdUsuarioPareja(Long idUsuarioPareja) {
+        this.idUsuarioPareja = idUsuarioPareja;
     }
 }

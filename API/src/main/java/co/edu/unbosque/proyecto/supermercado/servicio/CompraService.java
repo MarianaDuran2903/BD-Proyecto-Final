@@ -9,7 +9,11 @@ public interface CompraService {
 
     CompraResponseDTO registrar(CompraRequestDTO dto);
 
-    CompraResponseDTO obtenerPorId(Long idCompra);
+    CompraResponseDTO obtenerPorId(Long codCompra);
+
+    List<CompraResponseDTO> listarTodos();
 
     List<CompraResponseDTO> listarPorPareja(Long idUsuarioPareja);
+
+    List<CompraResponseDTO> listarPorCliente(Long idUsuarioCliente);
 }

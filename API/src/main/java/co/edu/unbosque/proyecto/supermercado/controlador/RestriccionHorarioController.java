@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +33,25 @@ public class RestriccionHorarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creada);
     }
 
-    // Todas las restricciones configuradas para una pareja (relación Tener)
+    @GetMapping("/{id}")
+    public ResponseEntity<RestriccionHorarioDTO> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(restriccionHorarioService.obtenerPorId(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RestriccionHorarioDTO>> listarTodos() {
+        return ResponseEntity.ok(restriccionHorarioService.listarTodos());
+    }
+
     @GetMapping("/pareja/{idUsuarioPareja}")
     public ResponseEntity<List<RestriccionHorarioDTO>> listarPorPareja(@PathVariable Long idUsuarioPareja) {
         return ResponseEntity.ok(restriccionHorarioService.listarPorPareja(idUsuarioPareja));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RestriccionHorarioDTO> actualizar(@PathVariable Long id,
+                                                            @Valid @RequestBody RestriccionHorarioDTO dto) {
+        return ResponseEntity.ok(restriccionHorarioService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")

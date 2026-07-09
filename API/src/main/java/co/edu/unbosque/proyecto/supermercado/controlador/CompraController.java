@@ -1,4 +1,5 @@
 package co.edu.unbosque.proyecto.supermercado.controlador;
+
 import java.util.List;
 
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.CompraRequestDTO;
@@ -25,10 +26,6 @@ public class CompraController {
         this.compraService = compraService;
     }
 
-    // Registra la compra. Si el monto excede el cupo disponible de la
-    // pareja, la compra igual se guarda pero queda marcada con
-    // requiereSobrecupo = true (ver AutorizacionSobrecupoController
-    // para el siguiente paso del flujo).
     @PostMapping
     public ResponseEntity<CompraResponseDTO> registrar(@Valid @RequestBody CompraRequestDTO dto) {
         CompraResponseDTO creada = compraService.registrar(dto);
@@ -40,9 +37,18 @@ public class CompraController {
         return ResponseEntity.ok(compraService.obtenerPorId(id));
     }
 
-    // Historial de compras de una pareja (relación Realizar)
+    @GetMapping
+    public ResponseEntity<List<CompraResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(compraService.listarTodos());
+    }
+
     @GetMapping("/pareja/{idUsuarioPareja}")
     public ResponseEntity<List<CompraResponseDTO>> listarPorPareja(@PathVariable Long idUsuarioPareja) {
         return ResponseEntity.ok(compraService.listarPorPareja(idUsuarioPareja));
+    }
+
+    @GetMapping("/cliente/{idUsuarioCliente}")
+    public ResponseEntity<List<CompraResponseDTO>> listarPorCliente(@PathVariable Long idUsuarioCliente) {
+        return ResponseEntity.ok(compraService.listarPorCliente(idUsuarioCliente));
     }
 }

@@ -1,66 +1,19 @@
 package co.edu.unbosque.proyecto.supermercado.modelo;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
-/**
- * Pareja asociada a un Cliente titular, con su propio cupo de crédito
- * individual. Es subtipo de Usuario.
- */
-@Entity
-@Table(name = "pareja")
+// idUsuario (heredado de Usuario) ES la cedula de la pareja
 public class Pareja extends Usuario {
 
-    @Column(name = "cedula", length = 30, nullable = false, unique = true)
-    private String cedula;
-
-    @Column(name = "primer_nombre", length = 30, nullable = false)
     private String primerNombre;
-
-    @Column(name = "segundo_nombre", length = 30)
     private String segundoNombre;
-
-    @Column(name = "primer_apellido", length = 30, nullable = false)
     private String primerApellido;
-
-    @Column(name = "segundo_apellido", length = 30)
     private String segundoApellido;
-
-    @Column(name = "cupo_asignado", nullable = false)
+    private String telefono;
     private BigDecimal cupoAsignado;
-
-    // Lado dueño de la relación Poseer (Pareja N - 1 Cliente)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario_cliente", nullable = false)
-    private Cliente cliente;
-
-    // Lado inverso de la relación Realizar (Pareja 1 - N Compra)
-    @OneToMany(mappedBy = "pareja", cascade = CascadeType.ALL)
-    private List<Compra> compras = new ArrayList<>();
-
-    // Lado inverso de la relación Tener (Pareja 1 - N RestriccionHorario)
-    @OneToMany(mappedBy = "pareja", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RestriccionHorario> restricciones = new ArrayList<>();
+    private Long idUsuarioCliente;
 
     public Pareja() {
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getPrimerNombre() {
@@ -95,6 +48,14 @@ public class Pareja extends Usuario {
         this.segundoApellido = segundoApellido;
     }
 
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public BigDecimal getCupoAsignado() {
         return cupoAsignado;
     }
@@ -103,27 +64,11 @@ public class Pareja extends Usuario {
         this.cupoAsignado = cupoAsignado;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public Long getIdUsuarioCliente() {
+        return idUsuarioCliente;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<Compra> getCompras() {
-        return compras;
-    }
-
-    public void setCompras(List<Compra> compras) {
-        this.compras = compras;
-    }
-
-    public List<RestriccionHorario> getRestricciones() {
-        return restricciones;
-    }
-
-    public void setRestricciones(List<RestriccionHorario> restricciones) {
-        this.restricciones = restricciones;
+    public void setIdUsuarioCliente(Long idUsuarioCliente) {
+        this.idUsuarioCliente = idUsuarioCliente;
     }
 }

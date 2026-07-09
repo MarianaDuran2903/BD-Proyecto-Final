@@ -8,7 +8,13 @@ public interface RestriccionHorarioService {
 
     RestriccionHorarioDTO crear(RestriccionHorarioDTO dto);
 
+    RestriccionHorarioDTO obtenerPorId(Long idRestriccion);
+
+    List<RestriccionHorarioDTO> listarTodos();
+
     List<RestriccionHorarioDTO> listarPorPareja(Long idUsuarioPareja);
+
+    RestriccionHorarioDTO actualizar(Long idRestriccion, RestriccionHorarioDTO dto);
 
     void eliminar(Long idRestriccion);
 }

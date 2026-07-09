@@ -2,15 +2,10 @@ package co.edu.unbosque.proyecto.supermercado.modelo.dto;
 
 import java.math.BigDecimal;
 
-/**
- * Datos que se devuelven al consultar un Cliente.
- * No incluye la contrasenia bajo ninguna circunstancia.
- */
 public class ClienteResponseDTO {
 
     private Long idUsuario;
     private String nombreUsuario;
-    private String cedula;
     private String primerNombre;
     private String segundoNombre;
     private String primerApellido;
@@ -36,14 +31,6 @@ public class ClienteResponseDTO {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getPrimerNombre() {

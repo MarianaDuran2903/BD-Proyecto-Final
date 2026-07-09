@@ -6,13 +6,6 @@ import java.time.LocalTime;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
-/**
- * Datos que el punto de venta envía para registrar una Compra.
- * Solo se envían los ids de Pareja y Almacen (no los objetos completos).
- * requiereSobrecupo e idUsuarioSupervisor no se incluyen aquí: los
- * calcula/asigna el servidor según la lógica de negocio (si el monto
- * supera el cupo disponible de la pareja).
- */
 public class CompraRequestDTO {
 
     @NotNull(message = "El monto de la compra es obligatorio")

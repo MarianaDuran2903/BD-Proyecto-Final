@@ -12,19 +12,17 @@ import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.ReglaNegocioExce
 import co.edu.unbosque.proyecto.supermercado.repositorio.AlmacenRepository;
 import co.edu.unbosque.proyecto.supermercado.repositorio.SupervisorRepository;
 import co.edu.unbosque.proyecto.supermercado.servicio.SupervisorService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 public class SupervisorServiceImpl implements SupervisorService {
 
     private final SupervisorRepository supervisorRepository;
     private final AlmacenRepository almacenRepository;
-    private final ModelMapper mm = new ModelMapper();
 
-    public SupervisorServiceImpl(SupervisorRepository supervisorRepository, AlmacenRepository almacenRepository) {
+    public SupervisorServiceImpl(SupervisorRepository supervisorRepository,
+                                 AlmacenRepository almacenRepository) {
         this.supervisorRepository = supervisorRepository;
         this.almacenRepository = almacenRepository;
     }
@@ -32,73 +30,105 @@ public class SupervisorServiceImpl implements SupervisorService {
     @Override
     @Transactional
     public SupervisorResponseDTO crear(SupervisorRequestDTO dto) {
-        Almacen almacen = almacenRepository.findById(dto.getIdAlmacen())
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró el almacén con id " + dto.getIdAlmacen()));
-
-        if (supervisorRepository.existsByCedula(dto.getCedula())) {
-            throw new ReglaNegocioException("Ya existe un supervisor registrado con la cédula " + dto.getCedula());
+        if (supervisorRepository.existsById(dto.getIdUsuario())) {
+            throw new ReglaNegocioException(
+                    "Ya existe un usuario registrado con la cedula " + dto.getIdUsuario());
         }
 
-        Supervisor supervisor = mm.map(dto, Supervisor.class);
-        supervisor.setIdUsuario(null);
-        supervisor.setEstado("Activo");
-        supervisor.setAlmacen(almacen);
+        Almacen almacen = buscarAlmacenOLanzarError(dto.getIdAlmacen());
 
-        Supervisor guardado = supervisorRepository.save(supervisor);
-        return mapearAResponseDTO(guardado);
-    }
-
-    @Override
-    public SupervisorResponseDTO obtenerPorId(Long idUsuario) {
-        return mapearAResponseDTO(buscarPorIdOLanzarError(idUsuario));
-    }
-
-    @Override
-    public List<SupervisorResponseDTO> listarPorAlmacen(Long idAlmacen) {
-        return supervisorRepository.findByAlmacen_IdAlmacen(idAlmacen).stream()
-                .map(this::mapearAResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public SupervisorResponseDTO actualizar(Long idUsuario, SupervisorRequestDTO dto) {
-        Supervisor supervisor = buscarPorIdOLanzarError(idUsuario);
-        Almacen almacen = almacenRepository.findById(dto.getIdAlmacen())
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró el almacén con id " + dto.getIdAlmacen()));
-
+        Supervisor supervisor = new Supervisor();
+        supervisor.setIdUsuario(dto.getIdUsuario());
         supervisor.setNombreUsuario(dto.getNombreUsuario());
         supervisor.setContrasenia(dto.getContrasenia());
-        supervisor.setCedula(dto.getCedula());
+        supervisor.setEstado("Activo");
         supervisor.setCorreo(dto.getCorreo());
         supervisor.setTelefono(dto.getTelefono());
         supervisor.setPrimerNombre(dto.getPrimerNombre());
         supervisor.setSegundoNombre(dto.getSegundoNombre());
         supervisor.setPrimerApellido(dto.getPrimerApellido());
         supervisor.setSegundoApellido(dto.getSegundoApellido());
-        supervisor.setAlmacen(almacen);
+        supervisor.setIdAlmacen(almacen.getIdAlmacen());
 
-        return mapearAResponseDTO(supervisorRepository.save(supervisor));
+        return toResponseDTO(supervisorRepository.save(supervisor), almacen);
+    }
+
+    @Override
+    public SupervisorResponseDTO obtenerPorId(Long idUsuario) {
+        Supervisor supervisor = buscarOLanzarError(idUsuario);
+        Almacen almacen = buscarAlmacenOLanzarError(supervisor.getIdAlmacen());
+        return toResponseDTO(supervisor, almacen);
+    }
+
+    @Override
+    public List<SupervisorResponseDTO> listarTodos() {
+        return supervisorRepository.findAll().stream()
+                .map(s -> {
+                    Almacen almacen = buscarAlmacenOLanzarError(s.getIdAlmacen());
+                    return toResponseDTO(s, almacen);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SupervisorResponseDTO> listarPorAlmacen(Long idAlmacen) {
+        Almacen almacen = buscarAlmacenOLanzarError(idAlmacen);
+        return supervisorRepository.findByIdAlmacen(idAlmacen).stream()
+                .map(s -> toResponseDTO(s, almacen))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public SupervisorResponseDTO actualizar(Long idUsuario, SupervisorRequestDTO dto) {
+        Supervisor supervisor = buscarOLanzarError(idUsuario);
+        Almacen almacen = buscarAlmacenOLanzarError(dto.getIdAlmacen());
+
+        supervisor.setNombreUsuario(dto.getNombreUsuario());
+        supervisor.setContrasenia(dto.getContrasenia());
+        supervisor.setCorreo(dto.getCorreo());
+        supervisor.setTelefono(dto.getTelefono());
+        supervisor.setPrimerNombre(dto.getPrimerNombre());
+        supervisor.setSegundoNombre(dto.getSegundoNombre());
+        supervisor.setPrimerApellido(dto.getPrimerApellido());
+        supervisor.setSegundoApellido(dto.getSegundoApellido());
+        supervisor.setIdAlmacen(almacen.getIdAlmacen());
+
+        return toResponseDTO(supervisorRepository.update(supervisor), almacen);
     }
 
     @Override
     @Transactional
     public void eliminar(Long idUsuario) {
-        supervisorRepository.delete(buscarPorIdOLanzarError(idUsuario));
+        buscarOLanzarError(idUsuario);
+        supervisorRepository.deleteById(idUsuario);
     }
 
-    private Supervisor buscarPorIdOLanzarError(Long idUsuario) {
+    private Supervisor buscarOLanzarError(Long idUsuario) {
         return supervisorRepository.findById(idUsuario)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontró un supervisor con id " + idUsuario));
+                        "No se encontro un supervisor con id " + idUsuario));
     }
 
-    private SupervisorResponseDTO mapearAResponseDTO(Supervisor supervisor) {
-        SupervisorResponseDTO dto = mm.map(supervisor, SupervisorResponseDTO.class);
-        dto.setIdAlmacen(supervisor.getAlmacen().getIdAlmacen());
-        dto.setNombreAlmacen(supervisor.getAlmacen().getNombreAlmacen());
+    private Almacen buscarAlmacenOLanzarError(Long idAlmacen) {
+        return almacenRepository.findById(idAlmacen)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontro el almacen con id " + idAlmacen));
+    }
+
+    private SupervisorResponseDTO toResponseDTO(Supervisor s, Almacen almacen) {
+        SupervisorResponseDTO dto = new SupervisorResponseDTO();
+        dto.setIdUsuario(s.getIdUsuario());
+        dto.setNombreUsuario(s.getNombreUsuario());
+        dto.setCorreo(s.getCorreo());
+        dto.setTelefono(s.getTelefono());
+        dto.setPrimerNombre(s.getPrimerNombre());
+        dto.setSegundoNombre(s.getSegundoNombre());
+        dto.setPrimerApellido(s.getPrimerApellido());
+        dto.setSegundoApellido(s.getSegundoApellido());
+        dto.setEstado(s.getEstado());
+        dto.setIdAlmacen(almacen.getIdAlmacen());
+        dto.setNombreAlmacen(almacen.getNombreAlmacen());
         return dto;
     }
 }

@@ -2,20 +2,15 @@ package co.edu.unbosque.proyecto.supermercado.modelo.dto;
 
 import java.math.BigDecimal;
 
-/**
- * Datos que se devuelven al consultar una Pareja.
- * Incluye el nombre del cliente titular ya resuelto (no solo el id)
- * para que el frontend no tenga que hacer una consulta adicional.
- */
 public class ParejaResponseDTO {
 
     private Long idUsuario;
     private String nombreUsuario;
-    private String cedula;
     private String primerNombre;
     private String segundoNombre;
     private String primerApellido;
     private String segundoApellido;
+    private String telefono;
     private BigDecimal cupoAsignado;
     private String estado;
     private Long idUsuarioCliente;
@@ -38,14 +33,6 @@ public class ParejaResponseDTO {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
     }
 
     public String getPrimerNombre() {
@@ -78,6 +65,14 @@ public class ParejaResponseDTO {
 
     public void setSegundoApellido(String segundoApellido) {
         this.segundoApellido = segundoApellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public BigDecimal getCupoAsignado() {
