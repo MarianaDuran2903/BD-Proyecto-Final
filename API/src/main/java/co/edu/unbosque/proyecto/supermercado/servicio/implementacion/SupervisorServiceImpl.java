@@ -10,6 +10,8 @@ import co.edu.unbosque.proyecto.supermercado.modelo.dto.SupervisorResponseDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.RecursoNoEncontradoException;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.ReglaNegocioException;
 import co.edu.unbosque.proyecto.supermercado.repositorio.AlmacenRepository;
+import co.edu.unbosque.proyecto.supermercado.repositorio.ClienteRepository;
+import co.edu.unbosque.proyecto.supermercado.repositorio.ParejaRepository;
 import co.edu.unbosque.proyecto.supermercado.repositorio.SupervisorRepository;
 import co.edu.unbosque.proyecto.supermercado.servicio.SupervisorService;
 import org.springframework.stereotype.Service;
@@ -20,11 +22,17 @@ public class SupervisorServiceImpl implements SupervisorService {
 
     private final SupervisorRepository supervisorRepository;
     private final AlmacenRepository almacenRepository;
+    private final ClienteRepository clienteRepository;
+    private final ParejaRepository parejaRepository;
 
     public SupervisorServiceImpl(SupervisorRepository supervisorRepository,
-                                 AlmacenRepository almacenRepository) {
+                                 AlmacenRepository almacenRepository,
+                                 ClienteRepository clienteRepository,
+                                 ParejaRepository parejaRepository) {
         this.supervisorRepository = supervisorRepository;
         this.almacenRepository = almacenRepository;
+        this.clienteRepository = clienteRepository;
+        this.parejaRepository = parejaRepository;
     }
 
     @Override
@@ -34,6 +42,7 @@ public class SupervisorServiceImpl implements SupervisorService {
             throw new ReglaNegocioException(
                     "Ya existe un usuario registrado con la cedula " + dto.getIdUsuario());
         }
+        validarCedulaNoRegistradaEnOtroRol(dto.getIdUsuario());
 
         Almacen almacen = buscarAlmacenOLanzarError(dto.getIdAlmacen());
 
@@ -102,6 +111,18 @@ public class SupervisorServiceImpl implements SupervisorService {
     public void eliminar(Long idUsuario) {
         buscarOLanzarError(idUsuario);
         supervisorRepository.deleteById(idUsuario);
+    }
+
+    // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario
+    private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
+        if (clienteRepository.existsById(idUsuario)) {
+            throw new ReglaNegocioException(
+                    "La cedula " + idUsuario + " ya esta registrada como Cliente");
+        }
+        if (parejaRepository.existsById(idUsuario)) {
+            throw new ReglaNegocioException(
+                    "La cedula " + idUsuario + " ya esta registrada como Pareja");
+        }
     }
 
     private Supervisor buscarOLanzarError(Long idUsuario) {

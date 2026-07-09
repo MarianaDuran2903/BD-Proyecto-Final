@@ -9,6 +9,8 @@ import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteResponseDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.RecursoNoEncontradoException;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.ReglaNegocioException;
 import co.edu.unbosque.proyecto.supermercado.repositorio.ClienteRepository;
+import co.edu.unbosque.proyecto.supermercado.repositorio.ParejaRepository;
+import co.edu.unbosque.proyecto.supermercado.repositorio.SupervisorRepository;
 import co.edu.unbosque.proyecto.supermercado.servicio.ClienteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ParejaRepository parejaRepository;
+    private final SupervisorRepository supervisorRepository;
 
-    public ClienteServiceImpl(ClienteRepository clienteRepository) {
+    public ClienteServiceImpl(ClienteRepository clienteRepository,
+                              ParejaRepository parejaRepository,
+                              SupervisorRepository supervisorRepository) {
         this.clienteRepository = clienteRepository;
+        this.parejaRepository = parejaRepository;
+        this.supervisorRepository = supervisorRepository;
     }
 
     @Override
@@ -29,6 +37,7 @@ public class ClienteServiceImpl implements ClienteService {
             throw new ReglaNegocioException(
                     "Ya existe un usuario registrado con la cedula " + dto.getIdUsuario());
         }
+        validarCedulaNoRegistradaEnOtroRol(dto.getIdUsuario());
 
         Cliente cliente = new Cliente();
         cliente.setIdUsuario(dto.getIdUsuario());
@@ -79,6 +88,18 @@ public class ClienteServiceImpl implements ClienteService {
     public void eliminar(Long idUsuario) {
         buscarOLanzarError(idUsuario);
         clienteRepository.deleteById(idUsuario);
+    }
+
+    // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario
+    private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
+        if (parejaRepository.existsById(idUsuario)) {
+            throw new ReglaNegocioException(
+                    "La cedula " + idUsuario + " ya esta registrada como Pareja");
+        }
+        if (supervisorRepository.existsById(idUsuario)) {
+            throw new ReglaNegocioException(
+                    "La cedula " + idUsuario + " ya esta registrada como Supervisor");
+        }
     }
 
     private Cliente buscarOLanzarError(Long idUsuario) {

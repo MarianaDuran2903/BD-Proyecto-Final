@@ -12,6 +12,7 @@ import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.RecursoNoEncontr
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.ReglaNegocioException;
 import co.edu.unbosque.proyecto.supermercado.repositorio.ClienteRepository;
 import co.edu.unbosque.proyecto.supermercado.repositorio.ParejaRepository;
+import co.edu.unbosque.proyecto.supermercado.repositorio.SupervisorRepository;
 import co.edu.unbosque.proyecto.supermercado.servicio.ParejaService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,13 @@ public class ParejaServiceImpl implements ParejaService {
 
     private final ParejaRepository parejaRepository;
     private final ClienteRepository clienteRepository;
+    private final SupervisorRepository supervisorRepository;
 
-    public ParejaServiceImpl(ParejaRepository parejaRepository, ClienteRepository clienteRepository) {
+    public ParejaServiceImpl(ParejaRepository parejaRepository, ClienteRepository clienteRepository,
+                             SupervisorRepository supervisorRepository) {
         this.parejaRepository = parejaRepository;
         this.clienteRepository = clienteRepository;
+        this.supervisorRepository = supervisorRepository;
     }
 
     @Override
@@ -34,6 +38,7 @@ public class ParejaServiceImpl implements ParejaService {
             throw new ReglaNegocioException(
                     "Ya existe un usuario registrado con la cedula " + dto.getIdUsuario());
         }
+        validarCedulaNoRegistradaEnOtroRol(dto.getIdUsuario());
 
         Cliente cliente = buscarClienteOLanzarError(dto.getIdUsuarioCliente());
         validarLimiteDeIntegridad(cliente, dto.getCupoAsignado(), null);
@@ -125,6 +130,18 @@ public class ParejaServiceImpl implements ParejaService {
                             + "Disponible para asignar: "
                             + cliente.getCupoTotalAutorizado().subtract(sumaActual)
                             + ", cupo solicitado: " + nuevoCupo);
+        }
+    }
+
+    // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario
+    private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
+        if (clienteRepository.existsById(idUsuario)) {
+            throw new ReglaNegocioException(
+                    "La cedula " + idUsuario + " ya esta registrada como Cliente");
+        }
+        if (supervisorRepository.existsById(idUsuario)) {
+            throw new ReglaNegocioException(
+                    "La cedula " + idUsuario + " ya esta registrada como Supervisor");
         }
     }
 
