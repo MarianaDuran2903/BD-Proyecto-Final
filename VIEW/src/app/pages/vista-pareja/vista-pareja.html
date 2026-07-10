@@ -1,1 +1,129 @@
-<p>vista-pareja works!</p>
+<app-diseno-admin>
+  <div class="pagina">
+
+    @if (pareja()) {
+      <div class="tarjeta">
+        <h2 class="tarjeta__titulo">Información de la Pareja</h2>
+        <div class="tarjeta__info">
+          <div>
+            <span class="tarjeta__label">Nombre:</span>
+            <span class="tarjeta__valor">{{ pareja()!.primer_nombre }} {{ pareja()!.primer_apellido }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Cliente Titular:</span>
+            <span class="tarjeta__valor">{{ pareja()!.nombre_cliente_titular }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Cupo Asignado:</span>
+            <span class="tarjeta__valor">$ {{ pareja()!.cupo_asignado }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Estado:</span>
+            <app-estado [valor]="pareja()!.estado" />
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="tarjeta">
+      <h2 class="tarjeta__titulo">Historial de Compras</h2>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Almacén</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of compras(); track c.id_compra) {
+            <tr>
+              <td>{{ c.fecha }}</td>
+              <td>{{ c.hora }}</td>
+              <td>{{ c.nombre_almacen }}</td>
+              <td>$ {{ c.monto }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4" class="tabla__vacio">No hay compras registradas.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tarjeta">
+      <h2 class="tarjeta__titulo">Restricciones de Compra</h2>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Días Bloqueados</th>
+            <th>Horario Bloqueado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of restricciones(); track r.id_restriccion) {
+            <tr>
+              <td>{{ r.dia_bloqueo }}</td>
+              <td>{{ r.hora_bloqueo_inicio }} - {{ r.hora_bloqueo_fin }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="2" class="tabla__vacio">No hay restricciones.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tarjeta">
+      <h2 class="tarjeta__titulo">Solicitar Sobrecupo</h2>
+
+      @if (!formularioVisible()) {
+        <app-boton etiqueta="SOLICITAR SOBRECUPO" (click)="formularioVisible.set(true)" />
+      } @else {
+        <div class="pagina__campos">
+          <app-campo-formulario
+            etiqueta="Valor Solicitado"
+            id="monto"
+            tipo="number"
+            placeholder="Ej. 200000"
+            [valor]="form.monto_solicitado"
+            (valorChange)="form.monto_solicitado = +$event"
+          />
+          <app-campo-formulario
+            etiqueta="ID Almacén"
+            id="almacen"
+            tipo="number"
+            placeholder="ID del almacén"
+            [valor]="form.id_almacen"
+            (valorChange)="form.id_almacen = +$event"
+          />
+        </div>
+        <div class="pagina__acciones">
+          <app-boton etiqueta="ENVIAR SOLICITUD" (click)="solicitarSobrecupo()" />
+          <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioVisible.set(false)" />
+        </div>
+      }
+
+      <table class="tabla" style="margin-top: 16px;">
+        <thead>
+          <tr>
+            <th>Pareja</th>
+            <th>Valor Solicitado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of solicitudes(); track s.cod_solicitud) {
+            <tr>
+              <td>{{ s.nombre_pareja_completo }}</td>
+              <td>$ {{ s.monto_solicitado }}</td>
+              <td><app-estado [valor]="s.estado" /></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="tabla__vacio">No hay solicitudes.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</app-diseno-admin>

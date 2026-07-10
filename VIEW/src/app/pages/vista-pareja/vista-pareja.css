@@ -1,0 +1,76 @@
+.pagina { display: flex; flex-direction: column; gap: 20px; }
+
+.tarjeta {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.tarjeta__titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a3ee8;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tarjeta__info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tarjeta__label {
+  font-size: 13px;
+  color: #666;
+  margin-right: 8px;
+}
+
+.tarjeta__valor {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.pagina__campos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pagina__acciones {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla th {
+  background: #f0f2f5;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla td {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tabla__vacio {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}

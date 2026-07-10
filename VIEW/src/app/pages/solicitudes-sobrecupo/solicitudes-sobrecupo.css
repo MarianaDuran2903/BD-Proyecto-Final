@@ -1,0 +1,55 @@
+.pagina { display: flex; flex-direction: column; gap: 20px; }
+
+.pagina__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagina__titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+}
+
+.pagina__breadcrumb {
+  font-size: 12px;
+  color: #999;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.tabla th {
+  background: #f0f2f5;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tabla__vacio {
+  text-align: center;
+  color: #999;
+  padding: 24px;
+}
+
+.tabla__acciones {
+  display: flex;
+  gap: 8px;
+}

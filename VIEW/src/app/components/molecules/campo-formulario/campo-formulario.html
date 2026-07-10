@@ -1,12 +1,19 @@
 <div class="campo">
-  <label [for]="id" class="campo__etiqueta">{{ etiqueta }}</label>
-  <app-campo-entrada
-    [id]="id"
-    [tipo]="tipo"
-    [placeholder]="placeholder"
-    [valor]="valor"
-    (valorChange)="valorChange.emit($event)"
-  />
+  <label [for]="id" class="campo__etiqueta" [innerHTML]="etiqueta.replace('*', '<span class=\'requerido\'>*</span>')">
+  </label>
+  <div class="campo__entrada-contenedor">
+    <app-campo-entrada
+      [id]="id"
+      [tipo]="tipo"
+      [placeholder]="placeholder"
+      [valor]="valor"
+      [tooltip]="tooltip"
+      (valorChange)="valorChange.emit($event)"
+    />
+    @if (tooltip) {
+      <span class="campo__tooltip-icono" [title]="tooltip">?</span>
+    }
+  </div>
   @if (error) {
     <span class="campo__error">{{ error }}</span>
   }

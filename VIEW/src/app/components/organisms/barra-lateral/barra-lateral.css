@@ -1,7 +1,7 @@
 .barra-lateral {
-  width: 200px;
+  width: 210px;
   height: 100vh;
-  background: #1e2a3a;
+  background: #2C4A3E;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -9,7 +9,7 @@
 
 .barra-lateral__marca {
   padding: 24px 20px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .barra-lateral__titulo {
@@ -17,13 +17,14 @@
   font-size: 18px;
   font-weight: 700;
   color: #fff;
+  letter-spacing: -0.3px;
 }
 
 .barra-lateral__subtitulo {
   display: block;
   font-size: 10px;
   font-weight: 500;
-  color: #8a9bb0;
+  color: #8ABFB0;
   letter-spacing: 0.8px;
   margin-top: 2px;
 }
@@ -42,8 +43,8 @@
   display: flex;
   align-items: center;
   padding: 10px 12px;
-  border-radius: 4px;
-  color: #8a9bb0;
+  border-radius: 6px;
+  color: #8ABFB0;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
@@ -51,18 +52,18 @@
 }
 
 .barra-lateral__enlace:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.08);
   color: #fff;
 }
 
 .barra-lateral__enlace--activo {
-  background: #1a3ee8;
+  background: #5C8D7D;
   color: #fff;
 }
 
 .barra-lateral__pie {
   padding: 16px 10px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(255,255,255,0.08);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -79,7 +80,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #1a3ee8;
+  background: #5C8D7D;
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -106,16 +107,16 @@
 
 .barra-lateral__rol {
   font-size: 11px;
-  color: #8a9bb0;
+  color: #8ABFB0;
 }
 
 .barra-lateral__cerrar {
   width: 100%;
   padding: 8px;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 4px;
-  color: #8a9bb0;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  color: #8ABFB0;
   font-size: 13px;
   font-family: inherit;
   cursor: pointer;
@@ -123,6 +124,6 @@
 }
 
 .barra-lateral__cerrar:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.08);
   color: #fff;
 }

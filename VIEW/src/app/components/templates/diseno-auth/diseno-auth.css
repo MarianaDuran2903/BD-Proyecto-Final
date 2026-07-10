@@ -3,16 +3,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f2f5;
+  background-color: #F5F0E8;
 }
 
 .diseno-auth__tarjeta {
   background: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 44px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(44, 74, 62, 0.12);
   width: 100%;
-  max-width: 420px;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -26,7 +26,7 @@
 .diseno-auth__logo-icono {
   width: 56px;
   height: 56px;
-  background-color: #1a3ee8;
+  background-color: #5C8D7D;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -37,16 +37,16 @@
 }
 
 .diseno-auth__titulo {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
-  color: #333;
+  color: #2C4A3E;
   text-align: center;
   margin: 0;
 }
 
 .diseno-auth__subtitulo {
   font-size: 14px;
-  color: #666;
+  color: #6B7D75;
   text-align: center;
   margin: 0;
 }

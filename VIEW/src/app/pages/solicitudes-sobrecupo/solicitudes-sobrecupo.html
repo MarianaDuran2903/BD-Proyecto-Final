@@ -1,1 +1,42 @@
-<p>solicitudes-sobrecupo works!</p>
+<app-diseno-admin>
+  <div class="pagina">
+    <div class="pagina__encabezado">
+      <div>
+        <h1 class="pagina__titulo">Solicitudes de Sobrecupo</h1>
+        <span class="pagina__breadcrumb">MercaCredit / Solicitudes de Sobrecupo</span>
+      </div>
+    </div>
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Pareja</th>
+          <th>Valor Solicitado</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of solicitudes(); track s.cod_solicitud) {
+          <tr>
+            <td>{{ s.nombre_cliente_completo }}</td>
+            <td>{{ s.nombre_pareja_completo }}</td>
+            <td>$ {{ s.monto_solicitado }}</td>
+            <td><app-estado [valor]="s.estado" /></td>
+            <td>
+              @if (s.estado === 'Pendiente') {
+                <div class="tabla__acciones">
+                  <app-boton etiqueta="Aprobar" (click)="aprobar(s.cod_solicitud)" />
+                  <app-boton etiqueta="Rechazar" variante="peligro" (click)="rechazar(s.cod_solicitud)" />
+                </div>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="tabla__vacio">No hay solicitudes registradas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-diseno-admin>

@@ -12,6 +12,7 @@ export class CampoEntrada {
   @Input() placeholder = '';
   @Input() valor: string | number = '';
   @Input() deshabilitado = false;
+  @Input() tooltip = '';
   @Output() valorChange = new EventEmitter<string>();
 
   alEscribir(event: Event): void {

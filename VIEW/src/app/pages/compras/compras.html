@@ -1,1 +1,39 @@
-<p>compras works!</p>
+<app-diseno-admin>
+  <div class="pagina">
+    <div class="pagina__encabezado">
+      <div>
+        <h1 class="pagina__titulo">Compras</h1>
+        <span class="pagina__breadcrumb">MercaCredit / Compras</span>
+      </div>
+    </div>
+
+    <p class="pagina__conteo">Compras ({{ compras().length }} registros)</p>
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Pareja</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Almacén</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of compras(); track c.id_compra) {
+          <tr>
+            <td>{{ c.nombre_pareja_completo }}</td>
+            <td>{{ c.nombre_pareja_completo }}</td>
+            <td>{{ c.fecha }}</td>
+            <td>{{ c.hora }}</td>
+            <td>{{ c.nombre_almacen }}</td>
+            <td>$ {{ c.monto }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="tabla__vacio">No hay compras registradas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-diseno-admin>

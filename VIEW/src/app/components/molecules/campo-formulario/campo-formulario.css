@@ -1,12 +1,49 @@
-.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
 
 .campo__etiqueta {
   font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: #2C4A3E;
+  letter-spacing: 0.2px;
 }
 
 .campo__error {
   font-size: 12px;
-  color: #dc3545;
+  color: #C0392B;
+  background: #FDECEA;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.campo__entrada-contenedor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.campo__tooltip-icono {
+  position: absolute;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  background: #5C8D7D;
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+}
+
+.requerido {
+  color: #C0392B;
+  margin-left: 2px;
 }

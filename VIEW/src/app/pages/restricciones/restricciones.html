@@ -1,1 +1,72 @@
-<p>restricciones works!</p>
+<app-diseno-admin>
+  <div class="pagina">
+    <div class="pagina__encabezado">
+      <div>
+        <h1 class="pagina__titulo">Restricciones</h1>
+        <span class="pagina__breadcrumb">MercaCredit / Restricciones</span>
+      </div>
+      <app-boton etiqueta="+ GUARDAR RESTRICCIÓN" (click)="abrirCrear()" />
+    </div>
+
+    @if (formularioVisible()) {
+      <div class="pagina__formulario">
+        <h2 class="pagina__subtitulo">Configurar Restricción de Compra</h2>
+        <div class="pagina__campos">
+          <div class="pagina__select">
+            <label class="campo__etiqueta">Pareja</label>
+            <select (change)="form.id_usuario_pareja = +$any($event.target).value">
+              <option value="0">Seleccionar pareja</option>
+              @for (p of parejas(); track p.id_usuario) {
+                <option [value]="p.id_usuario">{{ p.primer_nombre }} {{ p.primer_apellido }}</option>
+              }
+            </select>
+          </div>
+          <div class="pagina__select">
+            <label class="campo__etiqueta">Día</label>
+            <select (change)="form.dia_bloqueo = $any($event.target).value">
+              <option value="">Seleccionar día</option>
+              @for (dia of dias; track dia) {
+                <option [value]="dia">{{ dia }}</option>
+              }
+            </select>
+          </div>
+          <app-campo-formulario etiqueta="Hora de Inicio" id="horaInicio" tipo="time" [valor]="form.hora_bloqueo_inicio" (valorChange)="form.hora_bloqueo_inicio = $event" />
+          <app-campo-formulario etiqueta="Hora de Fin" id="horaFin" tipo="time" [valor]="form.hora_bloqueo_fin" (valorChange)="form.hora_bloqueo_fin = $event" />
+        </div>
+        <div class="pagina__acciones">
+          <app-boton etiqueta="GUARDAR RESTRICCIÓN" (click)="guardar()" />
+          <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioVisible.set(false)" />
+        </div>
+      </div>
+    }
+
+    <p class="pagina__subtitulo">Restricciones Configuradas</p>
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Pareja</th>
+          <th>Día</th>
+          <th>Hora Inicio</th>
+          <th>Hora Fin</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of restricciones(); track r.id_restriccion) {
+          <tr>
+            <td>{{ r.id_usuario_pareja }}</td>
+            <td>{{ r.dia_bloqueo }}</td>
+            <td>{{ r.hora_bloqueo_inicio }}</td>
+            <td>{{ r.hora_bloqueo_fin }}</td>
+            <td>
+              <app-boton etiqueta="Eliminar" variante="peligro" (click)="eliminar(r.id_restriccion!)" />
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="tabla__vacio">No hay restricciones configuradas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-diseno-admin>

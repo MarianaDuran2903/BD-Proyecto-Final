@@ -1,1 +1,77 @@
-<p>clientes works!</p>
+<app-diseno-admin>
+  <div class="pagina">
+    <div class="pagina__encabezado">
+      <div>
+        <h1 class="pagina__titulo">Clientes</h1>
+        <span class="pagina__breadcrumb">MercaCredit / Clientes</span>
+      </div>
+      <app-boton etiqueta="+ CREAR CLIENTE" (click)="abrirCrear()" />
+    </div>
+
+    @if (formularioVisible()) {
+      <div class="pagina__formulario">
+        <h2 class="pagina__subtitulo">{{ editando() ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+        <div class="pagina__campos">
+          <app-campo-formulario etiqueta="No. Documento *" id="idUsuario" tipo="number"
+            tooltip="Número de cédula del cliente. Será su ID en el sistema."
+            [valor]="form.cedula" (valorChange)="form.cedula = $event" />
+          <app-campo-formulario etiqueta="Nombre de Usuario *" id="usuario"
+            tooltip="Nombre con el que el cliente iniciará sesión en MercaCredit."
+            [valor]="form.nombre_usuario" (valorChange)="form.nombre_usuario = $event" />
+          <app-campo-formulario etiqueta="Contraseña *" id="contrasenia" tipo="password"
+            tooltip="Contraseña de acceso del cliente al sistema."
+            [valor]="form.contrasenia" (valorChange)="form.contrasenia = $event" />
+          <app-campo-formulario etiqueta="Primer Nombre *" id="primerNombre"
+            tooltip="Primer nombre del cliente."
+            [valor]="form.primer_nombre" (valorChange)="form.primer_nombre = $event" />
+          <app-campo-formulario etiqueta="Segundo Nombre" id="segundoNombre"
+            tooltip="Segundo nombre del cliente (opcional)."
+            [valor]="form.segundo_nombre" (valorChange)="form.segundo_nombre = $event" />
+          <app-campo-formulario etiqueta="Primer Apellido *" id="primerApellido"
+            tooltip="Primer apellido del cliente."
+            [valor]="form.primer_apellido" (valorChange)="form.primer_apellido = $event" />
+          <app-campo-formulario etiqueta="Segundo Apellido" id="segundoApellido"
+            tooltip="Segundo apellido del cliente (opcional)."
+            [valor]="form.segundo_apellido" (valorChange)="form.segundo_apellido = $event" />
+          <app-campo-formulario etiqueta="Teléfono" id="telefono"
+            tooltip="Número de contacto del cliente (opcional)."
+            [valor]="form.telefono" (valorChange)="form.telefono = $event" />
+          <app-campo-formulario etiqueta="Cupo Total Autorizado *" id="cupo" tipo="number"
+            tooltip="Monto máximo de crédito autorizado para este cliente."
+            [valor]="form.cupo_total_autorizado" (valorChange)="form.cupo_total_autorizado = +$event" />
+        </div>
+        <div class="pagina__acciones">
+          <app-boton etiqueta="GUARDAR" (click)="guardar()" />
+          <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioVisible.set(false)" />
+        </div>
+      </div>
+    }
+
+    <p class="pagina__conteo">Clientes ({{ clientes().length }} registros)</p>
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Documento</th>
+          <th>Cupo Total</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of clientes(); track c.id_usuario) {
+          <tr>
+            <td>{{ c.primer_nombre }} {{ c.primer_apellido }}</td>
+            <td>{{ c.id_usuario }}</td>
+            <td>$ {{ c.cupo_total_autorizado }}</td>
+            <td>{{ c.estado }}</td>
+            <td><app-boton etiqueta="Editar" variante="secundario" (click)="abrirEditar(c)" /></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="tabla__vacio">No hay clientes registrados.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-diseno-admin>

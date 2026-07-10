@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "supercredito": {
+    "mercacredit": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -57,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "supercredito:build:production"
+              "buildTarget": "mercacredit:build:production"
             },
             "development": {
-              "buildTarget": "supercredito:build:development"
+              "buildTarget": "mercacredit:build:development"
             }
           },
           "defaultConfiguration": "development"

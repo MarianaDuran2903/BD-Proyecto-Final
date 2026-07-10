@@ -1,1 +1,101 @@
-<p>vista-cliente works!</p>
+<app-diseno-admin>
+  <div class="pagina">
+
+    @if (cliente()) {
+      <div class="tarjeta">
+        <h2 class="tarjeta__titulo">Información del Cliente</h2>
+        <div class="tarjeta__info">
+          <div>
+            <span class="tarjeta__label">Nombre:</span>
+            <span class="tarjeta__valor">{{ cliente()!.primer_nombre }} {{ cliente()!.primer_apellido }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Documento:</span>
+            <span class="tarjeta__valor">{{ cliente()!.id_usuario }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Cupo Total Autorizado:</span>
+            <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_autorizado }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="tarjeta">
+      <h2 class="tarjeta__titulo">Mis Parejas</h2>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Cupo Asignado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of parejas(); track p.id_usuario) {
+            <tr>
+              <td>{{ p.primer_nombre }} {{ p.primer_apellido }}</td>
+              <td>$ {{ p.cupo_asignado }}</td>
+              <td><app-estado [valor]="p.estado" /></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="tabla__vacio">No hay parejas registradas.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tarjeta">
+      <h2 class="tarjeta__titulo">Historial de Compras</h2>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Almacén</th>
+            <th>Pareja</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of compras(); track c.id_compra) {
+            <tr>
+              <td>{{ c.fecha }}</td>
+              <td>{{ c.hora }}</td>
+              <td>{{ c.nombre_almacen }}</td>
+              <td>{{ c.nombre_pareja_completo }}</td>
+              <td>$ {{ c.monto }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="tabla__vacio">No hay compras registradas.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tarjeta">
+      <h2 class="tarjeta__titulo">Solicitudes de Sobrecupo</h2>
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Pareja</th>
+            <th>Valor Solicitado</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of solicitudes(); track s.cod_solicitud) {
+            <tr>
+              <td>{{ s.nombre_pareja_completo }}</td>
+              <td>$ {{ s.monto_solicitado }}</td>
+              <td><app-estado [valor]="s.estado" /></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="tabla__vacio">No hay solicitudes.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</app-diseno-admin>

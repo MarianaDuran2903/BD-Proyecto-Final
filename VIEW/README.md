@@ -1,4 +1,4 @@
-# Supermercado — Frontend
+# MercaCredit — Frontend
 
 Aplicación web desarrollada en Angular 21 para el sistema de gestión financiera de cupos
 

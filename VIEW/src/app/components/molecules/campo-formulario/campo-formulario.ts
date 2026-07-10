@@ -14,5 +14,6 @@ export class CampoFormulario {
   @Input() placeholder = '';
   @Input() valor: string | number = '';
   @Input() error = '';
+  @Input() tooltip = '';
   @Output() valorChange = new EventEmitter<string>();
 }
