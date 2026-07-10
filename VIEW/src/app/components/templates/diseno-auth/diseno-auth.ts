@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-diseno-auth',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './diseno-auth.html',
   styleUrl: './diseno-auth.css',
 })

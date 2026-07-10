@@ -1,1 +1,13 @@
-<p>campo-formulario works!</p>
+<div class="campo">
+  <label [for]="id" class="campo__etiqueta">{{ etiqueta }}</label>
+  <app-campo-entrada
+    [id]="id"
+    [tipo]="tipo"
+    [placeholder]="placeholder"
+    [valor]="valor"
+    (valorChange)="valorChange.emit($event)"
+  />
+  @if (error) {
+    <span class="campo__error">{{ error }}</span>
+  }
+</div>

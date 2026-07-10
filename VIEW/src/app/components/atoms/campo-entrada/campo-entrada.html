@@ -1,1 +1,11 @@
-<p>campo-entrada works!</p>
+<div class="campo-entrada">
+  <input
+    [id]="id"
+    [type]="tipo"
+    [placeholder]="placeholder"
+    [value]="valor"
+    [disabled]="deshabilitado"
+    (input)="alEscribir($event)"
+    class="campo-entrada__input"
+  />
+</div>

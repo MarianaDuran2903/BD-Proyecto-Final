@@ -1,0 +1,64 @@
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    opacity 0.15s;
+  white-space: nowrap;
+}
+
+.boton--ancho-completo {
+  width: 100%;
+}
+
+.boton--primario {
+  background: #1a3ee8;
+  color: #fff;
+  border-color: #1a3ee8;
+}
+.boton--primario:hover:not(:disabled) {
+  background: #1530b8;
+  border-color: #1530b8;
+}
+
+.boton--secundario {
+  background: transparent;
+  color: #1a3ee8;
+  border-color: #1a3ee8;
+}
+.boton--secundario:hover:not(:disabled) {
+  background: #e8ecfd;
+}
+
+.boton--peligro {
+  background: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+}
+.boton--peligro:hover:not(:disabled) {
+  background: #b02a37;
+  border-color: #b02a37;
+}
+
+.boton--fantasma {
+  background: transparent;
+  color: #666;
+  border-color: #ddd;
+}
+.boton--fantasma:hover:not(:disabled) {
+  background: #f0f2f5;
+}
+
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

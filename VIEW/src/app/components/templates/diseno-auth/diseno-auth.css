@@ -1,0 +1,52 @@
+.diseno-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f2f5;
+}
+
+.diseno-auth__tarjeta {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.diseno-auth__logo {
+  display: flex;
+  justify-content: center;
+}
+
+.diseno-auth__logo-icono {
+  width: 56px;
+  height: 56px;
+  background-color: #1a3ee8;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.diseno-auth__titulo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin: 0;
+}
+
+.diseno-auth__subtitulo {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin: 0;
+}

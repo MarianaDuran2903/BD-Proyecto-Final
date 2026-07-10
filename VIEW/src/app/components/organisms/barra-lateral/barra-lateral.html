@@ -1,1 +1,29 @@
-<p>barra-lateral works!</p>
+<nav class="barra-lateral">
+  <div class="barra-lateral__marca">
+    <span class="barra-lateral__titulo">SuperCrédito</span>
+    <span class="barra-lateral__subtitulo">ADMINISTRADOR</span>
+  </div>
+
+  <ul class="barra-lateral__nav">
+    @for (item of elementosNav; track item.ruta) {
+      <li>
+        <a [routerLink]="item.ruta" routerLinkActive="barra-lateral__enlace--activo" class="barra-lateral__enlace">
+          <span>{{ item.etiqueta }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="barra-lateral__pie">
+    @if (usuario) {
+      <div class="barra-lateral__usuario">
+        <div class="barra-lateral__avatar">{{ usuario.nombre_usuario[0]?.toUpperCase() }}</div>
+        <div class="barra-lateral__info">
+          <span class="barra-lateral__nombre">{{ usuario.nombre_usuario }}</span>
+          <span class="barra-lateral__rol">Administrador</span>
+        </div>
+      </div>
+    }
+    <button class="barra-lateral__cerrar" (click)="cerrarSesion()">Cerrar sesión</button>
+  </div>
+</nav>

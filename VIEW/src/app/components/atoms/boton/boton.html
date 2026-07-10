@@ -1,1 +1,7 @@
-<p>boton works!</p>
+<button
+  [type]="tipo"
+  [disabled]="deshabilitado"
+  [class]="'boton boton--' + variante + (anchoCompleto ? ' boton--ancho-completo' : '')"
+>
+  {{ etiqueta }}
+</button>

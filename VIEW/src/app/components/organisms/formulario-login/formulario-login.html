@@ -1,1 +1,33 @@
-<p>formulario-login works!</p>
+<div class="formulario-login">
+  <h2 class="formulario-login__titulo">Iniciar Sesión</h2>
+
+  <div class="formulario-login__campos">
+    <app-campo-formulario
+      id="idUsuario"
+      etiqueta="No. Documento"
+      tipo="number"
+      placeholder="Ingrese su número de documento"
+      [valor]="idUsuario"
+      (valorChange)="idUsuario = $event"
+    />
+    <app-campo-formulario
+      id="contrasenia"
+      etiqueta="Contraseña"
+      tipo="password"
+      placeholder="Ingrese su contraseña"
+      [valor]="contrasenia"
+      (valorChange)="contrasenia = $event"
+    />
+  </div>
+
+  @if (error) {
+    <p class="formulario-login__error">{{ error }}</p>
+  }
+
+  <app-boton
+    etiqueta="INICIAR SESIÓN"
+    tipo="submit"
+    [anchoCompleto]="true"
+    (click)="alEnviar()"
+  />
+</div>

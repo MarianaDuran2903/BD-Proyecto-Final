@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-campo-entrada',
@@ -6,4 +6,15 @@ import { Component } from '@angular/core';
   templateUrl: './campo-entrada.html',
   styleUrl: './campo-entrada.css',
 })
-export class CampoEntrada {}
+export class CampoEntrada {
+  @Input() id = '';
+  @Input() tipo: 'text' | 'email' | 'password' | 'number' | 'date' | 'time' = 'text';
+  @Input() placeholder = '';
+  @Input() valor: string | number = '';
+  @Input() deshabilitado = false;
+  @Output() valorChange = new EventEmitter<string>();
+
+  alEscribir(event: Event): void {
+    this.valorChange.emit((event.target as HTMLInputElement).value);
+  }
+}

@@ -1,0 +1,43 @@
+.estado {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.estado--activo {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.estado--inactivo {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.estado--pendiente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.estado--bloqueada {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.estado--aprobada\ cliente,
+.estado--aprobada\ supervisor {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.estado--rechazada {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.estado--pendiente\ supervisor {
+  background-color: #fff3cd;
+  color: #856404;
+}
