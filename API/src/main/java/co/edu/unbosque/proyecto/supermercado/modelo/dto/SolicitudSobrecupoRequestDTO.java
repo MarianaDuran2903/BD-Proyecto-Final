@@ -19,9 +19,6 @@ public class SolicitudSobrecupoRequestDTO {
     @DecimalMin(value = "0.01", message = "El monto solicitado debe ser mayor a cero")
     private BigDecimal montoSolicitado;
 
-    @NotNull(message = "Debe indicar el almacen donde se intento realizar la compra")
-    private Long idAlmacen;
-
     public SolicitudSobrecupoRequestDTO() {
     }
 
@@ -47,13 +44,5 @@ public class SolicitudSobrecupoRequestDTO {
 
     public void setMontoSolicitado(BigDecimal montoSolicitado) {
         this.montoSolicitado = montoSolicitado;
-    }
-
-    public Long getIdAlmacen() {
-        return idAlmacen;
-    }
-
-    public void setIdAlmacen(Long idAlmacen) {
-        this.idAlmacen = idAlmacen;
     }
 }

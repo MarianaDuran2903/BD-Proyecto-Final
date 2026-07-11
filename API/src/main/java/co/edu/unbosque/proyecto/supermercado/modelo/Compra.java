@@ -10,8 +10,8 @@ public class Compra {
     private BigDecimal monto;
     private LocalDate fecha;
     private LocalTime hora;
-    private Boolean requiereSobrecupo;
     private Long idUsuarioPareja;
+    private Long idUsuarioCliente;
     private Long idAlmacen;
     private Long idUsuarioSupervisor;
 
@@ -50,20 +50,20 @@ public class Compra {
         this.hora = hora;
     }
 
-    public Boolean getRequiereSobrecupo() {
-        return requiereSobrecupo;
-    }
-
-    public void setRequiereSobrecupo(Boolean requiereSobrecupo) {
-        this.requiereSobrecupo = requiereSobrecupo;
-    }
-
     public Long getIdUsuarioPareja() {
         return idUsuarioPareja;
     }
 
     public void setIdUsuarioPareja(Long idUsuarioPareja) {
         this.idUsuarioPareja = idUsuarioPareja;
+    }
+
+    public Long getIdUsuarioCliente() {
+        return idUsuarioCliente;
+    }
+
+    public void setIdUsuarioCliente(Long idUsuarioCliente) {
+        this.idUsuarioCliente = idUsuarioCliente;
     }
 
     public Long getIdAlmacen() {

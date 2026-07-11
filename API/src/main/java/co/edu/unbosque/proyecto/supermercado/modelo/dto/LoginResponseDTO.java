@@ -14,6 +14,7 @@ public class LoginResponseDTO {
     private String estado;
 
     // Solo para CLIENTE
+    private BigDecimal cupoPropio;
     private BigDecimal cupoTotalAutorizado;
 
     // Solo para PAREJA
@@ -47,6 +48,9 @@ public class LoginResponseDTO {
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    public BigDecimal getCupoPropio() { return cupoPropio; }
+    public void setCupoPropio(BigDecimal cupoPropio) { this.cupoPropio = cupoPropio; }
 
     public BigDecimal getCupoTotalAutorizado() { return cupoTotalAutorizado; }
     public void setCupoTotalAutorizado(BigDecimal cupoTotalAutorizado) { this.cupoTotalAutorizado = cupoTotalAutorizado; }

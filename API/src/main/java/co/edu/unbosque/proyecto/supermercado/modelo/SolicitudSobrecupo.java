@@ -10,13 +10,12 @@ public class SolicitudSobrecupo {
     private LocalDate fecha;
     private LocalTime hora;
     private BigDecimal montoSolicitado;
-    private BigDecimal montoAutorizado;  // null mientras este Pendiente
-    private String estado;               // Pendiente | Pendiente Supervisor | Aprobada Cliente | Aprobada Supervisor | Rechazada
-    private Long idCompra;               // null hasta que la compra se registre tras la aprobacion
+    private BigDecimal montoAutorizado;  // null mientras este pendiente_cliente
+    // pendiente_cliente | aprobada_directa | pendiente_supervisor | aprobada_supervisor | rechazada_cliente | rechazada_supervisor
+    private String estado;
     private Long idUsuarioCliente;
     private Long idUsuarioPareja;
     private Long idUsuarioSupervisor;    // null si el cliente aprueba directamente
-    private Long idAlmacen;             // almacen donde se intento hacer la compra
 
     public SolicitudSobrecupo() {
     }
@@ -69,14 +68,6 @@ public class SolicitudSobrecupo {
         this.estado = estado;
     }
 
-    public Long getIdCompra() {
-        return idCompra;
-    }
-
-    public void setIdCompra(Long idCompra) {
-        this.idCompra = idCompra;
-    }
-
     public Long getIdUsuarioCliente() {
         return idUsuarioCliente;
     }
@@ -99,13 +90,5 @@ public class SolicitudSobrecupo {
 
     public void setIdUsuarioSupervisor(Long idUsuarioSupervisor) {
         this.idUsuarioSupervisor = idUsuarioSupervisor;
-    }
-
-    public Long getIdAlmacen() {
-        return idAlmacen;
-    }
-
-    public void setIdAlmacen(Long idAlmacen) {
-        this.idAlmacen = idAlmacen;
     }
 }

@@ -21,7 +21,7 @@ public class ClienteRepository {
     // id_usuario ES la cedula del cliente (BIGINT proporcionado por el usuario)
     private static final String COLUMNAS =
             "id_usuario, nombre_usuario, contrasenia, estado, primer_nombre, "
-                    + "segundo_nombre, primer_apellido, segundo_apellido, telefono, cupo_total_autorizado";
+                    + "segundo_nombre, primer_apellido, segundo_apellido, telefono, cupo_propio";
 
     private final RowMapper<Cliente> mapper = (rs, rowNum) -> {
         Cliente c = new Cliente();
@@ -34,7 +34,7 @@ public class ClienteRepository {
         c.setPrimerApellido(rs.getString("primer_apellido"));
         c.setSegundoApellido(rs.getString("segundo_apellido"));
         c.setTelefono(rs.getString("telefono"));
-        c.setCupoTotalAutorizado(rs.getBigDecimal("cupo_total_autorizado"));
+        c.setCupoPropio(rs.getBigDecimal("cupo_propio"));
         return c;
     };
 
@@ -63,13 +63,13 @@ public class ClienteRepository {
     public Cliente save(Cliente cliente) {
         String sql = "INSERT INTO cliente (id_usuario, nombre_usuario, contrasenia, estado, "
                 + "primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, "
-                + "telefono, cupo_total_autorizado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "telefono, cupo_propio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
                 cliente.getIdUsuario(), cliente.getNombreUsuario(), cliente.getContrasenia(),
                 cliente.getEstado(), cliente.getPrimerNombre(), cliente.getSegundoNombre(),
                 cliente.getPrimerApellido(), cliente.getSegundoApellido(),
-                cliente.getTelefono(), cliente.getCupoTotalAutorizado());
+                cliente.getTelefono(), cliente.getCupoPropio());
 
         return cliente;
     }
@@ -77,22 +77,25 @@ public class ClienteRepository {
     public Cliente update(Cliente cliente) {
         String sql = "UPDATE cliente SET nombre_usuario = ?, contrasenia = ?, "
                 + "primer_nombre = ?, segundo_nombre = ?, primer_apellido = ?, segundo_apellido = ?, "
-                + "telefono = ?, cupo_total_autorizado = ? WHERE id_usuario = ?";
+                + "telefono = ?, cupo_propio = ? WHERE id_usuario = ?";
 
         jdbcTemplate.update(sql,
                 cliente.getNombreUsuario(), cliente.getContrasenia(),
                 cliente.getPrimerNombre(), cliente.getSegundoNombre(),
                 cliente.getPrimerApellido(), cliente.getSegundoApellido(),
-                cliente.getTelefono(), cliente.getCupoTotalAutorizado(),
+                cliente.getTelefono(), cliente.getCupoPropio(),
                 cliente.getIdUsuario());
 
         return cliente;
     }
 
-    // Usado cuando el supervisor aprueba un aumento de cupo para el cliente
-    public void actualizarCupoTotal(Long idCliente, BigDecimal nuevoCupoTotal) {
-        String sql = "UPDATE cliente SET cupo_total_autorizado = ? WHERE id_usuario = ?";
-        jdbcTemplate.update(sql, nuevoCupoTotal, idCliente);
+    // Saldo disponible del cupo propio del cliente = cupo_propio - suma de sus compras directas
+    public BigDecimal calcularSaldoPropioDisponible(Long idCliente) {
+        String sql = "SELECT c.cupo_propio - COALESCE(SUM(co.monto), 0) "
+                + "FROM cliente c LEFT JOIN compra co ON co.id_usuario_cliente = c.id_usuario "
+                + "WHERE c.id_usuario = ? GROUP BY c.cupo_propio";
+        BigDecimal saldo = jdbcTemplate.queryForObject(sql, BigDecimal.class, idCliente);
+        return saldo != null ? saldo : BigDecimal.ZERO;
     }
 
     public void deleteById(Long id) {

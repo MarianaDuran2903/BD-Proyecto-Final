@@ -37,9 +37,9 @@ public class ClienteRequestDTO {
     @Size(max = 30)
     private String telefono;
 
-    @NotNull(message = "El cupo total autorizado es obligatorio")
-    @DecimalMin(value = "0.0", message = "El cupo total autorizado no puede ser negativo")
-    private BigDecimal cupoTotalAutorizado;
+    @NotNull(message = "El cupo propio es obligatorio")
+    @DecimalMin(value = "0.0", message = "El cupo propio no puede ser negativo")
+    private BigDecimal cupoPropio;
 
     public ClienteRequestDTO() {
     }
@@ -108,11 +108,11 @@ public class ClienteRequestDTO {
         this.telefono = telefono;
     }
 
-    public BigDecimal getCupoTotalAutorizado() {
-        return cupoTotalAutorizado;
+    public BigDecimal getCupoPropio() {
+        return cupoPropio;
     }
 
-    public void setCupoTotalAutorizado(BigDecimal cupoTotalAutorizado) {
-        this.cupoTotalAutorizado = cupoTotalAutorizado;
+    public void setCupoPropio(BigDecimal cupoPropio) {
+        this.cupoPropio = cupoPropio;
     }
 }

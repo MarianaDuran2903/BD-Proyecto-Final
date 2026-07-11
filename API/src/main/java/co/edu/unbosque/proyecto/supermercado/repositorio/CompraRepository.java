@@ -20,7 +20,7 @@ public class CompraRepository {
     }
 
     private static final String COLUMNAS =
-            "cod_compra, monto, fecha, hora, requiere_sobrecupo, id_usuario_pareja, "
+            "cod_compra, monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, "
                     + "id_almacen, id_usuario_supervisor";
 
     private final RowMapper<Compra> mapper = (rs, rowNum) -> {
@@ -29,12 +29,15 @@ public class CompraRepository {
         c.setMonto(rs.getBigDecimal("monto"));
         c.setFecha(rs.getObject("fecha", LocalDate.class));
         c.setHora(rs.getObject("hora", LocalTime.class));
-        c.setRequiereSobrecupo(rs.getBoolean("requiere_sobrecupo"));
-        c.setIdUsuarioPareja(rs.getLong("id_usuario_pareja"));
-        c.setIdAlmacen(rs.getLong("id_almacen"));
 
-        long idSupervisor = rs.getLong("id_usuario_supervisor");
-        c.setIdUsuarioSupervisor(rs.wasNull() ? null : idSupervisor);
+        long idPareja = rs.getLong("id_usuario_pareja");
+        c.setIdUsuarioPareja(rs.wasNull() ? null : idPareja);
+
+        long idCliente = rs.getLong("id_usuario_cliente");
+        c.setIdUsuarioCliente(rs.wasNull() ? null : idCliente);
+
+        c.setIdAlmacen(rs.getLong("id_almacen"));
+        c.setIdUsuarioSupervisor(rs.getLong("id_usuario_supervisor"));
 
         return c;
     };
@@ -54,31 +57,29 @@ public class CompraRepository {
         return jdbcTemplate.query(sql, mapper, idUsuarioPareja);
     }
 
-    // Compras de todas las parejas de un cliente (JOIN con pareja)
+    // Compras directas del cliente + compras de todas sus parejas (JOIN con pareja)
     public List<Compra> findByIdUsuarioCliente(Long idUsuarioCliente) {
-        String sql = "SELECT c." + COLUMNAS.replace(", ", ", c.").replaceFirst("c.cod_compra", "cod_compra")
-                + " FROM compra c "
-                + "JOIN pareja p ON c.id_usuario_pareja = p.id_usuario "
-                + "WHERE p.id_usuario_cliente = ? ORDER BY c.fecha DESC, c.hora DESC";
+        String sql = "SELECT cod_compra, monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, "
+                + "id_almacen, id_usuario_supervisor FROM compra WHERE id_usuario_cliente = ? "
+                + "UNION "
+                + "SELECT c.cod_compra, c.monto, c.fecha, c.hora, c.id_usuario_pareja, c.id_usuario_cliente, "
+                + "c.id_almacen, c.id_usuario_supervisor "
+                + "FROM compra c JOIN pareja p ON c.id_usuario_pareja = p.id_usuario "
+                + "WHERE p.id_usuario_cliente = ? "
+                + "ORDER BY fecha DESC, hora DESC";
 
-        // Query construida manualmente para evitar ambigüedad de columnas en el JOIN
-        String sqlJoin = "SELECT c.cod_compra, c.monto, c.fecha, c.hora, c.requiere_sobrecupo, "
-                + "c.id_usuario_pareja, c.id_almacen, c.id_usuario_supervisor "
-                + "FROM compra c "
-                + "JOIN pareja p ON c.id_usuario_pareja = p.id_usuario "
-                + "WHERE p.id_usuario_cliente = ? ORDER BY c.fecha DESC, c.hora DESC";
-
-        return jdbcTemplate.query(sqlJoin, mapper, idUsuarioCliente);
+        return jdbcTemplate.query(sql, mapper, idUsuarioCliente, idUsuarioCliente);
     }
 
     // cod_compra es BIGSERIAL: se genera automáticamente en la BD
     public Compra save(Compra compra) {
-        String sql = "INSERT INTO compra (monto, fecha, hora, requiere_sobrecupo, id_usuario_pareja, "
+        String sql = "INSERT INTO compra (monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, "
                 + "id_almacen, id_usuario_supervisor) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING cod_compra";
 
         Long codGenerado = jdbcTemplate.queryForObject(sql, Long.class,
-                compra.getMonto(), compra.getFecha(), compra.getHora(), compra.getRequiereSobrecupo(),
-                compra.getIdUsuarioPareja(), compra.getIdAlmacen(), compra.getIdUsuarioSupervisor());
+                compra.getMonto(), compra.getFecha(), compra.getHora(),
+                compra.getIdUsuarioPareja(), compra.getIdUsuarioCliente(),
+                compra.getIdAlmacen(), compra.getIdUsuarioSupervisor());
 
         compra.setCodCompra(codGenerado);
         return compra;

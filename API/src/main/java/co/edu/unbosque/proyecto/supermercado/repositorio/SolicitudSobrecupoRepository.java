@@ -21,7 +21,7 @@ public class SolicitudSobrecupoRepository {
 
     private static final String COLUMNAS =
             "cod_solicitud, fecha, hora, monto_solicitado, monto_autorizado, estado, "
-                    + "id_compra, id_usuario_cliente, id_usuario_pareja, id_usuario_supervisor, id_almacen";
+                    + "id_usuario_cliente, id_usuario_pareja, id_usuario_supervisor";
 
     private final RowMapper<SolicitudSobrecupo> mapper = (rs, rowNum) -> {
         SolicitudSobrecupo s = new SolicitudSobrecupo();
@@ -33,16 +33,12 @@ public class SolicitudSobrecupoRepository {
 
         s.setEstado(rs.getString("estado"));
 
-        long idCompra = rs.getLong("id_compra");
-        s.setIdCompra(rs.wasNull() ? null : idCompra);
-
         s.setIdUsuarioCliente(rs.getLong("id_usuario_cliente"));
         s.setIdUsuarioPareja(rs.getLong("id_usuario_pareja"));
 
         long idSupervisor = rs.getLong("id_usuario_supervisor");
         s.setIdUsuarioSupervisor(rs.wasNull() ? null : idSupervisor);
 
-        s.setIdAlmacen(rs.getLong("id_almacen"));
         return s;
     };
 
@@ -68,17 +64,17 @@ public class SolicitudSobrecupoRepository {
         return jdbcTemplate.query(sql, mapper, idPareja);
     }
 
-    // Solicitudes que el cliente aun debe revisar (estado = 'Pendiente')
+    // Solicitudes que el cliente aun debe revisar
     public List<SolicitudSobrecupo> findPendientesByCliente(Long idCliente) {
         String sql = "SELECT " + COLUMNAS + " FROM solicitud_sobrecupo "
-                + "WHERE id_usuario_cliente = ? AND estado = 'Pendiente' ORDER BY fecha, hora";
+                + "WHERE id_usuario_cliente = ? AND estado = 'pendiente_cliente' ORDER BY fecha, hora";
         return jdbcTemplate.query(sql, mapper, idCliente);
     }
 
-    // Solicitudes que el supervisor debe revisar (estado = 'Pendiente Supervisor')
+    // Solicitudes que el supervisor debe revisar
     public List<SolicitudSobrecupo> findPendientesBySupervisor(Long idSupervisor) {
         String sql = "SELECT " + COLUMNAS + " FROM solicitud_sobrecupo "
-                + "WHERE id_usuario_supervisor = ? AND estado = 'Pendiente Supervisor' ORDER BY fecha, hora";
+                + "WHERE id_usuario_supervisor = ? AND estado = 'pendiente_supervisor' ORDER BY fecha, hora";
         return jdbcTemplate.query(sql, mapper, idSupervisor);
     }
 
@@ -86,15 +82,15 @@ public class SolicitudSobrecupoRepository {
     public SolicitudSobrecupo save(SolicitudSobrecupo solicitud) {
         String sql = "INSERT INTO solicitud_sobrecupo "
                 + "(fecha, hora, monto_solicitado, monto_autorizado, estado, "
-                + "id_compra, id_usuario_cliente, id_usuario_pareja, id_usuario_supervisor, id_almacen) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING cod_solicitud";
+                + "id_usuario_cliente, id_usuario_pareja, id_usuario_supervisor) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING cod_solicitud";
 
         Long codGenerado = jdbcTemplate.queryForObject(sql, Long.class,
                 solicitud.getFecha(), solicitud.getHora(),
                 solicitud.getMontoSolicitado(), solicitud.getMontoAutorizado(),
-                solicitud.getEstado(), solicitud.getIdCompra(),
+                solicitud.getEstado(),
                 solicitud.getIdUsuarioCliente(), solicitud.getIdUsuarioPareja(),
-                solicitud.getIdUsuarioSupervisor(), solicitud.getIdAlmacen());
+                solicitud.getIdUsuarioSupervisor());
 
         solicitud.setCodSolicitud(codGenerado);
         return solicitud;
@@ -103,11 +99,11 @@ public class SolicitudSobrecupoRepository {
     // Actualiza los campos que cambian durante el flujo de aprobacion/rechazo
     public SolicitudSobrecupo update(SolicitudSobrecupo solicitud) {
         String sql = "UPDATE solicitud_sobrecupo SET estado = ?, monto_autorizado = ?, "
-                + "id_compra = ?, id_usuario_supervisor = ? WHERE cod_solicitud = ?";
+                + "id_usuario_supervisor = ? WHERE cod_solicitud = ?";
 
         jdbcTemplate.update(sql,
                 solicitud.getEstado(), solicitud.getMontoAutorizado(),
-                solicitud.getIdCompra(), solicitud.getIdUsuarioSupervisor(),
+                solicitud.getIdUsuarioSupervisor(),
                 solicitud.getCodSolicitud());
 
         return solicitud;

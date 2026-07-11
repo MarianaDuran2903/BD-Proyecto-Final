@@ -24,21 +24,15 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
     private final ParejaRepository parejaRepository;
     private final ClienteRepository clienteRepository;
     private final SupervisorRepository supervisorRepository;
-    private final AlmacenRepository almacenRepository;
-    private final CompraRepository compraRepository;
 
     public SolicitudSobrecupoServiceImpl(SolicitudSobrecupoRepository solicitudRepository,
                                          ParejaRepository parejaRepository,
                                          ClienteRepository clienteRepository,
-                                         SupervisorRepository supervisorRepository,
-                                         AlmacenRepository almacenRepository,
-                                         CompraRepository compraRepository) {
+                                         SupervisorRepository supervisorRepository) {
         this.solicitudRepository = solicitudRepository;
         this.parejaRepository = parejaRepository;
         this.clienteRepository = clienteRepository;
         this.supervisorRepository = supervisorRepository;
-        this.almacenRepository = almacenRepository;
-        this.compraRepository = compraRepository;
     }
 
     @Override
@@ -56,23 +50,17 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
             throw new ReglaNegocioException("La pareja no pertenece al cliente indicado");
         }
 
-        Almacen almacen = almacenRepository.findById(dto.getIdAlmacen())
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "No se encontro el almacen con id " + dto.getIdAlmacen()));
-
         SolicitudSobrecupo solicitud = new SolicitudSobrecupo();
         solicitud.setFecha(LocalDate.now());
         solicitud.setHora(LocalTime.now());
         solicitud.setMontoSolicitado(dto.getMontoSolicitado());
         solicitud.setMontoAutorizado(null);
-        solicitud.setEstado("Pendiente");
-        solicitud.setIdCompra(null);
+        solicitud.setEstado("pendiente_cliente");
         solicitud.setIdUsuarioCliente(cliente.getIdUsuario());
         solicitud.setIdUsuarioPareja(pareja.getIdUsuario());
         solicitud.setIdUsuarioSupervisor(null);
-        solicitud.setIdAlmacen(almacen.getIdAlmacen());
 
-        return toResponseDTO(solicitudRepository.save(solicitud), cliente, pareja, null, almacen);
+        return toResponseDTO(solicitudRepository.save(solicitud), cliente, pareja, null);
     }
 
     @Override
@@ -121,49 +109,49 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
     public SolicitudSobrecupoResponseDTO decidirComoCliente(Long codSolicitud, DecisionSolicitudDTO dto) {
         SolicitudSobrecupo solicitud = buscarOLanzarError(codSolicitud);
 
-        if (!"Pendiente".equals(solicitud.getEstado())) {
+        if (!"pendiente_cliente".equals(solicitud.getEstado())) {
             throw new ReglaNegocioException(
-                    "Solo se puede decidir sobre solicitudes en estado 'Pendiente'. Estado actual: "
+                    "Solo se puede decidir sobre solicitudes en estado 'pendiente_cliente'. Estado actual: "
                             + solicitud.getEstado());
         }
 
         if ("Rechazar".equals(dto.getDecision())) {
-            solicitud.setEstado("Rechazada");
+            solicitud.setEstado("rechazada_cliente");
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
 
-        // Aprobar: verificar si el cliente tiene cupo disponible para redistribuir
+        // Aprobar: verificar si el cliente tiene cupo propio disponible para reasignar
         Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
 
-        BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
-        BigDecimal cupoDisponibleCliente = cliente.getCupoTotalAutorizado().subtract(sumaAsignada);
+        BigDecimal disponible = clienteRepository.calcularSaldoPropioDisponible(cliente.getIdUsuario());
 
-        if (cupoDisponibleCliente.compareTo(solicitud.getMontoSolicitado()) >= 0) {
-            // Cliente tiene cupo: aprueba directamente sin supervisor
+        if (disponible.compareTo(solicitud.getMontoSolicitado()) >= 0) {
+            // Cliente tiene cupo propio: aprueba directamente sin supervisor.
+            // Se reasigna dinero ya autorizado: cupo_propio baja, cupo_asignado de la pareja sube
+            // en la misma proporcion, el total del cliente no cambia.
             Pareja pareja = parejaRepository.findById(solicitud.getIdUsuarioPareja())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Pareja no encontrada"));
+
+            cliente.setCupoPropio(cliente.getCupoPropio().subtract(solicitud.getMontoSolicitado()));
+            clienteRepository.update(cliente);
 
             BigDecimal nuevoCupoPareja = pareja.getCupoAsignado().add(solicitud.getMontoSolicitado());
             parejaRepository.actualizarCupoAsignado(pareja.getIdUsuario(), nuevoCupoPareja);
 
-            Compra compra = registrarCompraPostAprobacion(solicitud, null);
-
-            solicitud.setEstado("Aprobada Cliente");
+            solicitud.setEstado("aprobada_directa");
             solicitud.setMontoAutorizado(solicitud.getMontoSolicitado());
-            solicitud.setIdCompra(compra.getCodCompra());
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
 
         } else {
-            // Cliente no tiene cupo: escalar al supervisor del almacen
-            List<Supervisor> supervisores = supervisorRepository.findByIdAlmacen(solicitud.getIdAlmacen());
-            Supervisor supervisor = supervisores.stream()
+            // Cliente no tiene cupo propio suficiente: escalar a cualquier supervisor activo
+            Supervisor supervisor = supervisorRepository.findAll().stream()
                     .filter(sv -> "Activo".equals(sv.getEstado()))
                     .findFirst()
                     .orElseThrow(() -> new ReglaNegocioException(
-                            "No hay supervisores activos en el almacen para gestionar el sobrecupo"));
+                            "No hay supervisores activos para gestionar el sobrecupo"));
 
-            solicitud.setEstado("Pendiente Supervisor");
+            solicitud.setEstado("pendiente_supervisor");
             solicitud.setIdUsuarioSupervisor(supervisor.getIdUsuario());
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
@@ -174,56 +162,28 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
     public SolicitudSobrecupoResponseDTO decidirComoSupervisor(Long codSolicitud, DecisionSolicitudDTO dto) {
         SolicitudSobrecupo solicitud = buscarOLanzarError(codSolicitud);
 
-        if (!"Pendiente Supervisor".equals(solicitud.getEstado())) {
+        if (!"pendiente_supervisor".equals(solicitud.getEstado())) {
             throw new ReglaNegocioException(
-                    "Solo se puede decidir sobre solicitudes en estado 'Pendiente Supervisor'. Estado actual: "
+                    "Solo se puede decidir sobre solicitudes en estado 'pendiente_supervisor'. Estado actual: "
                             + solicitud.getEstado());
         }
 
         if ("Rechazar".equals(dto.getDecision())) {
-            solicitud.setEstado("Rechazada");
+            solicitud.setEstado("rechazada_supervisor");
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
 
-        // Supervisor aprueba: aumentar cupo del cliente y de la pareja, luego registrar compra
-        Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
-
+        // Supervisor aprueba: es dinero nuevo, solo aumenta el cupo asignado de la pareja.
+        // No se toca el cupo_propio del cliente.
         Pareja pareja = parejaRepository.findById(solicitud.getIdUsuarioPareja())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Pareja no encontrada"));
 
         BigDecimal monto = solicitud.getMontoSolicitado();
+        parejaRepository.actualizarCupoAsignado(pareja.getIdUsuario(), pareja.getCupoAsignado().add(monto));
 
-        // Incrementar cupo total del cliente
-        clienteRepository.actualizarCupoTotal(
-                cliente.getIdUsuario(), cliente.getCupoTotalAutorizado().add(monto));
-
-        // Incrementar cupo asignado de la pareja
-        parejaRepository.actualizarCupoAsignado(
-                pareja.getIdUsuario(), pareja.getCupoAsignado().add(monto));
-
-        Supervisor supervisor = supervisorRepository.findById(solicitud.getIdUsuarioSupervisor())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Supervisor no encontrado"));
-
-        Compra compra = registrarCompraPostAprobacion(solicitud, supervisor.getIdUsuario());
-
-        solicitud.setEstado("Aprobada Supervisor");
+        solicitud.setEstado("aprobada_supervisor");
         solicitud.setMontoAutorizado(monto);
-        solicitud.setIdCompra(compra.getCodCompra());
         return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
-    }
-
-    // Crea la compra una vez que el sobrecupo fue aprobado
-    private Compra registrarCompraPostAprobacion(SolicitudSobrecupo solicitud, Long idSupervisor) {
-        Compra compra = new Compra();
-        compra.setMonto(solicitud.getMontoSolicitado());
-        compra.setFecha(LocalDate.now());
-        compra.setHora(LocalTime.now());
-        compra.setRequiereSobrecupo(true);
-        compra.setIdUsuarioPareja(solicitud.getIdUsuarioPareja());
-        compra.setIdAlmacen(solicitud.getIdAlmacen());
-        compra.setIdUsuarioSupervisor(idSupervisor);
-        return compraRepository.save(compra);
     }
 
     private SolicitudSobrecupo buscarOLanzarError(Long codSolicitud) {
@@ -239,14 +199,12 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
         Supervisor supervisor = s.getIdUsuarioSupervisor() != null
                 ? supervisorRepository.findById(s.getIdUsuarioSupervisor()).orElse(null)
                 : null;
-        Almacen almacen = almacenRepository.findById(s.getIdAlmacen()).orElse(null);
 
-        return toResponseDTO(s, cliente, pareja, supervisor, almacen);
+        return toResponseDTO(s, cliente, pareja, supervisor);
     }
 
     private SolicitudSobrecupoResponseDTO toResponseDTO(SolicitudSobrecupo s, Cliente cliente,
-                                                        Pareja pareja, Supervisor supervisor,
-                                                        Almacen almacen) {
+                                                        Pareja pareja, Supervisor supervisor) {
         SolicitudSobrecupoResponseDTO dto = new SolicitudSobrecupoResponseDTO();
         dto.setCodSolicitud(s.getCodSolicitud());
         dto.setFecha(s.getFecha());
@@ -254,7 +212,6 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
         dto.setMontoSolicitado(s.getMontoSolicitado());
         dto.setMontoAutorizado(s.getMontoAutorizado());
         dto.setEstado(s.getEstado());
-        dto.setIdCompra(s.getIdCompra());
 
         if (cliente != null) {
             dto.setIdUsuarioCliente(cliente.getIdUsuario());
@@ -268,10 +225,6 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
             dto.setIdUsuarioSupervisor(supervisor.getIdUsuario());
             dto.setNombreSupervisorCompleto(
                     supervisor.getPrimerNombre() + " " + supervisor.getPrimerApellido());
-        }
-        if (almacen != null) {
-            dto.setIdAlmacen(almacen.getIdAlmacen());
-            dto.setNombreAlmacen(almacen.getNombreAlmacen());
         }
         return dto;
     }

@@ -1,5 +1,7 @@
 package co.edu.unbosque.proyecto.supermercado.servicio.implementacion;
 
+import java.math.BigDecimal;
+
 import co.edu.unbosque.proyecto.supermercado.modelo.Almacen;
 import co.edu.unbosque.proyecto.supermercado.modelo.Cliente;
 import co.edu.unbosque.proyecto.supermercado.modelo.Pareja;
@@ -80,7 +82,9 @@ public class LoginServiceImpl implements LoginService {
         dto.setPrimerApellido(c.getPrimerApellido());
         dto.setSegundoApellido(c.getSegundoApellido());
         dto.setEstado(c.getEstado());
-        dto.setCupoTotalAutorizado(c.getCupoTotalAutorizado());
+        dto.setCupoPropio(c.getCupoPropio());
+        BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(c.getIdUsuario());
+        dto.setCupoTotalAutorizado(c.getCupoPropio().add(sumaAsignada));
         return dto;
     }
 

@@ -12,7 +12,6 @@ public class SolicitudSobrecupoResponseDTO {
     private BigDecimal montoSolicitado;
     private BigDecimal montoAutorizado;  // null si todavia no fue aprobada
     private String estado;
-    private Long idCompra;               // null hasta que la compra se registre
 
     private Long idUsuarioCliente;
     private String nombreClienteCompleto;
@@ -22,9 +21,6 @@ public class SolicitudSobrecupoResponseDTO {
 
     private Long idUsuarioSupervisor;    // null si no intervino supervisor
     private String nombreSupervisorCompleto;
-
-    private Long idAlmacen;
-    private String nombreAlmacen;
 
     public SolicitudSobrecupoResponseDTO() {
     }
@@ -77,14 +73,6 @@ public class SolicitudSobrecupoResponseDTO {
         this.estado = estado;
     }
 
-    public Long getIdCompra() {
-        return idCompra;
-    }
-
-    public void setIdCompra(Long idCompra) {
-        this.idCompra = idCompra;
-    }
-
     public Long getIdUsuarioCliente() {
         return idUsuarioCliente;
     }
@@ -131,21 +119,5 @@ public class SolicitudSobrecupoResponseDTO {
 
     public void setNombreSupervisorCompleto(String nombreSupervisorCompleto) {
         this.nombreSupervisorCompleto = nombreSupervisorCompleto;
-    }
-
-    public Long getIdAlmacen() {
-        return idAlmacen;
-    }
-
-    public void setIdAlmacen(Long idAlmacen) {
-        this.idAlmacen = idAlmacen;
-    }
-
-    public String getNombreAlmacen() {
-        return nombreAlmacen;
-    }
-
-    public void setNombreAlmacen(String nombreAlmacen) {
-        this.nombreAlmacen = nombreAlmacen;
     }
 }

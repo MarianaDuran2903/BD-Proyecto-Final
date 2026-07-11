@@ -11,6 +11,7 @@ public class ClienteResponseDTO {
     private String primerApellido;
     private String segundoApellido;
     private String telefono;
+    private BigDecimal cupoPropio;
     private BigDecimal cupoTotalAutorizado;
     private String estado;
 
@@ -73,6 +74,15 @@ public class ClienteResponseDTO {
         this.telefono = telefono;
     }
 
+    public BigDecimal getCupoPropio() {
+        return cupoPropio;
+    }
+
+    public void setCupoPropio(BigDecimal cupoPropio) {
+        this.cupoPropio = cupoPropio;
+    }
+
+    // Calculado: cupo_propio + suma del cupo_asignado de todas sus Parejas
     public BigDecimal getCupoTotalAutorizado() {
         return cupoTotalAutorizado;
     }

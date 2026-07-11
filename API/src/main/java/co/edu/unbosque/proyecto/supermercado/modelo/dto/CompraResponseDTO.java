@@ -10,10 +10,12 @@ public class CompraResponseDTO {
     private BigDecimal monto;
     private LocalDate fecha;
     private LocalTime hora;
-    private Boolean requiereSobrecupo;
 
     private Long idUsuarioPareja;
     private String nombreParejaCompleto;
+
+    private Long idUsuarioCliente;
+    private String nombreClienteCompleto;
 
     private Long idAlmacen;
     private String nombreAlmacen;
@@ -56,14 +58,6 @@ public class CompraResponseDTO {
         this.hora = hora;
     }
 
-    public Boolean getRequiereSobrecupo() {
-        return requiereSobrecupo;
-    }
-
-    public void setRequiereSobrecupo(Boolean requiereSobrecupo) {
-        this.requiereSobrecupo = requiereSobrecupo;
-    }
-
     public Long getIdUsuarioPareja() {
         return idUsuarioPareja;
     }
@@ -78,6 +72,22 @@ public class CompraResponseDTO {
 
     public void setNombreParejaCompleto(String nombreParejaCompleto) {
         this.nombreParejaCompleto = nombreParejaCompleto;
+    }
+
+    public Long getIdUsuarioCliente() {
+        return idUsuarioCliente;
+    }
+
+    public void setIdUsuarioCliente(Long idUsuarioCliente) {
+        this.idUsuarioCliente = idUsuarioCliente;
+    }
+
+    public String getNombreClienteCompleto() {
+        return nombreClienteCompleto;
+    }
+
+    public void setNombreClienteCompleto(String nombreClienteCompleto) {
+        this.nombreClienteCompleto = nombreClienteCompleto;
     }
 
     public Long getIdAlmacen() {

@@ -41,7 +41,7 @@ public class ParejaServiceImpl implements ParejaService {
         validarCedulaNoRegistradaEnOtroRol(dto.getIdUsuario());
 
         Cliente cliente = buscarClienteOLanzarError(dto.getIdUsuarioCliente());
-        validarLimiteDeIntegridad(cliente, dto.getCupoAsignado(), null);
+        transferirCupoPropio(cliente, dto.getCupoAsignado());
 
         Pareja pareja = new Pareja();
         pareja.setIdUsuario(dto.getIdUsuario());
@@ -88,10 +88,14 @@ public class ParejaServiceImpl implements ParejaService {
     @Transactional
     public ParejaResponseDTO actualizar(Long idUsuario, ParejaRequestDTO dto) {
         Pareja pareja = buscarOLanzarError(idUsuario);
-        Cliente cliente = buscarClienteOLanzarError(dto.getIdUsuarioCliente());
+        Cliente clienteAnterior = buscarClienteOLanzarError(pareja.getIdUsuarioCliente());
+        Cliente cliente = dto.getIdUsuarioCliente().equals(clienteAnterior.getIdUsuario())
+                ? clienteAnterior
+                : buscarClienteOLanzarError(dto.getIdUsuarioCliente());
 
-        // Se descuenta el cupo actual de esta pareja antes de validar para no contarlo doble
-        validarLimiteDeIntegridad(cliente, dto.getCupoAsignado(), pareja.getCupoAsignado());
+        // Se devuelve el cupo que tenia asignado antes de descontar el nuevo monto
+        transferirCupoPropio(clienteAnterior, pareja.getCupoAsignado().negate());
+        transferirCupoPropio(cliente, dto.getCupoAsignado());
 
         pareja.setNombreUsuario(dto.getNombreUsuario());
         pareja.setContrasenia(dto.getContrasenia());
@@ -109,28 +113,26 @@ public class ParejaServiceImpl implements ParejaService {
     @Override
     @Transactional
     public void eliminar(Long idUsuario) {
-        buscarOLanzarError(idUsuario);
+        Pareja pareja = buscarOLanzarError(idUsuario);
+        Cliente cliente = buscarClienteOLanzarError(pareja.getIdUsuarioCliente());
+
+        // El cupo asignado que tenia la pareja vuelve al cupo propio del cliente
+        transferirCupoPropio(cliente, pareja.getCupoAsignado().negate());
         parejaRepository.deleteById(idUsuario);
     }
 
-    // Regla de integridad: suma de cupos asignados no puede superar cupoTotalAutorizado del cliente
-    private void validarLimiteDeIntegridad(Cliente cliente, BigDecimal nuevoCupo,
-                                           BigDecimal cupoAnteriorDeEstaPareja) {
-        BigDecimal sumaActual = parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
-
-        if (cupoAnteriorDeEstaPareja != null) {
-            sumaActual = sumaActual.subtract(cupoAnteriorDeEstaPareja);
+    // Mueve "monto" del cupo_propio del cliente hacia una pareja (monto negativo = devolucion)
+    private void transferirCupoPropio(Cliente cliente, BigDecimal monto) {
+        if (monto.signum() > 0) {
+            BigDecimal disponible = clienteRepository.calcularSaldoPropioDisponible(cliente.getIdUsuario());
+            if (disponible.compareTo(monto) < 0) {
+                throw new ReglaNegocioException(
+                        "El cupo propio del cliente es insuficiente. Disponible: " + disponible
+                                + ", cupo asignado solicitado: " + monto);
+            }
         }
-
-        BigDecimal sumaProyectada = sumaActual.add(nuevoCupo);
-
-        if (sumaProyectada.compareTo(cliente.getCupoTotalAutorizado()) > 0) {
-            throw new ReglaNegocioException(
-                    "El cupo asignado excede el cupo total del cliente. "
-                            + "Disponible para asignar: "
-                            + cliente.getCupoTotalAutorizado().subtract(sumaActual)
-                            + ", cupo solicitado: " + nuevoCupo);
-        }
+        cliente.setCupoPropio(cliente.getCupoPropio().subtract(monto));
+        clienteRepository.update(cliente);
     }
 
     // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario

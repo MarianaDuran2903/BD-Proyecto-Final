@@ -9,7 +9,7 @@ public class Cliente extends Usuario {
     private String primerApellido;
     private String segundoApellido;
     private String telefono;
-    private BigDecimal cupoTotalAutorizado;
+    private BigDecimal cupoPropio;
 
     public Cliente() {
     }
@@ -54,11 +54,11 @@ public class Cliente extends Usuario {
         this.telefono = telefono;
     }
 
-    public BigDecimal getCupoTotalAutorizado() {
-        return cupoTotalAutorizado;
+    public BigDecimal getCupoPropio() {
+        return cupoPropio;
     }
 
-    public void setCupoTotalAutorizado(BigDecimal cupoTotalAutorizado) {
-        this.cupoTotalAutorizado = cupoTotalAutorizado;
+    public void setCupoPropio(BigDecimal cupoPropio) {
+        this.cupoPropio = cupoPropio;
     }
 }

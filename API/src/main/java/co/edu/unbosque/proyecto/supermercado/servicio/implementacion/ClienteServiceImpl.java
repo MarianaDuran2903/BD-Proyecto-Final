@@ -1,5 +1,6 @@
 package co.edu.unbosque.proyecto.supermercado.servicio.implementacion;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setPrimerApellido(dto.getPrimerApellido());
         cliente.setSegundoApellido(dto.getSegundoApellido());
         cliente.setTelefono(dto.getTelefono());
-        cliente.setCupoTotalAutorizado(dto.getCupoTotalAutorizado());
+        cliente.setCupoPropio(dto.getCupoPropio());
 
         return toResponseDTO(clienteRepository.save(cliente));
     }
@@ -78,7 +79,7 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setPrimerApellido(dto.getPrimerApellido());
         cliente.setSegundoApellido(dto.getSegundoApellido());
         cliente.setTelefono(dto.getTelefono());
-        cliente.setCupoTotalAutorizado(dto.getCupoTotalAutorizado());
+        cliente.setCupoPropio(dto.getCupoPropio());
 
         return toResponseDTO(clienteRepository.update(cliente));
     }
@@ -117,7 +118,11 @@ public class ClienteServiceImpl implements ClienteService {
         dto.setPrimerApellido(c.getPrimerApellido());
         dto.setSegundoApellido(c.getSegundoApellido());
         dto.setTelefono(c.getTelefono());
-        dto.setCupoTotalAutorizado(c.getCupoTotalAutorizado());
+        dto.setCupoPropio(c.getCupoPropio());
+
+        BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(c.getIdUsuario());
+        dto.setCupoTotalAutorizado(c.getCupoPropio().add(sumaAsignada));
+
         dto.setEstado(c.getEstado());
         return dto;
     }

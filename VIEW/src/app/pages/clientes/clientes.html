@@ -26,16 +26,16 @@
             [valor]="form.primer_nombre" (valorChange)="form.primer_nombre = $event" />
           <app-campo-formulario etiqueta="Segundo Nombre" id="segundoNombre"
             tooltip="Segundo nombre del cliente (opcional)."
-            [valor]="form.segundo_nombre" (valorChange)="form.segundo_nombre = $event" />
+            [valor]="form.segundo_nombre ?? ''" (valorChange)="form.segundo_nombre = $event" />
           <app-campo-formulario etiqueta="Primer Apellido *" id="primerApellido"
             tooltip="Primer apellido del cliente."
             [valor]="form.primer_apellido" (valorChange)="form.primer_apellido = $event" />
           <app-campo-formulario etiqueta="Segundo Apellido" id="segundoApellido"
             tooltip="Segundo apellido del cliente (opcional)."
-            [valor]="form.segundo_apellido" (valorChange)="form.segundo_apellido = $event" />
+            [valor]="form.segundo_apellido ?? ''" (valorChange)="form.segundo_apellido = $event" />
           <app-campo-formulario etiqueta="Teléfono" id="telefono"
             tooltip="Número de contacto del cliente (opcional)."
-            [valor]="form.telefono" (valorChange)="form.telefono = $event" />
+            [valor]="form.telefono ?? ''" (valorChange)="form.telefono = $event" />
           <app-campo-formulario etiqueta="Cupo Total Autorizado *" id="cupo" tipo="number"
             tooltip="Monto máximo de crédito autorizado para este cliente."
             [valor]="form.cupo_total_autorizado" (valorChange)="form.cupo_total_autorizado = +$event" />

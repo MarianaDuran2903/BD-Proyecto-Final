@@ -20,7 +20,7 @@ CREATE TABLE CLIENTE (
                          primer_apellido          VARCHAR(30) NOT NULL,
                          segundo_apellido         VARCHAR(30),
                          telefono                 VARCHAR(30),
-                         cupo_total_autorizado    DECIMAL(10,2) NOT NULL CHECK (cupo_total_autorizado >= 0)
+                         cupo_propio              DECIMAL(10,2) NOT NULL CHECK (cupo_propio >= 0)
 );
 
 -- Tabla: ALMACEN
@@ -65,18 +65,24 @@ CREATE TABLE SUPERVISOR (
 );
 
 -- Tabla: COMPRA
+-- id_usuario_pareja / id_usuario_cliente: arco exclusivo, exactamente uno de los dos debe estar lleno
 CREATE TABLE COMPRA (
                         cod_compra               BIGSERIAL PRIMARY KEY,
                         monto                    DECIMAL(10,2) NOT NULL CHECK (monto >= 0),
                         fecha                    DATE NOT NULL,
                         hora                     TIME NOT NULL,
-                        requiere_sobrecupo       BOOLEAN NOT NULL DEFAULT FALSE,
-                        id_usuario_pareja        BIGINT NOT NULL,
+                        id_usuario_pareja        BIGINT,
+                        id_usuario_cliente       BIGINT,
                         id_almacen               BIGINT NOT NULL,
-                        id_usuario_supervisor    BIGINT,
+                        id_usuario_supervisor    BIGINT NOT NULL,
                         FOREIGN KEY (id_usuario_pareja) REFERENCES PAREJA (id_usuario),
+                        FOREIGN KEY (id_usuario_cliente) REFERENCES CLIENTE (id_usuario),
                         FOREIGN KEY (id_almacen) REFERENCES ALMACEN (id_almacen),
-                        FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario)
+                        FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario),
+                        CHECK (
+                            (id_usuario_pareja IS NOT NULL AND id_usuario_cliente IS NULL)
+                            OR (id_usuario_pareja IS NULL AND id_usuario_cliente IS NOT NULL)
+                        )
 );
 
 -- Tabla: RESTRICCION_HORARIO
@@ -92,26 +98,22 @@ CREATE TABLE RESTRICCION_HORARIO (
 );
 
 -- Tabla: SOLICITUD_SOBRECUPO
--- id_compra es nullable porque la compra se registra DESPUES de aprobarse el sobrecupo
 -- id_usuario_supervisor es nullable porque el supervisor no siempre interviene
 -- monto_autorizado es nullable porque es NULL mientras la solicitud esta pendiente
+-- no tiene id_compra: aprobar una solicitud nunca crea una Compra, solo reasigna cupo
 CREATE TABLE SOLICITUD_SOBRECUPO (
                                      cod_solicitud            BIGSERIAL PRIMARY KEY,
                                      fecha                    DATE NOT NULL,
                                      hora                     TIME NOT NULL,
                                      monto_solicitado         DECIMAL(10,2) NOT NULL CHECK (monto_solicitado >= 0),
                                      monto_autorizado         DECIMAL(10,2) CHECK (monto_autorizado >= 0),
-                                     estado                   VARCHAR(30) NOT NULL CHECK (estado IN ('Pendiente', 'Pendiente Supervisor', 'Aprobada Cliente', 'Aprobada Supervisor', 'Rechazada')),
-                                     id_compra                BIGINT UNIQUE,
+                                     estado                   VARCHAR(30) NOT NULL CHECK (estado IN ('pendiente_cliente', 'aprobada_directa', 'pendiente_supervisor', 'aprobada_supervisor', 'rechazada_cliente', 'rechazada_supervisor')),
                                      id_usuario_cliente       BIGINT NOT NULL,
                                      id_usuario_pareja        BIGINT NOT NULL,
                                      id_usuario_supervisor    BIGINT,
-                                     id_almacen               BIGINT NOT NULL,
-                                     FOREIGN KEY (id_compra) REFERENCES COMPRA (cod_compra),
                                      FOREIGN KEY (id_usuario_cliente) REFERENCES CLIENTE (id_usuario),
                                      FOREIGN KEY (id_usuario_pareja) REFERENCES PAREJA (id_usuario),
-                                     FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario),
-                                     FOREIGN KEY (id_almacen) REFERENCES ALMACEN (id_almacen)
+                                     FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario)
 );
 
 

@@ -18,11 +18,16 @@ public class CompraRequestDTO {
     @NotNull(message = "La hora es obligatoria")
     private LocalTime hora;
 
-    @NotNull(message = "Debe indicar la pareja que realiza la compra")
+    // Exactamente uno de los dos debe venir informado: la compra la hace una Pareja o un Cliente
     private Long idUsuarioPareja;
+
+    private Long idUsuarioCliente;
 
     @NotNull(message = "Debe indicar el almacén donde se efectúa la compra")
     private Long idAlmacen;
+
+    @NotNull(message = "Debe indicar el supervisor que registra la compra")
+    private Long idUsuarioSupervisor;
 
     public CompraRequestDTO() {
     }
@@ -59,11 +64,27 @@ public class CompraRequestDTO {
         this.idUsuarioPareja = idUsuarioPareja;
     }
 
+    public Long getIdUsuarioCliente() {
+        return idUsuarioCliente;
+    }
+
+    public void setIdUsuarioCliente(Long idUsuarioCliente) {
+        this.idUsuarioCliente = idUsuarioCliente;
+    }
+
     public Long getIdAlmacen() {
         return idAlmacen;
     }
 
     public void setIdAlmacen(Long idAlmacen) {
         this.idAlmacen = idAlmacen;
+    }
+
+    public Long getIdUsuarioSupervisor() {
+        return idUsuarioSupervisor;
+    }
+
+    public void setIdUsuarioSupervisor(Long idUsuarioSupervisor) {
+        this.idUsuarioSupervisor = idUsuarioSupervisor;
     }
 }
