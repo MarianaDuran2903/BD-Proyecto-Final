@@ -6,6 +6,7 @@ import co.edu.unbosque.proyecto.supermercado.modelo.dto.AprobacionCupoInicialDTO
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRegistroRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteResponseDTO;
+import co.edu.unbosque.proyecto.supermercado.modelo.dto.EditarCupoPropioDTO;
 import co.edu.unbosque.proyecto.supermercado.servicio.ClienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +70,13 @@ public class ClienteController {
             @PathVariable Long id,
             @Valid @RequestBody AprobacionCupoInicialDTO dto) {
         return ResponseEntity.ok(clienteService.aprobarCupoInicial(id, dto));
+    }
+
+    @PutMapping("/{id}/cupo-propio")
+    public ResponseEntity<ClienteResponseDTO> editarCupoPropio(
+            @PathVariable Long id,
+            @Valid @RequestBody EditarCupoPropioDTO dto) {
+        return ResponseEntity.ok(clienteService.editarCupoPropio(id, dto));
     }
 
     @DeleteMapping("/{id}")

@@ -30,6 +30,14 @@ export class ParejaService {
     return this.http.put<ParejaResponseDTO>(`${this.BASE_URL}/${id}`, body);
   }
 
+  inactivarPareja(id: number): Observable<ParejaResponseDTO> {
+    return this.http.put<ParejaResponseDTO>(`${this.BASE_URL}/${id}/inactivar`, {});
+  }
+
+  activarPareja(id: number): Observable<ParejaResponseDTO> {
+    return this.http.put<ParejaResponseDTO>(`${this.BASE_URL}/${id}/activar`, {});
+  }
+
   eliminarPareja(id: number): Observable<void> {
     return this.http.delete<void>(`${this.BASE_URL}/${id}`);
   }

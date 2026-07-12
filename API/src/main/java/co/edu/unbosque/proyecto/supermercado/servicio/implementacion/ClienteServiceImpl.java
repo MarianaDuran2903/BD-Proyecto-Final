@@ -9,6 +9,7 @@ import co.edu.unbosque.proyecto.supermercado.modelo.dto.AprobacionCupoInicialDTO
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRegistroRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteResponseDTO;
+import co.edu.unbosque.proyecto.supermercado.modelo.dto.EditarCupoPropioDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.RecursoNoEncontradoException;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.ReglaNegocioException;
 import co.edu.unbosque.proyecto.supermercado.repositorio.ClienteRepository;
@@ -138,6 +139,29 @@ public class ClienteServiceImpl implements ClienteService {
         clienteRepository.update(cliente);
 
         return toResponseDTO(cliente);
+    }
+
+    @Override
+    @Transactional
+    public ClienteResponseDTO editarCupoPropio(Long idUsuario, EditarCupoPropioDTO dto) {
+        Cliente cliente = buscarOLanzarError(idUsuario);
+
+        if ("Pendiente".equals(cliente.getEstado())) {
+            throw new ReglaNegocioException(
+                    "El cliente aun no tiene un cupo inicial aprobado por el Supervisor.");
+        }
+
+        // El nuevo cupo_propio + lo ya asignado a parejas no puede superar el techo autorizado.
+        BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
+        BigDecimal maximoPermitido = cliente.getCupoTotalAutorizado().subtract(sumaAsignada);
+        if (dto.getCupoPropio().compareTo(maximoPermitido) > 0) {
+            throw new ReglaNegocioException(
+                    "El cupo propio no puede superar " + maximoPermitido
+                            + " (cupo total autorizado menos lo ya asignado a tus parejas).");
+        }
+
+        cliente.setCupoPropio(dto.getCupoPropio());
+        return toResponseDTO(clienteRepository.update(cliente));
     }
 
     @Override

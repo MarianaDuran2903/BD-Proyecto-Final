@@ -2,10 +2,14 @@
   <div class="pagina">
     <div class="pagina__encabezado">
       <div>
-        <h1 class="pagina__titulo">Solicitudes de Sobrecupo</h1>
+        <h1 class="pagina__titulo">Solicitudes Escaladas al Supervisor</h1>
         <span class="pagina__breadcrumb">MercaCredit / Solicitudes de Sobrecupo</span>
       </div>
     </div>
+
+    @if (error) {
+      <p class="pagina__error">{{ error }}</p>
+    }
 
     <table class="tabla">
       <thead>

@@ -53,3 +53,11 @@
   display: flex;
   gap: 8px;
 }
+.pagina__error {
+  font-size: 13px;
+  color: #96281B;
+  background: #F1E4E1;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #C0392B;
+}

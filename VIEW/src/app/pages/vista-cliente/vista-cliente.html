@@ -3,7 +3,12 @@
 
     @if (cliente()) {
       <div class="tarjeta">
-        <h2 class="tarjeta__titulo">Información del Cliente</h2>
+        <div class="tarjeta__encabezado">
+          <h2 class="tarjeta__titulo">Información del Cliente</h2>
+          @if (!formularioCupoPropioVisible()) {
+            <app-boton etiqueta="Editar Cupo Propio" variante="secundario" (click)="abrirFormularioCupoPropio()" />
+          }
+        </div>
         <div class="tarjeta__info">
           <div>
             <span class="tarjeta__label">Nombre:</span>
@@ -22,6 +27,21 @@
             <span class="tarjeta__valor">$ {{ cliente()!.cupo_propio }}</span>
           </div>
         </div>
+
+        @if (formularioCupoPropioVisible()) {
+          <div class="pagina__formulario">
+            <app-campo-formulario etiqueta="Nuevo Cupo Propio *" id="nuevoCupoPropio" tipo="number"
+              [valor]="nuevoCupoPropio" (valorChange)="nuevoCupoPropio = +$event" />
+            @if (errorCupoPropio) {
+              <p class="pagina__error">{{ errorCupoPropio }}</p>
+            }
+            <div class="pagina__acciones">
+              <app-boton etiqueta="GUARDAR" (click)="guardarCupoPropio()" />
+              <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioCupoPropioVisible.set(false)" />
+            </div>
+          </div>
+        }
+
         <div class="tarjeta__destacado">
           <span class="tarjeta__label">Cupo Total Disponible:</span>
           <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_disponible }}</span>
@@ -39,34 +59,37 @@
 
       @if (formularioParejaVisible()) {
         <div class="pagina__formulario">
+          <p class="pagina__formulario-titulo">{{ editandoId() ? 'Editar Pareja' : 'Nueva Pareja' }}</p>
           <div class="pagina__campos">
-            <app-campo-formulario etiqueta="Documento" id="idUsuarioPareja" tipo="number"
-              [valor]="formPareja.id_usuario" (valorChange)="formPareja.id_usuario = +$event" />
-            <app-campo-formulario etiqueta="Nombre de Usuario" id="nombreUsuarioPareja"
-              [valor]="formPareja.nombre_usuario" (valorChange)="formPareja.nombre_usuario = $event" />
-            <app-campo-formulario etiqueta="Contraseña" id="contraseniaPareja" tipo="password"
+            <app-campo-formulario etiqueta="Documento *" id="idUsuarioPareja" tipo="number"
+              [valor]="formPareja.id_usuario" [deshabilitado]="!!editandoId()"
+              (valorChange)="formPareja.id_usuario = +$event" />
+            <app-campo-formulario etiqueta="Contraseña *" id="contraseniaPareja" tipo="password"
               [valor]="formPareja.contrasenia" (valorChange)="formPareja.contrasenia = $event" />
-            <app-campo-formulario etiqueta="Primer Nombre" id="primerNombrePareja"
+            <app-campo-formulario etiqueta="Primer Nombre *" id="primerNombrePareja"
               [valor]="formPareja.primer_nombre" (valorChange)="formPareja.primer_nombre = $event" />
             <app-campo-formulario etiqueta="Segundo Nombre" id="segundoNombrePareja"
               [valor]="formPareja.segundo_nombre ?? ''" (valorChange)="formPareja.segundo_nombre = $event" />
-            <app-campo-formulario etiqueta="Primer Apellido" id="primerApellidoPareja"
+            <app-campo-formulario etiqueta="Primer Apellido *" id="primerApellidoPareja"
               [valor]="formPareja.primer_apellido" (valorChange)="formPareja.primer_apellido = $event" />
             <app-campo-formulario etiqueta="Segundo Apellido" id="segundoApellidoPareja"
               [valor]="formPareja.segundo_apellido ?? ''" (valorChange)="formPareja.segundo_apellido = $event" />
-            <app-campo-formulario etiqueta="Teléfono" id="telefonoPareja"
-              [valor]="formPareja.telefono ?? ''" (valorChange)="formPareja.telefono = $event" />
-            <app-campo-formulario etiqueta="Cupo Asignado" id="cupoAsignadoPareja" tipo="number"
+            <app-campo-formulario etiqueta="Cupo Asignado *" id="cupoAsignadoPareja" tipo="number"
               [valor]="formPareja.cupo_asignado" (valorChange)="formPareja.cupo_asignado = +$event" />
           </div>
           @if (errorPareja) {
             <p class="pagina__error">{{ errorPareja }}</p>
           }
           <div class="pagina__acciones">
-            <app-boton etiqueta="GUARDAR" (click)="guardarPareja()" />
-            <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioParejaVisible.set(false)" />
+            <app-boton [etiqueta]="editandoId() ? 'GUARDAR CAMBIOS' : 'GUARDAR'" (click)="guardarPareja()" />
+            <app-boton etiqueta="Cancelar" variante="secundario"
+              (click)="formularioParejaVisible.set(false); editandoId.set(null)" />
           </div>
         </div>
+      }
+
+      @if (errorPareja && !formularioParejaVisible()) {
+        <p class="pagina__error">{{ errorPareja }}</p>
       }
 
       <table class="tabla">
@@ -79,6 +102,7 @@
             <th>Cupo Disponible</th>
             <th>Contraseña</th>
             <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -91,9 +115,19 @@
               <td>$ {{ p.cupo_disponible }}</td>
               <td>{{ p.contrasenia }}</td>
               <td><app-estado [valor]="p.estado" /></td>
+              <td>
+                <div class="tabla__acciones">
+                  <button class="tabla__eliminar" (click)="abrirFormularioEditarPareja(p)">Editar</button>
+                  @if (p.estado === 'Activo') {
+                    <button class="tabla__eliminar" (click)="inactivarPareja(p.id_usuario)">Inactivar</button>
+                  } @else {
+                    <button class="tabla__eliminar" (click)="activarPareja(p.id_usuario)">Activar</button>
+                  }
+                </div>
+              </td>
             </tr>
           } @empty {
-            <tr><td colspan="7" class="tabla__vacio">No hay parejas registradas.</td></tr>
+            <tr><td colspan="8" class="tabla__vacio">No hay parejas registradas.</td></tr>
           }
         </tbody>
         @if (parejas().length > 0) {
@@ -103,7 +137,7 @@
               <td>$ {{ totalCupoAsignado() }}</td>
               <td>$ {{ totalCupoGastadoParejas() }}</td>
               <td>$ {{ totalCupoDisponible() }}</td>
-              <td colspan="2"></td>
+              <td colspan="3"></td>
             </tr>
           </tfoot>
         }
@@ -123,7 +157,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (c of compras(); track c.id_compra) {
+          @for (c of compras(); track c.cod_compra) {
             <tr>
               <td>{{ c.fecha }}</td>
               <td>{{ c.hora }}</td>
@@ -211,7 +245,7 @@
         <div class="pagina__formulario">
           <div class="pagina__campos">
             <div class="pagina__select">
-              <label class="campo__etiqueta">Pareja</label>
+              <label class="campo__etiqueta">Pareja <span class="requerido">*</span></label>
               <select (change)="formRestriccion.id_usuario_pareja = +$any($event.target).value">
                 <option [value]="0">Seleccionar pareja</option>
                 @for (p of parejas(); track p.id_usuario) {
@@ -221,11 +255,11 @@
             </div>
             <app-campo-formulario etiqueta="Motivo" id="motivoRestriccion"
               [valor]="formRestriccion.motivo ?? ''" (valorChange)="formRestriccion.motivo = $event" />
-            <app-campo-formulario etiqueta="Día" id="diaRestriccion" tipo="date"
+            <app-campo-formulario etiqueta="Día *" id="diaRestriccion" tipo="date"
               [valor]="formRestriccion.dia_bloqueo" (valorChange)="formRestriccion.dia_bloqueo = $event" />
-            <app-campo-formulario etiqueta="Hora Inicio" id="horaInicioRestriccion" tipo="time"
+            <app-campo-formulario etiqueta="Hora Inicio *" id="horaInicioRestriccion" tipo="time"
               [valor]="formRestriccion.hora_bloqueo_inicio" (valorChange)="formRestriccion.hora_bloqueo_inicio = $event" />
-            <app-campo-formulario etiqueta="Hora Fin" id="horaFinRestriccion" tipo="time"
+            <app-campo-formulario etiqueta="Hora Fin *" id="horaFinRestriccion" tipo="time"
               [valor]="formRestriccion.hora_bloqueo_fin" (valorChange)="formRestriccion.hora_bloqueo_fin = $event" />
           </div>
           @if (errorRestriccion) {

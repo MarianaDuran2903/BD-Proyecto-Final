@@ -56,6 +56,16 @@ public class ParejaController {
         return ResponseEntity.ok(parejaService.actualizar(id, dto));
     }
 
+    @PutMapping("/{id}/inactivar")
+    public ResponseEntity<ParejaResponseDTO> inactivar(@PathVariable Long id) {
+        return ResponseEntity.ok(parejaService.inactivar(id));
+    }
+
+    @PutMapping("/{id}/activar")
+    public ResponseEntity<ParejaResponseDTO> activar(@PathVariable Long id) {
+        return ResponseEntity.ok(parejaService.activar(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         parejaService.eliminar(id);

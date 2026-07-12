@@ -97,12 +97,12 @@ public class ParejaRepository {
     }
 
     public Pareja update(Pareja pareja) {
-        String sql = "UPDATE pareja SET nombre_usuario = ?, contrasenia = ?, "
+        String sql = "UPDATE pareja SET nombre_usuario = ?, contrasenia = ?, estado = ?, "
                 + "primer_nombre = ?, segundo_nombre = ?, primer_apellido = ?, segundo_apellido = ?, "
                 + "telefono = ?, cupo_asignado = ?, id_usuario_cliente = ? WHERE id_usuario = ?";
 
         jdbcTemplate.update(sql,
-                pareja.getNombreUsuario(), pareja.getContrasenia(),
+                pareja.getNombreUsuario(), pareja.getContrasenia(), pareja.getEstado(),
                 pareja.getPrimerNombre(), pareja.getSegundoNombre(),
                 pareja.getPrimerApellido(), pareja.getSegundoApellido(),
                 pareja.getTelefono(), pareja.getCupoAsignado(),

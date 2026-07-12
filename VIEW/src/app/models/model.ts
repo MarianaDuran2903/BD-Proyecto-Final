@@ -48,6 +48,10 @@ export interface AprobacionCupoInicialDTO {
   cupo_autorizado: number;
 }
 
+export interface EditarCupoPropioDTO {
+  cupo_propio: number;
+}
+
 export interface ClienteResponseDTO {
   id_usuario: number;
   nombre_usuario: string;
@@ -94,18 +98,8 @@ export interface ParejaResponseDTO {
   nombre_cliente_titular: string;
 }
 
-export interface CompraRequestDTO {
-  monto: number;
-  fecha: string;
-  hora: string;
-  id_usuario_pareja?: number;
-  id_usuario_cliente?: number;
-  id_almacen: number;
-  id_usuario_supervisor: number;
-}
-
 export interface CompraResponseDTO {
-  id_compra: number;
+  cod_compra: number;
   monto: number;
   fecha: string;
   hora: string;
@@ -117,6 +111,15 @@ export interface CompraResponseDTO {
   nombre_almacen: string;
   id_usuario_supervisor: number;
   nombre_supervisor_completo: string;
+}
+export interface CompraRequestDTO {
+  monto: number;
+  fecha: string;
+  hora: string;
+  id_usuario_pareja?: number;
+  id_usuario_cliente?: number;
+  id_almacen: number;
+  id_usuario_supervisor: number;
 }
 
 export interface RestriccionHorarioDTO {

@@ -43,7 +43,11 @@ export class VistaCliente implements OnInit {
   restricciones = signal<RestriccionHorarioDTO[]>([]);
 
   formularioParejaVisible = signal(false);
+  editandoId = signal<number | null>(null);
   formularioRestriccionVisible = signal(false);
+  formularioCupoPropioVisible = signal(false);
+  nuevoCupoPropio = 0;
+  errorCupoPropio = '';
   errorPareja = '';
   errorRestriccion = '';
   errorSolicitud = signal('');
@@ -135,19 +139,85 @@ export class VistaCliente implements OnInit {
     };
   }
 
+  abrirFormularioCupoPropio(): void {
+    this.nuevoCupoPropio = this.cliente()?.cupo_propio ?? 0;
+    this.errorCupoPropio = '';
+    this.formularioCupoPropioVisible.set(true);
+  }
+
+  guardarCupoPropio(): void {
+    const id = this.idClienteActual();
+    if (!id) return;
+    if (this.nuevoCupoPropio == null || this.nuevoCupoPropio < 0) {
+      this.errorCupoPropio = 'Ingresa un valor válido.';
+      return;
+    }
+    this.clienteService.editarCupoPropio(id, { cupo_propio: this.nuevoCupoPropio }).subscribe({
+      next: () => {
+        this.formularioCupoPropioVisible.set(false);
+        this.cargarTodo();
+      },
+      error: (e) => {
+        this.errorCupoPropio = e.error?.mensaje ?? 'No se pudo actualizar el cupo propio.';
+      }
+    });
+  }
+
   abrirFormularioPareja(): void {
     this.formPareja = this.formParejaVacio();
+    this.editandoId.set(null);
+    this.errorPareja = '';
+    this.formularioParejaVisible.set(true);
+  }
+
+  abrirFormularioEditarPareja(p: ParejaResponseDTO): void {
+    this.formPareja = {
+      id_usuario: p.id_usuario,
+      nombre_usuario: p.nombre_usuario,
+      contrasenia: p.contrasenia,
+      primer_nombre: p.primer_nombre,
+      segundo_nombre: p.segundo_nombre,
+      primer_apellido: p.primer_apellido,
+      segundo_apellido: p.segundo_apellido,
+      telefono: p.telefono,
+      cupo_asignado: p.cupo_asignado,
+      id_usuario_cliente: p.id_usuario_cliente,
+    };
+    this.editandoId.set(p.id_usuario);
     this.errorPareja = '';
     this.formularioParejaVisible.set(true);
   }
 
   guardarPareja(): void {
-    if (!this.formPareja.id_usuario || !this.formPareja.nombre_usuario || !this.formPareja.contrasenia
-      || !this.formPareja.primer_nombre || !this.formPareja.primer_apellido) {
+    if (!this.formPareja.id_usuario || !this.formPareja.contrasenia
+      || !this.formPareja.primer_nombre || !this.formPareja.primer_apellido
+      || this.formPareja.cupo_asignado == null || this.formPareja.cupo_asignado < 0) {
       this.errorPareja = 'Completa todos los campos obligatorios.';
       return;
     }
     this.formPareja.id_usuario_cliente = this.idClienteActual();
+
+    const idEditando = this.editandoId();
+    if (idEditando) {
+      // Editando una pareja existente: no se regenera nombre_usuario, se conserva el que ya tenía.
+      this.parejaService.actualizarPareja(idEditando, this.formPareja).subscribe({
+        next: () => {
+          this.formularioParejaVisible.set(false);
+          this.editandoId.set(null);
+          this.cargarTodo();
+        },
+        error: (e) => {
+          this.errorPareja = e.status === 400
+            ? (e.error?.mensaje ?? 'El cupo asignado excede el cupo total disponible.')
+            : 'Error al actualizar la pareja.';
+        }
+      });
+      return;
+    }
+
+    // El mockup no pide "Nombre de Usuario" para la Pareja: se genera igual
+    // que en el registro público de Cliente (nombre + documento).
+    this.formPareja.nombre_usuario = `${this.formPareja.primer_nombre.trim().toLowerCase()}${this.formPareja.id_usuario}`;
     this.parejaService.crearPareja(this.formPareja).subscribe({
       next: () => {
         this.formularioParejaVisible.set(false);
@@ -161,12 +231,26 @@ export class VistaCliente implements OnInit {
     });
   }
 
+  inactivarPareja(id: number): void {
+    if (!confirm('¿Inactivar esta pareja? Su cupo asignado volverá a tu cupo propio.')) return;
+    this.parejaService.inactivarPareja(id).subscribe({
+      next: () => this.cargarTodo(),
+      error: (e) => this.errorPareja = e.error?.mensaje ?? 'No se pudo inactivar la pareja.'
+    });
+  }
+
+  activarPareja(id: number): void {
+    this.parejaService.activarPareja(id).subscribe({
+      next: () => this.cargarTodo(),
+      error: (e) => this.errorPareja = e.error?.mensaje ?? 'No se pudo activar la pareja.'
+    });
+  }
+
   abrirFormularioRestriccion(): void {
     this.formRestriccion = this.formRestriccionVacio();
     this.errorRestriccion = '';
     this.formularioRestriccionVisible.set(true);
   }
-
   guardarRestriccion(): void {
     if (!this.formRestriccion.id_usuario_pareja || !this.formRestriccion.dia_bloqueo
       || !this.formRestriccion.hora_bloqueo_inicio || !this.formRestriccion.hora_bloqueo_fin) {

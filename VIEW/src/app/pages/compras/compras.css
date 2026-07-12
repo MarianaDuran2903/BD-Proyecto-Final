@@ -1,4 +1,9 @@
-.pagina { display: flex; flex-direction: column; gap: 20px; }
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+}
 
 .pagina__encabezado {
   display: flex;
@@ -9,48 +14,121 @@
 .pagina__titulo {
   font-size: 22px;
   font-weight: 700;
-  color: #333;
+  color: #2C4A3E;
 }
 
 .pagina__breadcrumb {
   font-size: 12px;
-  color: #999;
+  color: #6B7D75;
 }
 
 .pagina__conteo {
   font-size: 13px;
-  color: #666;
+  color: #6B7D75;
   font-weight: 500;
+}
+
+.pagina__formulario {
+  background: white;
+  border: 1px solid #D4C9B8;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(44, 74, 62, 0.06);
+}
+
+.pagina__subtitulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2C4A3E;
+  margin-bottom: 16px;
+}
+
+.pagina__campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.pagina__select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pagina__select select {
+  padding: 10px 12px;
+  border: 1px solid #D4C9B8;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #2C3E35;
+  font-family: inherit;
+  background: white;
+}
+
+.campo__etiqueta {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2C4A3E;
+}
+
+.pagina__nota {
+  font-size: 12px;
+  color: #6B7D75;
+  margin-bottom: 16px;
+}
+
+.pagina__acciones {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.pagina__error {
+  font-size: 13px;
+  color: #96281B;
+  background: #F1E4E1;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #C0392B;
+  margin-bottom: 16px;
 }
 
 .tabla {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(44, 74, 62, 0.06);
 }
 
 .tabla th {
-  background: #f0f2f5;
+  background: #F5F0E8;
   padding: 12px 16px;
   text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2C4A3E;
+  border-bottom: 1px solid #D4C9B8;
 }
 
 .tabla td {
   padding: 12px 16px;
-  font-size: 14px;
-  color: #333;
-  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  color: #2C3E35;
+  border-bottom: 1px solid #EDE6D8;
 }
 
 .tabla__vacio {
   text-align: center;
-  color: #999;
+  color: #6B7D75;
   padding: 24px;
+}
+
+.tabla__total td {
+  font-weight: 700;
+  color: #2C4A3E;
+  border-top: 2px solid #D4C9B8;
+  border-bottom: none;
 }

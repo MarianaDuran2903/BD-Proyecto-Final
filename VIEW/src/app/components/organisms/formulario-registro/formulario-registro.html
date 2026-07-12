@@ -4,7 +4,7 @@
   <div class="formulario-registro__campos">
     <app-campo-formulario
       id="primerNombre"
-      etiqueta="Primer Nombre"
+      etiqueta="Primer Nombre *"
       placeholder="Primer Nombre"
       [valor]="primerNombre"
       (valorChange)="primerNombre = $event"
@@ -18,7 +18,7 @@
     />
     <app-campo-formulario
       id="primerApellido"
-      etiqueta="Primer Apellido"
+      etiqueta="Primer Apellido *"
       placeholder="Primer Apellido"
       [valor]="primerApellido"
       (valorChange)="primerApellido = $event"
@@ -32,7 +32,7 @@
     />
     <app-campo-formulario
       id="documento"
-      etiqueta="Documento"
+      etiqueta="Documento *"
       tipo="number"
       placeholder="No. de documento"
       [valor]="documento"
@@ -40,7 +40,7 @@
     />
     <app-campo-formulario
       id="contrasenia"
-      etiqueta="Contraseña"
+      etiqueta="Contraseña *"
       tipo="password"
       placeholder="Contraseña"
       [valor]="contrasenia"
@@ -48,7 +48,7 @@
     />
     <app-campo-formulario
       id="cupoSolicitado"
-      etiqueta="Cupo total solicitado ($)"
+      etiqueta="Cupo total solicitado ($) *"
       tipo="number"
       placeholder="Valor en COP"
       [valor]="cupoSolicitado"

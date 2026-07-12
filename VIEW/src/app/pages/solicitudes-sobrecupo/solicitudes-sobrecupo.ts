@@ -3,6 +3,7 @@ import { DisenoAdmin } from '../../components/templates/diseno-admin/diseno-admi
 import { Boton } from '../../components/atoms/boton/boton';
 import { Estado } from '../../components/atoms/estado/estado';
 import { SobrecupoService } from '../../services/sobrecupo.service';
+import { SesionService } from '../../services/sesion.service';
 import { EstadoSolicitudSobrecupo, SolicitudSobrecupoResponseDTO } from '../../models/model';
 
 const ETIQUETAS_ESTADO: Record<EstadoSolicitudSobrecupo, string> = {
@@ -22,11 +23,23 @@ const ETIQUETAS_ESTADO: Record<EstadoSolicitudSobrecupo, string> = {
 })
 export class SolicitudesSobrecupo implements OnInit {
   solicitudes = signal<SolicitudSobrecupoResponseDTO[]>([]);
+  error = '';
 
-  constructor(private sobrecupoService: SobrecupoService) {}
+  constructor(
+    private sobrecupoService: SobrecupoService,
+    private sesionService: SesionService,
+  ) {}
 
   ngOnInit(): void {
-    this.sobrecupoService.getSolicitudes().subscribe(data => this.solicitudes.set(data));
+    this.cargar();
+  }
+
+  cargar(): void {
+    const usuario = this.sesionService.usuario();
+    if (!usuario) return;
+    this.sobrecupoService.getPendientesPorSupervisor(usuario.id_usuario).subscribe((data) =>
+      this.solicitudes.set(data)
+    );
   }
 
   etiquetaEstado(estado: EstadoSolicitudSobrecupo): string {
@@ -34,16 +47,18 @@ export class SolicitudesSobrecupo implements OnInit {
   }
 
   aprobar(id: number): void {
-    this.sobrecupoService.decidirComoCliente(id, { decision: 'Aprobar' }).subscribe({
-      next: () => this.ngOnInit(),
-      error: (e) => console.error('Error al aprobar.', e)
+    this.error = '';
+    this.sobrecupoService.decidirComoSupervisor(id, { decision: 'Aprobar' }).subscribe({
+      next: () => this.cargar(),
+      error: (e) => this.error = e.error?.mensaje ?? 'Error al aprobar.',
     });
   }
 
   rechazar(id: number): void {
-    this.sobrecupoService.decidirComoCliente(id, { decision: 'Rechazar' }).subscribe({
-      next: () => this.ngOnInit(),
-      error: (e) => console.error('Error al rechazar.', e)
+    this.error = '';
+    this.sobrecupoService.decidirComoSupervisor(id, { decision: 'Rechazar' }).subscribe({
+      next: () => this.cargar(),
+      error: (e) => this.error = e.error?.mensaje ?? 'Error al rechazar.',
     });
   }
 }

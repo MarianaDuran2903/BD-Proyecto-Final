@@ -17,5 +17,9 @@ public interface ParejaService {
 
     ParejaResponseDTO actualizar(Long idUsuario, ParejaRequestDTO dto);
 
+    ParejaResponseDTO inactivar(Long idUsuario);
+
+    ParejaResponseDTO activar(Long idUsuario);
+
     void eliminar(Long idUsuario);
 }

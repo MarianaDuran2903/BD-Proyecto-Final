@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-diseno-auth',
-  imports: [RouterOutlet],
+  imports: [],
   templateUrl: './diseno-auth.html',
   styleUrl: './diseno-auth.css',
 })
