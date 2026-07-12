@@ -3,6 +3,7 @@ import { authGuard } from './guards/auth-guard';
 import { Login} from './pages/login/login';
 import { Registro } from './pages/registro/registro';
 import { Clientes } from './pages/clientes/clientes';
+import { AprobacionCupoInicial } from './pages/aprobacion-cupo-inicial/aprobacion-cupo-inicial';
 import { Parejas } from './pages/parejas/parejas';
 import { Compras } from './pages/compras/compras';
 import { Restricciones } from './pages/restricciones/restricciones';
@@ -15,6 +16,7 @@ export const routes: Routes = [
    { path: 'login', component: Login },
    { path: 'registro', component: Registro },
    { path: 'clientes', component: Clientes, canActivate: [authGuard] },
+   { path: 'aprobacion-cupo-inicial', component: AprobacionCupoInicial, canActivate: [authGuard] },
    { path: 'parejas', component: Parejas, canActivate: [authGuard] },
    { path: 'compras', component: Compras, canActivate: [authGuard] },
    { path: 'restricciones', component: Restricciones, canActivate: [authGuard] },

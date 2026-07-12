@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CampoFormulario } from '../../molecules/campo-formulario/campo-formulario';
 import { Boton } from '../../atoms/boton/boton';
-import { ClienteRequestDTO } from '../../../models/model';
+import { ClienteRegistroRequestDTO } from '../../../models/model';
 
 @Component({
   selector: 'app-formulario-registro',
@@ -10,7 +10,7 @@ import { ClienteRequestDTO } from '../../../models/model';
   styleUrl: './formulario-registro.css',
 })
 export class FormularioRegistro {
-  @Output() enviarFormulario = new EventEmitter<ClienteRequestDTO>();
+  @Output() enviarFormulario = new EventEmitter<ClienteRegistroRequestDTO>();
   @Output() irALogin = new EventEmitter<void>();
 
   primerNombre = '';
@@ -47,7 +47,7 @@ export class FormularioRegistro {
       segundo_nombre: this.segundoNombre || undefined,
       primer_apellido: this.primerApellido,
       segundo_apellido: this.segundoApellido || undefined,
-      cupo_propio: Number(this.cupoSolicitado),
+      cupo_total_solicitado: Number(this.cupoSolicitado),
     });
   }
 }

@@ -32,6 +32,22 @@ export interface ClienteRequestDTO {
   cupo_propio: number;
 }
 
+export interface ClienteRegistroRequestDTO {
+  id_usuario: number;
+  nombre_usuario: string;
+  contrasenia: string;
+  primer_nombre: string;
+  segundo_nombre?: string;
+  primer_apellido: string;
+  segundo_apellido?: string;
+  telefono?: string;
+  cupo_total_solicitado: number;
+}
+
+export interface AprobacionCupoInicialDTO {
+  cupo_autorizado: number;
+}
+
 export interface ClienteResponseDTO {
   id_usuario: number;
   nombre_usuario: string;
@@ -41,7 +57,10 @@ export interface ClienteResponseDTO {
   segundo_apellido?: string;
   telefono?: string;
   cupo_propio: number;
+  cupo_total_solicitado?: number;
   cupo_total_autorizado: number;
+  cupo_asignado_parejas: number;
+  cupo_total_disponible: number;
   estado: string;
 }
 

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { DisenoAuth } from '../../components/templates/diseno-auth/diseno-auth';
 import { FormularioRegistro } from '../../components/organisms/formulario-registro/formulario-registro';
 import { ClienteService } from '../../services/cliente.service';
-import { ClienteRequestDTO } from '../../models/model';
+import { ClienteRegistroRequestDTO } from '../../models/model';
 
 @Component({
   selector: 'app-registro',
@@ -17,8 +17,8 @@ export class Registro {
     private router: Router,
   ) {}
 
-  alRegistrar(data: ClienteRequestDTO): void {
-    this.clienteService.crearCliente(data).subscribe({
+  alRegistrar(data: ClienteRegistroRequestDTO): void {
+    this.clienteService.registrarCliente(data).subscribe({
       next: () => this.router.navigate(['/login']),
       error: (e) => {
         const msg = e.status === 409 || e.status === 400
