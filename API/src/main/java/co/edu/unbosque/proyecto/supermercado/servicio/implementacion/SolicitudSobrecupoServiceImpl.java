@@ -120,16 +120,22 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
 
-        // Aprobar: verificar si el cliente tiene cupo propio disponible para reasignar
-        Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
+        if ("Aprobar".equals(dto.getDecision())) {
+            // Caso 1: el cliente decide asignar de su propio cupo.
+            // Ahora SI se valida que le alcance (antes esto no fallaba,
+            // simplemente escalaba solo; ahora "Aprobar" implica que el
+            // cliente ya eligio usar su cupo propio, asi que si no le
+            // alcanza es un error, no un fallback silencioso).
+            Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
 
-        BigDecimal disponible = clienteRepository.calcularSaldoPropioDisponible(cliente.getIdUsuario());
+            BigDecimal disponible = clienteRepository.calcularSaldoPropioDisponible(cliente.getIdUsuario());
+            if (disponible.compareTo(solicitud.getMontoSolicitado()) < 0) {
+                throw new ReglaNegocioException(
+                        "Cupo propio insuficiente para aprobar directamente. Disponible: " + disponible
+                                + ", solicitado: " + solicitud.getMontoSolicitado());
+            }
 
-        if (disponible.compareTo(solicitud.getMontoSolicitado()) >= 0) {
-            // Cliente tiene cupo propio: aprueba directamente sin supervisor.
-            // Se reasigna dinero ya autorizado: cupo_propio baja, cupo_asignado de la pareja sube
-            // en la misma proporcion, el total del cliente no cambia.
             Pareja pareja = parejaRepository.findById(solicitud.getIdUsuarioPareja())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Pareja no encontrada"));
 
@@ -142,19 +148,19 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
             solicitud.setEstado("aprobada_directa");
             solicitud.setMontoAutorizado(solicitud.getMontoSolicitado());
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
-
-        } else {
-            // Cliente no tiene cupo propio suficiente: escalar a cualquier supervisor activo
-            Supervisor supervisor = supervisorRepository.findAll().stream()
-                    .filter(sv -> "Activo".equals(sv.getEstado()))
-                    .findFirst()
-                    .orElseThrow(() -> new ReglaNegocioException(
-                            "No hay supervisores activos para gestionar el sobrecupo"));
-
-            solicitud.setEstado("pendiente_supervisor");
-            solicitud.setIdUsuarioSupervisor(supervisor.getIdUsuario());
-            return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
+
+        // Unica opcion que queda: "Escalar" (Caso 2). El cliente elige
+        // pedir cupo nuevo, sin mirar si tiene o no cupo propio disponible.
+        Supervisor supervisor = supervisorRepository.findAll().stream()
+                .filter(sv -> "Activo".equals(sv.getEstado()))
+                .findFirst()
+                .orElseThrow(() -> new ReglaNegocioException(
+                        "No hay supervisores activos para gestionar el sobrecupo"));
+
+        solicitud.setEstado("pendiente_supervisor");
+        solicitud.setIdUsuarioSupervisor(supervisor.getIdUsuario());
+        return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
     }
 
     @Override
