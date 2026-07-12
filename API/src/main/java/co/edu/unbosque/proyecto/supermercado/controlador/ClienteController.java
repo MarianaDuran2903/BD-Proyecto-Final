@@ -2,6 +2,8 @@ package co.edu.unbosque.proyecto.supermercado.controlador;
 
 import java.util.List;
 
+import co.edu.unbosque.proyecto.supermercado.modelo.dto.AprobacionCupoInicialDTO;
+import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRegistroRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteResponseDTO;
 import co.edu.unbosque.proyecto.supermercado.servicio.ClienteService;
@@ -34,6 +36,13 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
+    @PostMapping("/registro")
+    public ResponseEntity<ClienteResponseDTO> registrar(
+            @Valid @RequestBody ClienteRegistroRequestDTO dto) {
+        ClienteResponseDTO creado = clienteService.registrar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponseDTO> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(clienteService.obtenerPorId(id));
@@ -44,10 +53,22 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.listarTodos());
     }
 
+    @GetMapping("/pendientes")
+    public ResponseEntity<List<ClienteResponseDTO>> listarPendientes() {
+        return ResponseEntity.ok(clienteService.listarPendientes());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponseDTO> actualizar(@PathVariable Long id,
                                                          @Valid @RequestBody ClienteRequestDTO dto) {
         return ResponseEntity.ok(clienteService.actualizar(id, dto));
+    }
+
+    @PutMapping("/{id}/aprobar-cupo-inicial")
+    public ResponseEntity<ClienteResponseDTO> aprobarCupoInicial(
+            @PathVariable Long id,
+            @Valid @RequestBody AprobacionCupoInicialDTO dto) {
+        return ResponseEntity.ok(clienteService.aprobarCupoInicial(id, dto));
     }
 
     @DeleteMapping("/{id}")

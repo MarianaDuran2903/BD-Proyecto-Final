@@ -10,6 +10,8 @@ public class Cliente extends Usuario {
     private String segundoApellido;
     private String telefono;
     private BigDecimal cupoPropio;
+    private BigDecimal cupoTotalSolicitado;
+    private BigDecimal cupoTotalAutorizado;
 
     public Cliente() {
     }
@@ -60,5 +62,21 @@ public class Cliente extends Usuario {
 
     public void setCupoPropio(BigDecimal cupoPropio) {
         this.cupoPropio = cupoPropio;
+    }
+
+    public BigDecimal getCupoTotalSolicitado() {
+        return cupoTotalSolicitado;
+    }
+
+    public void setCupoTotalSolicitado(BigDecimal cupoTotalSolicitado) {
+        this.cupoTotalSolicitado = cupoTotalSolicitado;
+    }
+
+    public BigDecimal getCupoTotalAutorizado() {
+        return cupoTotalAutorizado;
+    }
+
+    public void setCupoTotalAutorizado(BigDecimal cupoTotalAutorizado) {
+        this.cupoTotalAutorizado = cupoTotalAutorizado;
     }
 }

@@ -2,23 +2,49 @@ package co.edu.unbosque.proyecto.supermercado.modelo.dto;
 
 import java.math.BigDecimal;
 
-public class ClienteResponseDTO {
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+// DTO del autoregistro publico de Cliente (POST /api/clientes/registro).
+// No lleva cupoPropio ni cupoTotalAutorizado: esos los fuerza el backend
+// (arrancan en 0 hasta que el Supervisor aprueba el cupo inicial).
+public class ClienteRegistroRequestDTO {
+
+    @NotNull(message = "La cedula (id de usuario) es obligatoria")
     private Long idUsuario;
-    private String nombreUsuario;
-    private String primerNombre;
-    private String segundoNombre;
-    private String primerApellido;
-    private String segundoApellido;
-    private String telefono;
-    private BigDecimal cupoPropio;
-    private BigDecimal cupoTotalAutorizado;
-    private BigDecimal cupoTotalSolicitado;
-    private BigDecimal cupoAsignadoParejas;
-    private BigDecimal cupoTotalDisponible;
-    private String estado;
 
-    public ClienteResponseDTO() {
+    @NotBlank(message = "El nombre de usuario es obligatorio")
+    @Size(max = 30)
+    private String nombreUsuario;
+
+    @NotBlank(message = "La contrasenia es obligatoria")
+    @Size(max = 30)
+    private String contrasenia;
+
+    @NotBlank(message = "El primer nombre es obligatorio")
+    @Size(max = 30)
+    private String primerNombre;
+
+    @Size(max = 30)
+    private String segundoNombre;
+
+    @NotBlank(message = "El primer apellido es obligatorio")
+    @Size(max = 30)
+    private String primerApellido;
+
+    @Size(max = 30)
+    private String segundoApellido;
+
+    @Size(max = 30)
+    private String telefono;
+
+    @NotNull(message = "El cupo total solicitado es obligatorio")
+    @DecimalMin(value = "0.0", message = "El cupo total solicitado no puede ser negativo")
+    private BigDecimal cupoTotalSolicitado;
+
+    public ClienteRegistroRequestDTO() {
     }
 
     public Long getIdUsuario() {
@@ -35,6 +61,14 @@ public class ClienteResponseDTO {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 
     public String getPrimerNombre() {
@@ -77,54 +111,11 @@ public class ClienteResponseDTO {
         this.telefono = telefono;
     }
 
-    public BigDecimal getCupoPropio() {
-        return cupoPropio;
-    }
-
-    public void setCupoPropio(BigDecimal cupoPropio) {
-        this.cupoPropio = cupoPropio;
-    }
-
-    // Techo de credito autorizado por el Supervisor (ya no se calcula, se lee directo de la columna)
-    public BigDecimal getCupoTotalAutorizado() {
-        return cupoTotalAutorizado;
-    }
-
-    public void setCupoTotalAutorizado(BigDecimal cupoTotalAutorizado) {
-        this.cupoTotalAutorizado = cupoTotalAutorizado;
-    }
-
     public BigDecimal getCupoTotalSolicitado() {
         return cupoTotalSolicitado;
     }
 
     public void setCupoTotalSolicitado(BigDecimal cupoTotalSolicitado) {
         this.cupoTotalSolicitado = cupoTotalSolicitado;
-    }
-
-    // Suma de cupo_asignado de todas las Parejas del Cliente
-    public BigDecimal getCupoAsignadoParejas() {
-        return cupoAsignadoParejas;
-    }
-
-    public void setCupoAsignadoParejas(BigDecimal cupoAsignadoParejas) {
-        this.cupoAsignadoParejas = cupoAsignadoParejas;
-    }
-
-    // cupo_total_autorizado - cupo_propio - cupo_asignado_parejas
-    public BigDecimal getCupoTotalDisponible() {
-        return cupoTotalDisponible;
-    }
-
-    public void setCupoTotalDisponible(BigDecimal cupoTotalDisponible) {
-        this.cupoTotalDisponible = cupoTotalDisponible;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 }

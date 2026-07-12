@@ -187,6 +187,13 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
         BigDecimal monto = solicitud.getMontoSolicitado();
         parejaRepository.actualizarCupoAsignado(pareja.getIdUsuario(), pareja.getCupoAsignado().add(monto));
 
+        // cupo_total_autorizado ya no se recalcula solo (viene de la NOTA 4):
+        // hay que subirle el techo al cliente para que no quede "disponible" negativo.
+        Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
+        cliente.setCupoTotalAutorizado(cliente.getCupoTotalAutorizado().add(monto));
+        clienteRepository.update(cliente);
+
         solicitud.setEstado("aprobada_supervisor");
         solicitud.setMontoAutorizado(monto);
         return toResponseDTOConEntidades(solicitudRepository.update(solicitud));

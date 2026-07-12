@@ -1,0 +1,36 @@
+-- ============================================================
+-- NOTA 4 - Aprobacion de Cupo Inicial
+-- Script incremental para correr en pgAdmin sobre la BD ya existente
+-- (NO recrea tablas, solo altera CLIENTE)
+-- ============================================================
+
+-- 1. Permitir el nuevo estado 'Pendiente' en CLIENTE.
+--    Postgres no deja modificar un CHECK existente directamente:
+--    hay que borrarlo y volverlo a crear con el valor nuevo.
+--    OJO: el nombre real de la constraint puede variar segun como
+--    Postgres la haya nombrado al crear la tabla. Si el ALTER de
+--    abajo falla por "constraint does not exist", correr primero:
+--
+--    SELECT conname FROM pg_constraint
+--    WHERE conrelid = 'cliente'::regclass AND contype = 'c';
+--
+--    y reemplazar cliente_estado_check por el nombre que devuelva.
+
+ALTER TABLE CLIENTE DROP CONSTRAINT cliente_estado_check;
+
+ALTER TABLE CLIENTE ADD CONSTRAINT cliente_estado_check
+    CHECK (estado IN ('Activo', 'Inactivo', 'Pendiente'));
+
+-- 2. Columnas nuevas para el cupo inicial solicitado/autorizado.
+ALTER TABLE CLIENTE ADD COLUMN cupo_total_solicitado DECIMAL(10,2)
+    CHECK (cupo_total_solicitado >= 0);
+
+ALTER TABLE CLIENTE ADD COLUMN cupo_total_autorizado DECIMAL(10,2) NOT NULL DEFAULT 0
+    CHECK (cupo_total_autorizado >= 0);
+
+-- 3. Migrar los clientes de prueba que ya existian (Juan, Patricia, etc.)
+--    para que no queden con cupo_total_autorizado en $0 por accidente.
+UPDATE CLIENTE SET cupo_total_autorizado = cupo_propio +
+    COALESCE((SELECT SUM(cupo_asignado) FROM PAREJA
+               WHERE PAREJA.id_usuario_cliente = CLIENTE.id_usuario), 0)
+WHERE cupo_total_autorizado = 0;

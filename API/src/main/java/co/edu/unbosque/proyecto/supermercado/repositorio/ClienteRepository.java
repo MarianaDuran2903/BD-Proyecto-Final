@@ -21,7 +21,8 @@ public class ClienteRepository {
     // id_usuario ES la cedula del cliente (BIGINT proporcionado por el usuario)
     private static final String COLUMNAS =
             "id_usuario, nombre_usuario, contrasenia, estado, primer_nombre, "
-                    + "segundo_nombre, primer_apellido, segundo_apellido, telefono, cupo_propio";
+                    + "segundo_nombre, primer_apellido, segundo_apellido, telefono, cupo_propio, "
+                    + "cupo_total_solicitado, cupo_total_autorizado";
 
     private final RowMapper<Cliente> mapper = (rs, rowNum) -> {
         Cliente c = new Cliente();
@@ -35,6 +36,8 @@ public class ClienteRepository {
         c.setSegundoApellido(rs.getString("segundo_apellido"));
         c.setTelefono(rs.getString("telefono"));
         c.setCupoPropio(rs.getBigDecimal("cupo_propio"));
+        c.setCupoTotalSolicitado(rs.getBigDecimal("cupo_total_solicitado"));
+        c.setCupoTotalAutorizado(rs.getBigDecimal("cupo_total_autorizado"));
         return c;
     };
 
@@ -53,6 +56,11 @@ public class ClienteRepository {
         return jdbcTemplate.query(sql, mapper, nombreUsuario).stream().findFirst();
     }
 
+    public List<Cliente> findByEstado(String estado) {
+        String sql = "SELECT " + COLUMNAS + " FROM cliente WHERE estado = ? ORDER BY id_usuario";
+        return jdbcTemplate.query(sql, mapper, estado);
+    }
+
     public boolean existsById(Long id) {
         String sql = "SELECT COUNT(*) FROM cliente WHERE id_usuario = ?";
         Integer total = jdbcTemplate.queryForObject(sql, Integer.class, id);
@@ -63,27 +71,31 @@ public class ClienteRepository {
     public Cliente save(Cliente cliente) {
         String sql = "INSERT INTO cliente (id_usuario, nombre_usuario, contrasenia, estado, "
                 + "primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, "
-                + "telefono, cupo_propio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "telefono, cupo_propio, cupo_total_solicitado, cupo_total_autorizado) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql,
                 cliente.getIdUsuario(), cliente.getNombreUsuario(), cliente.getContrasenia(),
                 cliente.getEstado(), cliente.getPrimerNombre(), cliente.getSegundoNombre(),
                 cliente.getPrimerApellido(), cliente.getSegundoApellido(),
-                cliente.getTelefono(), cliente.getCupoPropio());
+                cliente.getTelefono(), cliente.getCupoPropio(),
+                cliente.getCupoTotalSolicitado(), cliente.getCupoTotalAutorizado());
 
         return cliente;
     }
 
     public Cliente update(Cliente cliente) {
-        String sql = "UPDATE cliente SET nombre_usuario = ?, contrasenia = ?, "
+        String sql = "UPDATE cliente SET nombre_usuario = ?, contrasenia = ?, estado = ?, "
                 + "primer_nombre = ?, segundo_nombre = ?, primer_apellido = ?, segundo_apellido = ?, "
-                + "telefono = ?, cupo_propio = ? WHERE id_usuario = ?";
+                + "telefono = ?, cupo_propio = ?, cupo_total_solicitado = ?, cupo_total_autorizado = ? "
+                + "WHERE id_usuario = ?";
 
         jdbcTemplate.update(sql,
-                cliente.getNombreUsuario(), cliente.getContrasenia(),
+                cliente.getNombreUsuario(), cliente.getContrasenia(), cliente.getEstado(),
                 cliente.getPrimerNombre(), cliente.getSegundoNombre(),
                 cliente.getPrimerApellido(), cliente.getSegundoApellido(),
                 cliente.getTelefono(), cliente.getCupoPropio(),
+                cliente.getCupoTotalSolicitado(), cliente.getCupoTotalAutorizado(),
                 cliente.getIdUsuario());
 
         return cliente;

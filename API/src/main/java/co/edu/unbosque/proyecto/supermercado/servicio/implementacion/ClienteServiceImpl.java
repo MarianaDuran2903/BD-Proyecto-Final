@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import co.edu.unbosque.proyecto.supermercado.modelo.Cliente;
+import co.edu.unbosque.proyecto.supermercado.modelo.dto.AprobacionCupoInicialDTO;
+import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRegistroRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteRequestDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.dto.ClienteResponseDTO;
 import co.edu.unbosque.proyecto.supermercado.modelo.excepciones.RecursoNoEncontradoException;
@@ -51,6 +53,34 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setSegundoApellido(dto.getSegundoApellido());
         cliente.setTelefono(dto.getTelefono());
         cliente.setCupoPropio(dto.getCupoPropio());
+        // El cliente todavia no tiene Parejas al crearse: propio = autorizado
+        cliente.setCupoTotalAutorizado(dto.getCupoPropio());
+
+        return toResponseDTO(clienteRepository.save(cliente));
+    }
+
+    @Override
+    @Transactional
+    public ClienteResponseDTO registrar(ClienteRegistroRequestDTO dto) {
+        if (clienteRepository.existsById(dto.getIdUsuario())) {
+            throw new ReglaNegocioException(
+                    "Ya existe un usuario registrado con la cedula " + dto.getIdUsuario());
+        }
+        validarCedulaNoRegistradaEnOtroRol(dto.getIdUsuario());
+
+        Cliente cliente = new Cliente();
+        cliente.setIdUsuario(dto.getIdUsuario());
+        cliente.setNombreUsuario(dto.getNombreUsuario());
+        cliente.setContrasenia(dto.getContrasenia());
+        cliente.setEstado("Pendiente");
+        cliente.setPrimerNombre(dto.getPrimerNombre());
+        cliente.setSegundoNombre(dto.getSegundoNombre());
+        cliente.setPrimerApellido(dto.getPrimerApellido());
+        cliente.setSegundoApellido(dto.getSegundoApellido());
+        cliente.setTelefono(dto.getTelefono());
+        cliente.setCupoPropio(BigDecimal.ZERO);
+        cliente.setCupoTotalAutorizado(BigDecimal.ZERO);
+        cliente.setCupoTotalSolicitado(dto.getCupoTotalSolicitado());
 
         return toResponseDTO(clienteRepository.save(cliente));
     }
@@ -63,6 +93,13 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<ClienteResponseDTO> listarTodos() {
         return clienteRepository.findAll().stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClienteResponseDTO> listarPendientes() {
+        return clienteRepository.findByEstado("Pendiente").stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -82,6 +119,25 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setCupoPropio(dto.getCupoPropio());
 
         return toResponseDTO(clienteRepository.update(cliente));
+    }
+
+    @Override
+    @Transactional
+    public ClienteResponseDTO aprobarCupoInicial(Long idUsuario, AprobacionCupoInicialDTO dto) {
+        Cliente cliente = buscarOLanzarError(idUsuario);
+
+        if (!"Pendiente".equals(cliente.getEstado())) {
+            throw new ReglaNegocioException(
+                    "Solo se puede aprobar el cupo inicial de clientes en estado 'Pendiente'. Estado actual: "
+                            + cliente.getEstado());
+        }
+
+        cliente.setCupoPropio(dto.getCupoAutorizado());
+        cliente.setCupoTotalAutorizado(dto.getCupoAutorizado());
+        cliente.setEstado("Activo");
+        clienteRepository.update(cliente);
+
+        return toResponseDTO(cliente);
     }
 
     @Override
@@ -121,7 +177,11 @@ public class ClienteServiceImpl implements ClienteService {
         dto.setCupoPropio(c.getCupoPropio());
 
         BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(c.getIdUsuario());
-        dto.setCupoTotalAutorizado(c.getCupoPropio().add(sumaAsignada));
+        dto.setCupoTotalAutorizado(c.getCupoTotalAutorizado());
+        dto.setCupoTotalSolicitado(c.getCupoTotalSolicitado());
+        dto.setCupoAsignadoParejas(sumaAsignada);
+        dto.setCupoTotalDisponible(
+                c.getCupoTotalAutorizado().subtract(c.getCupoPropio()).subtract(sumaAsignada));
 
         dto.setEstado(c.getEstado());
         return dto;
