@@ -145,9 +145,13 @@
     <div class="tarjeta">
       <h2 class="tarjeta__titulo">Solicitudes de Sobrecupo</h2>
       <p class="tarjeta__nota">
-        Al aprobar, el sistema decide automáticamente si se toma de tu cupo propio (aprobación directa)
-        o si necesita escalarse a un supervisor, según tu cupo propio disponible.
+        <strong>Aprobar directa</strong>: el monto se toma de tu cupo propio (Caso 1).<br>
+        <strong>Escalar a supervisor</strong>: solicitas incremento del cupo total (Casos 2 y 4).<br>
+        <strong>Rechazar</strong>: la solicitud queda rechazada (Caso 3).
       </p>
+      @if (errorSolicitud()) {
+        <p class="pagina__error">{{ errorSolicitud() }}</p>
+      }
       <table class="tabla">
         <thead>
           <tr>
@@ -168,7 +172,8 @@
               <td>
                 @if (s.estado === 'pendiente_cliente') {
                   <div class="tabla__acciones">
-                    <app-boton etiqueta="Aprobar" (click)="aprobarSolicitud(s.cod_solicitud)" />
+                    <app-boton etiqueta="Aprobar directa" (click)="aprobarSolicitud(s.cod_solicitud)" />
+                    <app-boton etiqueta="Escalar supervisor" variante="secundario" (click)="escalarSolicitud(s.cod_solicitud)" />
                     <app-boton etiqueta="Rechazar" variante="peligro" (click)="rechazarSolicitud(s.cod_solicitud)" />
                   </div>
                 }

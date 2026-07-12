@@ -46,6 +46,7 @@ export class VistaCliente implements OnInit {
   formularioRestriccionVisible = signal(false);
   errorPareja = '';
   errorRestriccion = '';
+  errorSolicitud = signal('');
 
   formPareja: ParejaRequestDTO = {
     id_usuario: 0,
@@ -202,16 +203,34 @@ export class VistaCliente implements OnInit {
   }
 
   aprobarSolicitud(id: number): void {
+    this.errorSolicitud.set('');
     this.sobrecupoService.decidirComoCliente(id, { decision: 'Aprobar' }).subscribe({
       next: () => this.cargarTodo(),
-      error: (e) => console.error('Error al aprobar la solicitud.', e)
+      error: (e) => {
+        this.errorSolicitud.set(e.status === 400
+          ? (e.error?.mensaje ?? 'Cupo propio insuficiente para aprobar directamente.')
+          : 'Error al aprobar la solicitud.');
+      }
+    });
+  }
+
+  escalarSolicitud(id: number): void {
+    this.errorSolicitud.set('');
+    this.sobrecupoService.decidirComoCliente(id, { decision: 'Escalar' }).subscribe({
+      next: () => this.cargarTodo(),
+      error: (e) => {
+        this.errorSolicitud.set(e.status === 400
+          ? (e.error?.mensaje ?? 'No se pudo escalar la solicitud.')
+          : 'Error al escalar la solicitud.');
+      }
     });
   }
 
   rechazarSolicitud(id: number): void {
+    this.errorSolicitud.set('');
     this.sobrecupoService.decidirComoCliente(id, { decision: 'Rechazar' }).subscribe({
       next: () => this.cargarTodo(),
-      error: (e) => console.error('Error al rechazar la solicitud.', e)
+      error: (e) => this.errorSolicitud.set('Error al rechazar la solicitud.')
     });
   }
 }
