@@ -1,0 +1,51 @@
+<app-diseno-admin>
+  <div class="pagina">
+    <div class="pagina__encabezado">
+      <div>
+        <h1 class="pagina__titulo">Aprobación Cupo Inicial</h1>
+        <span class="pagina__breadcrumb">MercaCredit / Aprobación Cupo Inicial</span>
+      </div>
+    </div>
+
+    <p class="pagina__nota">
+      Clientes recién registrados esperando que se les autorice su cupo total inicial.
+      Puedes aprobar el monto tal como lo solicitaron, o editarlo antes de aprobar.
+    </p>
+
+    @if (error) {
+      <p class="pagina__error">{{ error }}</p>
+    }
+
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Nombre</th>
+          <th>Cupo Total Solicitado</th>
+          <th>Cupo a Autorizar</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of filas(); track f.cliente.id_usuario) {
+          <tr>
+            <td>{{ f.cliente.id_usuario }}</td>
+            <td>{{ f.cliente.primer_nombre }} {{ f.cliente.primer_apellido }}</td>
+            <td>$ {{ f.cliente.cupo_total_solicitado }}</td>
+            <td>
+              <input
+                class="pagina__input-monto"
+                type="number"
+                [value]="f.montoEditable"
+                (change)="actualizarMonto(f.cliente.id_usuario, $any($event.target).value)"
+              />
+            </td>
+            <td><app-boton etiqueta="Aprobar" (click)="aprobar(f.cliente.id_usuario)" /></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="tabla__vacio">No hay clientes pendientes de aprobación.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-diseno-admin>

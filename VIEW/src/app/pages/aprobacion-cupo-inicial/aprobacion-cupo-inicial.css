@@ -1,0 +1,91 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1100px;
+}
+
+.pagina__encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pagina__titulo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2C4A3E;
+  margin: 0;
+}
+
+.pagina__breadcrumb {
+  font-size: 12px;
+  color: #6B7D75;
+  margin-top: 4px;
+  display: block;
+}
+
+.pagina__nota {
+  font-size: 13px;
+  color: #6B7D75;
+  margin: 0;
+}
+
+.pagina__error {
+  font-size: 13px;
+  color: #C0392B;
+  background: #FDECEA;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #C0392B;
+}
+
+.pagina__input-monto {
+  padding: 8px 12px;
+  border: 1.5px solid #D4C9B8;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 140px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(44, 74, 62, 0.06);
+  border: 1px solid #D4C9B8;
+}
+
+.tabla th {
+  background: #EDF4F1;
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2C4A3E;
+  border-bottom: 1px solid #D4C9B8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabla td {
+  padding: 14px 18px;
+  font-size: 14px;
+  color: #2C3E35;
+  border-bottom: 1px solid #EDF0ED;
+}
+
+.tabla tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla__vacio {
+  text-align: center;
+  color: #6B7D75;
+  padding: 32px;
+  font-size: 14px;
+}
