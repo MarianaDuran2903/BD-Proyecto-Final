@@ -78,7 +78,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (p of parejasConGasto(); track p.id_usuario) {
+          @for (p of parejas(); track p.id_usuario) {
             <tr>
               <td>{{ p.id_usuario }}</td>
               <td>{{ p.primer_nombre }} {{ p.primer_apellido }}</td>
@@ -92,7 +92,7 @@
             <tr><td colspan="7" class="tabla__vacio">No hay parejas registradas.</td></tr>
           }
         </tbody>
-        @if (parejasConGasto().length > 0) {
+        @if (parejas().length > 0) {
           <tfoot>
             <tr class="tabla__total">
               <td colspan="2">Total</td>

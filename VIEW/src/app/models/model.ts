@@ -68,6 +68,8 @@ export interface ParejaResponseDTO {
   segundo_apellido?: string;
   telefono?: string;
   cupo_asignado: number;
+  cupo_gastado: number;
+  cupo_disponible: number;
   estado: string;
   id_usuario_cliente: number;
   nombre_cliente_titular: string;

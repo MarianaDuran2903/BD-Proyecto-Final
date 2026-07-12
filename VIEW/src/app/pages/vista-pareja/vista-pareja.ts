@@ -46,14 +46,6 @@ export class VistaPareja implements OnInit {
     monto_solicitado: 0
   };
 
-  cupoGastado = computed(() =>
-    this.compras().reduce((suma, c) => suma + c.monto, 0));
-
-  cupoDisponible = computed(() => {
-    const p = this.pareja();
-    return p ? p.cupo_asignado - this.cupoGastado() : 0;
-  });
-
   totalCompras = computed(() =>
     this.compras().reduce((suma, c) => suma + c.monto, 0));
 
