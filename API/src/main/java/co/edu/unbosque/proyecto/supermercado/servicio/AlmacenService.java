@@ -12,7 +12,4 @@ public interface AlmacenService {
 
     List<AlmacenDTO> listarTodos();
 
-    AlmacenDTO actualizar(Long idAlmacen, AlmacenDTO dto);
-
-    void eliminar(Long idAlmacen);
 }

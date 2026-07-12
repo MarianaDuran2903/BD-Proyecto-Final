@@ -44,23 +44,7 @@ public class AlmacenServiceImpl implements AlmacenService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public AlmacenDTO actualizar(Long idAlmacen, AlmacenDTO dto) {
-        Almacen almacen = buscarPorIdOLanzarError(idAlmacen);
-        almacen.setNombreAlmacen(dto.getNombreAlmacen());
-        almacen.setUbicacionCiudad(dto.getUbicacionCiudad());
-        almacen.setUbicacionAvenida(dto.getUbicacionAvenida());
-        almacen.setUbicacionCalle(dto.getUbicacionCalle());
-        return mm.map(almacenRepository.update(almacen), AlmacenDTO.class);
-    }
 
-    @Override
-    @Transactional
-    public void eliminar(Long idAlmacen) {
-        buscarPorIdOLanzarError(idAlmacen);
-        almacenRepository.deleteById(idAlmacen);
-    }
 
     private Almacen buscarPorIdOLanzarError(Long idAlmacen) {
         return almacenRepository.findById(idAlmacen)

@@ -43,14 +43,4 @@ public class AlmacenController {
         return ResponseEntity.ok(almacenService.listarTodos());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<AlmacenDTO> actualizar(@PathVariable Long id, @Valid @RequestBody AlmacenDTO dto) {
-        return ResponseEntity.ok(almacenService.actualizar(id, dto));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        almacenService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
 }
