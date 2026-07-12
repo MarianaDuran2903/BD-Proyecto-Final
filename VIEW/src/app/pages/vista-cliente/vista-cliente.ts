@@ -74,6 +74,19 @@ export class VistaCliente implements OnInit {
     });
   });
 
+  totalCupoAsignado = computed(() =>
+    this.parejasConGasto().reduce((suma, p) => suma + p.cupo_asignado, 0));
+  totalCupoGastadoParejas = computed(() =>
+    this.parejasConGasto().reduce((suma, p) => suma + p.cupo_gastado, 0));
+  totalCupoDisponible = computed(() =>
+    this.parejasConGasto().reduce((suma, p) => suma + p.cupo_disponible, 0));
+
+  totalCompras = computed(() =>
+    this.compras().reduce((suma, c) => suma + c.monto, 0));
+
+  totalSolicitado = computed(() =>
+    this.solicitudes().reduce((suma, s) => suma + s.monto_solicitado, 0));
+
   constructor(
     private clienteService: ClienteService,
     private parejaService: ParejaService,

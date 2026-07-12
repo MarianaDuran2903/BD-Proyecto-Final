@@ -1,5 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { DisenoAdmin } from '../../components/templates/diseno-admin/diseno-admin';
+import { Component, OnInit, computed, signal } from '@angular/core';
+import { DisenoUsuario } from '../../components/templates/diseno-usuario/diseno-usuario';
 import { Estado } from '../../components/atoms/estado/estado';
 import { Boton } from '../../components/atoms/boton/boton';
 import { CampoFormulario } from '../../components/molecules/campo-formulario/campo-formulario';
@@ -13,12 +13,22 @@ import {
   CompraResponseDTO,
   RestriccionHorarioDTO,
   SolicitudSobrecupoResponseDTO,
-  SolicitudSobrecupoRequestDTO
+  SolicitudSobrecupoRequestDTO,
+  EstadoSolicitudSobrecupo
 } from '../../models/model';
+
+const ETIQUETAS_ESTADO: Record<EstadoSolicitudSobrecupo, string> = {
+  pendiente_cliente: 'Pendiente',
+  aprobada_directa: 'Aprobada Directa',
+  pendiente_supervisor: 'Escalada a Supervisor',
+  aprobada_supervisor: 'Aprobada Supervisor',
+  rechazada_cliente: 'Rechazada',
+  rechazada_supervisor: 'Rechazada',
+};
 
 @Component({
   selector: 'app-vista-pareja',
-  imports: [DisenoAdmin, Estado, Boton, CampoFormulario],
+  imports: [DisenoUsuario, Estado, Boton, CampoFormulario],
   templateUrl: './vista-pareja.html',
   styleUrl: './vista-pareja.css',
 })
@@ -28,12 +38,27 @@ export class VistaPareja implements OnInit {
   restricciones = signal<RestriccionHorarioDTO[]>([]);
   solicitudes = signal<SolicitudSobrecupoResponseDTO[]>([]);
   formularioVisible = signal(false);
+  errorSolicitud = '';
 
   form: SolicitudSobrecupoRequestDTO = {
     id_usuario_pareja: 0,
     id_usuario_cliente: 0,
-    monto_solicitado: 0,
+    monto_solicitado: 0
   };
+
+  cupoGastado = computed(() =>
+    this.compras().reduce((suma, c) => suma + c.monto, 0));
+
+  cupoDisponible = computed(() => {
+    const p = this.pareja();
+    return p ? p.cupo_asignado - this.cupoGastado() : 0;
+  });
+
+  totalCompras = computed(() =>
+    this.compras().reduce((suma, c) => suma + c.monto, 0));
+
+  totalSolicitado = computed(() =>
+    this.solicitudes().reduce((suma, s) => suma + s.monto_solicitado, 0));
 
   constructor(
     private parejaService: ParejaService,
@@ -44,30 +69,51 @@ export class VistaPareja implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const usuario = this.sesionService.usuario();
-    if (usuario) {
-      const id = usuario.id_usuario;
-      this.parejaService.getPareja(id).subscribe(data => {
-        this.pareja.set(data);
-        this.form.id_usuario_pareja = data.id_usuario;
-        this.form.id_usuario_cliente = data.id_usuario_cliente;
-      });
-      this.compraService.getComprasPorPareja(id).subscribe(data => this.compras.set(data));
-      this.restriccionService.getRestriccionesPorPareja(id).subscribe(data => this.restricciones.set(data));
-      this.sobrecupoService.getSolicitudesPorPareja(id).subscribe(data => this.solicitudes.set(data));
-    }
+    this.cargarTodo();
+  }
+
+  private idParejaActual(): number {
+    return this.sesionService.usuario()?.id_usuario ?? 0;
+  }
+
+  cargarTodo(): void {
+    const id = this.idParejaActual();
+    if (!id) return;
+    this.parejaService.getPareja(id).subscribe(data => {
+      this.pareja.set(data);
+      this.form.id_usuario_pareja = data.id_usuario;
+      this.form.id_usuario_cliente = data.id_usuario_cliente;
+    });
+    this.compraService.getComprasPorPareja(id).subscribe(data => this.compras.set(data));
+    this.restriccionService.getRestriccionesPorPareja(id).subscribe(data => this.restricciones.set(data));
+    this.sobrecupoService.getSolicitudesPorPareja(id).subscribe(data => this.solicitudes.set(data));
+  }
+
+  abrirFormulario(): void {
+    this.form.monto_solicitado = 0;
+    this.errorSolicitud = '';
+    this.formularioVisible.set(true);
   }
 
   solicitarSobrecupo(): void {
+    if (!this.form.monto_solicitado || this.form.monto_solicitado <= 0) {
+      this.errorSolicitud = 'Ingresa un monto válido.';
+      return;
+    }
     this.sobrecupoService.crearSolicitud(this.form).subscribe({
       next: () => {
         this.formularioVisible.set(false);
-        const usuario = this.sesionService.usuario();
-        if (usuario) {
-          this.sobrecupoService.getSolicitudesPorPareja(usuario.id_usuario).subscribe(data => this.solicitudes.set(data));
-        }
+        this.cargarTodo();
       },
-      error: (e) => console.error('Error al solicitar sobrecupo.', e)
+      error: (e) => {
+        this.errorSolicitud = e.status === 400
+          ? (e.error?.mensaje ?? 'No se pudo enviar la solicitud.')
+          : 'Error al solicitar sobrecupo.';
+      }
     });
+  }
+
+  etiquetaEstado(estado: EstadoSolicitudSobrecupo): string {
+    return ETIQUETAS_ESTADO[estado];
   }
 }

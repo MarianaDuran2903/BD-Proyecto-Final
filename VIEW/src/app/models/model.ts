@@ -4,7 +4,7 @@ export interface LoginRequestDTO {
 }
 
 export interface LoginResponseDTO {
-  tipo: string; // Depende si es CLIENTE, PAREJA o SUPERVISOR
+  tipo: string;
   id_usuario: number;
   nombre_usuario: string;
   primer_nombre: string;
@@ -12,13 +12,10 @@ export interface LoginResponseDTO {
   primer_apellido: string;
   segundo_apellido?: string;
   estado: string;
-  // Solo CLIENTE
   cupo_propio?: number;
-  cupo_total_autorizado?: number; // calculado: cupo_propio + suma de cupo_asignado de sus Parejas
-  // Solo PAREJA
+  cupo_total_autorizado?: number;
   cupo_asignado?: number;
   id_usuario_cliente?: number;
-  // Solo SUPERVISOR
   id_almacen?: number;
   nombre_almacen?: string;
 }
@@ -64,6 +61,7 @@ export interface ParejaRequestDTO {
 export interface ParejaResponseDTO {
   id_usuario: number;
   nombre_usuario: string;
+  contrasenia: string;
   primer_nombre: string;
   segundo_nombre?: string;
   primer_apellido: string;
@@ -79,7 +77,7 @@ export interface CompraRequestDTO {
   monto: number;
   fecha: string;
   hora: string;
-   id_usuario_pareja?: number;
+  id_usuario_pareja?: number;
   id_usuario_cliente?: number;
   id_almacen: number;
   id_usuario_supervisor: number;
@@ -139,8 +137,7 @@ export interface SolicitudSobrecupoResponseDTO {
 }
 
 export interface DecisionSolicitudDTO {
-  decision: 'Aprobar'
-  | 'Rechazar';
+  decision: 'Aprobar' | 'Rechazar';
 }
 
 export interface AlmacenDTO {

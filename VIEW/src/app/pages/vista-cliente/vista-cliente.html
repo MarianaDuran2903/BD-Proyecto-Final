@@ -14,12 +14,12 @@
             <span class="tarjeta__valor">{{ cliente()!.id_usuario }}</span>
           </div>
           <div>
-            <span class="tarjeta__label">Cupo Propio:</span>
-            <span class="tarjeta__valor">$ {{ cliente()!.cupo_propio }}</span>
-          </div>
-          <div>
             <span class="tarjeta__label">Cupo Total Autorizado:</span>
             <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_autorizado }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Cupo Propio:</span>
+            <span class="tarjeta__valor">$ {{ cliente()!.cupo_propio }}</span>
           </div>
         </div>
       </div>
@@ -44,8 +44,14 @@
               [valor]="formPareja.contrasenia" (valorChange)="formPareja.contrasenia = $event" />
             <app-campo-formulario etiqueta="Primer Nombre" id="primerNombrePareja"
               [valor]="formPareja.primer_nombre" (valorChange)="formPareja.primer_nombre = $event" />
+            <app-campo-formulario etiqueta="Segundo Nombre" id="segundoNombrePareja"
+              [valor]="formPareja.segundo_nombre ?? ''" (valorChange)="formPareja.segundo_nombre = $event" />
             <app-campo-formulario etiqueta="Primer Apellido" id="primerApellidoPareja"
               [valor]="formPareja.primer_apellido" (valorChange)="formPareja.primer_apellido = $event" />
+            <app-campo-formulario etiqueta="Segundo Apellido" id="segundoApellidoPareja"
+              [valor]="formPareja.segundo_apellido ?? ''" (valorChange)="formPareja.segundo_apellido = $event" />
+            <app-campo-formulario etiqueta="Teléfono" id="telefonoPareja"
+              [valor]="formPareja.telefono ?? ''" (valorChange)="formPareja.telefono = $event" />
             <app-campo-formulario etiqueta="Cupo Asignado" id="cupoAsignadoPareja" tipo="number"
               [valor]="formPareja.cupo_asignado" (valorChange)="formPareja.cupo_asignado = +$event" />
           </div>
@@ -67,6 +73,7 @@
             <th>Cupo Asignado</th>
             <th>Cupo Gastado</th>
             <th>Cupo Disponible</th>
+            <th>Contraseña</th>
             <th>Estado</th>
           </tr>
         </thead>
@@ -78,12 +85,24 @@
               <td>$ {{ p.cupo_asignado }}</td>
               <td>$ {{ p.cupo_gastado }}</td>
               <td>$ {{ p.cupo_disponible }}</td>
+              <td>{{ p.contrasenia }}</td>
               <td><app-estado [valor]="p.estado" /></td>
             </tr>
           } @empty {
-            <tr><td colspan="6" class="tabla__vacio">No hay parejas registradas.</td></tr>
+            <tr><td colspan="7" class="tabla__vacio">No hay parejas registradas.</td></tr>
           }
         </tbody>
+        @if (parejasConGasto().length > 0) {
+          <tfoot>
+            <tr class="tabla__total">
+              <td colspan="2">Total</td>
+              <td>$ {{ totalCupoAsignado() }}</td>
+              <td>$ {{ totalCupoGastadoParejas() }}</td>
+              <td>$ {{ totalCupoDisponible() }}</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        }
       </table>
     </div>
 
@@ -112,6 +131,14 @@
             <tr><td colspan="5" class="tabla__vacio">No hay compras registradas.</td></tr>
           }
         </tbody>
+        @if (compras().length > 0) {
+          <tfoot>
+            <tr class="tabla__total">
+              <td colspan="4">Total</td>
+              <td>$ {{ totalCompras() }}</td>
+            </tr>
+          </tfoot>
+        }
       </table>
     </div>
 
@@ -151,6 +178,15 @@
             <tr><td colspan="5" class="tabla__vacio">No hay solicitudes.</td></tr>
           }
         </tbody>
+        @if (solicitudes().length > 0) {
+          <tfoot>
+            <tr class="tabla__total">
+              <td>Total</td>
+              <td>$ {{ totalSolicitado() }}</td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        }
       </table>
     </div>
 

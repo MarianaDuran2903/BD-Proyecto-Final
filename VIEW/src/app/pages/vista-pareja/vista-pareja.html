@@ -1,9 +1,9 @@
-<app-diseno-admin>
+<app-diseno-usuario rol="Pareja">
   <div class="pagina">
 
     @if (pareja()) {
       <div class="tarjeta">
-        <h2 class="tarjeta__titulo">Información de la Pareja</h2>
+        <h2 class="tarjeta__titulo">Información</h2>
         <div class="tarjeta__info">
           <div>
             <span class="tarjeta__label">Nombre:</span>
@@ -16,6 +16,14 @@
           <div>
             <span class="tarjeta__label">Cupo Asignado:</span>
             <span class="tarjeta__valor">$ {{ pareja()!.cupo_asignado }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Cupo Gastado:</span>
+            <span class="tarjeta__valor">$ {{ cupoGastado() }}</span>
+          </div>
+          <div>
+            <span class="tarjeta__label">Cupo Disponible:</span>
+            <span class="tarjeta__valor">$ {{ cupoDisponible() }}</span>
           </div>
           <div>
             <span class="tarjeta__label">Estado:</span>
@@ -48,82 +56,98 @@
             <tr><td colspan="4" class="tabla__vacio">No hay compras registradas.</td></tr>
           }
         </tbody>
+        @if (compras().length > 0) {
+          <tfoot>
+            <tr class="tabla__total">
+              <td colspan="3">Total</td>
+              <td>$ {{ totalCompras() }}</td>
+            </tr>
+          </tfoot>
+        }
       </table>
     </div>
 
     <div class="tarjeta">
-      <h2 class="tarjeta__titulo">Restricciones de Compra</h2>
+      <h2 class="tarjeta__titulo">Restricciones Horarias <span class="tarjeta__subnota">(configuradas por el cliente)</span></h2>
       <table class="tabla">
         <thead>
           <tr>
-            <th>Días Bloqueados</th>
-            <th>Horario Bloqueado</th>
+            <th>Día</th>
+            <th>Hora Inicio</th>
+            <th>Hora Fin</th>
           </tr>
         </thead>
         <tbody>
           @for (r of restricciones(); track r.id_restriccion) {
             <tr>
               <td>{{ r.dia_bloqueo }}</td>
-              <td>{{ r.hora_bloqueo_inicio }} - {{ r.hora_bloqueo_fin }}</td>
+              <td>{{ r.hora_bloqueo_inicio }}</td>
+              <td>{{ r.hora_bloqueo_fin }}</td>
             </tr>
           } @empty {
-            <tr><td colspan="2" class="tabla__vacio">No hay restricciones.</td></tr>
+            <tr><td colspan="3" class="tabla__vacio">No hay restricciones.</td></tr>
           }
         </tbody>
       </table>
     </div>
 
     <div class="tarjeta">
-      <h2 class="tarjeta__titulo">Solicitar Sobrecupo</h2>
-
-      @if (!formularioVisible()) {
-        <app-boton etiqueta="SOLICITAR SOBRECUPO" (click)="formularioVisible.set(true)" />
-      } @else {
-        <div class="pagina__campos">
-          <app-campo-formulario
-            etiqueta="Valor Solicitado"
-            id="monto"
-            tipo="number"
-            placeholder="Ej. 200000"
-            [valor]="form.monto_solicitado"
-            (valorChange)="form.monto_solicitado = +$event"
-          />
-          <app-campo-formulario
-            etiqueta="Valor Solicitado"
-            id="monto"
-            tipo="number"
-            placeholder="Ej. 200000"
-            [valor]="form.monto_solicitado"
-            (valorChange)="form.monto_solicitado = +$event"
-          />
-        </div>
-        <div class="pagina__acciones">
-          <app-boton etiqueta="ENVIAR SOLICITUD" (click)="solicitarSobrecupo()" />
-          <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioVisible.set(false)" />
-        </div>
-      }
-
-      <table class="tabla" style="margin-top: 16px;">
+      <h2 class="tarjeta__titulo">Mis Solicitudes de Sobrecupo</h2>
+      <table class="tabla">
         <thead>
           <tr>
-            <th>Pareja</th>
-            <th>Valor Solicitado</th>
+            <th>Fecha</th>
+            <th>Monto Solicitado</th>
             <th>Estado</th>
           </tr>
         </thead>
         <tbody>
           @for (s of solicitudes(); track s.cod_solicitud) {
             <tr>
-              <td>{{ s.nombre_pareja_completo }}</td>
+              <td>{{ s.fecha }}</td>
               <td>$ {{ s.monto_solicitado }}</td>
-              <td><app-estado [valor]="s.estado" /></td>
+              <td><app-estado [valor]="etiquetaEstado(s.estado)" /></td>
             </tr>
           } @empty {
             <tr><td colspan="3" class="tabla__vacio">No hay solicitudes.</td></tr>
           }
         </tbody>
+        @if (solicitudes().length > 0) {
+          <tfoot>
+            <tr class="tabla__total">
+              <td>Total</td>
+              <td>$ {{ totalSolicitado() }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        }
       </table>
+
+      <div class="pagina__nueva-solicitud">
+        <h3 class="pagina__subtitulo">Nueva Solicitud de Sobrecupo</h3>
+        @if (!formularioVisible()) {
+          <app-boton etiqueta="SOLICITAR SOBRECUPO" (click)="abrirFormulario()" />
+        } @else {
+          <div class="pagina__campos">
+            <app-campo-formulario
+              etiqueta="Monto Solicitado"
+              id="monto"
+              tipo="number"
+              placeholder="Ej. 200000"
+              [valor]="form.monto_solicitado"
+              (valorChange)="form.monto_solicitado = +$event"
+            />
+          </div>
+          @if (errorSolicitud) {
+            <p class="pagina__error">{{ errorSolicitud }}</p>
+          }
+          <div class="pagina__acciones">
+            <app-boton etiqueta="Solicitar" (click)="solicitarSobrecupo()" />
+            <app-boton etiqueta="Cancelar" variante="secundario" (click)="formularioVisible.set(false)" />
+          </div>
+        }
+      </div>
     </div>
 
   </div>
-</app-diseno-admin>
+</app-diseno-usuario>

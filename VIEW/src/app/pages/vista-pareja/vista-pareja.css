@@ -1,37 +1,61 @@
-.pagina { display: flex; flex-direction: column; gap: 20px; }
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
 .tarjeta {
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  border: 1px solid #D4C9B8;
+  border-radius: 10px;
   padding: 20px;
+  box-shadow: 0 2px 8px rgba(44, 74, 62, 0.06);
 }
 
 .tarjeta__titulo {
   font-size: 16px;
-  font-weight: 600;
-  color: #1a3ee8;
+  font-weight: 700;
+  color: #2C4A3E;
   margin-bottom: 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #D4C9B8;
+}
+
+.tarjeta__subnota {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6B7D75;
 }
 
 .tarjeta__info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
 }
 
 .tarjeta__label {
   font-size: 13px;
-  color: #666;
+  color: #6B7D75;
   margin-right: 8px;
 }
 
 .tarjeta__valor {
   font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: #2C3E35;
+}
+
+.pagina__subtitulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2C4A3E;
+  margin: 0 0 12px;
+}
+
+.pagina__nueva-solicitud {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #D4C9B8;
 }
 
 .pagina__campos {
@@ -47,30 +71,60 @@
   margin-bottom: 16px;
 }
 
+.pagina__error {
+  font-size: 13px;
+  color: #C0392B;
+  background: #FDECEA;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #C0392B;
+  margin-bottom: 16px;
+}
+
 .tabla {
   width: 100%;
   border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .tabla th {
-  background: #f0f2f5;
-  padding: 10px 14px;
+  background: #EDF4F1;
+  padding: 12px 16px;
   text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2C4A3E;
+  border-bottom: 1px solid #D4C9B8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .tabla td {
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #333;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #2C3E35;
+  border-bottom: 1px solid #EDF0ED;
+}
+
+.tabla tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla__total {
+  background: #EDF4F1;
+  font-weight: 700;
+}
+
+.tabla__total td {
+  color: #2C4A3E;
+  border-top: 2px solid #D4C9B8;
 }
 
 .tabla__vacio {
   text-align: center;
-  color: #999;
-  padding: 20px;
+  color: #6B7D75;
+  padding: 24px;
+  font-size: 14px;
 }

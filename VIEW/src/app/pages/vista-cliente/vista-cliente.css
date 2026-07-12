@@ -43,9 +43,9 @@
 }
 
 .tarjeta__info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
 }
 
 .tarjeta__label {
@@ -141,6 +141,16 @@
 
 .tabla tr:last-child td {
   border-bottom: none;
+}
+
+.tabla__total {
+  background: #EDF4F1;
+  font-weight: 700;
+}
+
+.tabla__total td {
+  color: #2C4A3E;
+  border-top: 2px solid #D4C9B8;
 }
 
 .tabla__vacio {
