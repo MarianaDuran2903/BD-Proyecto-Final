@@ -15,6 +15,8 @@ public class ParejaResponseDTO {
     private String estado;
     private Long idUsuarioCliente;
     private String nombreClienteTitular;
+    private BigDecimal cupoGastado;
+    private BigDecimal cupoDisponible;
 
     public ParejaResponseDTO() {
     }
@@ -105,5 +107,21 @@ public class ParejaResponseDTO {
 
     public void setNombreClienteTitular(String nombreClienteTitular) {
         this.nombreClienteTitular = nombreClienteTitular;
+    }
+
+    public BigDecimal getCupoGastado() {
+        return cupoGastado;
+    }
+
+    public void setCupoGastado(BigDecimal cupoGastado) {
+        this.cupoGastado = cupoGastado;
+    }
+
+    public BigDecimal getCupoDisponible() {
+        return cupoDisponible;
+    }
+
+    public void setCupoDisponible(BigDecimal cupoDisponible) {
+        this.cupoDisponible = cupoDisponible;
     }
 }

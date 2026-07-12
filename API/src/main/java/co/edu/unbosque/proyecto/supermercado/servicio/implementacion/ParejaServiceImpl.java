@@ -172,6 +172,11 @@ public class ParejaServiceImpl implements ParejaService {
         dto.setEstado(p.getEstado());
         dto.setIdUsuarioCliente(cliente.getIdUsuario());
         dto.setNombreClienteTitular(cliente.getPrimerNombre() + " " + cliente.getPrimerApellido());
+
+        BigDecimal disponible = parejaRepository.calcularSaldoDisponible(p.getIdUsuario());
+        dto.setCupoDisponible(disponible);
+        dto.setCupoGastado(p.getCupoAsignado().subtract(disponible));
+
         return dto;
     }
 }
