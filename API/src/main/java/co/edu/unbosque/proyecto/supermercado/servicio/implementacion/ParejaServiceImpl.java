@@ -172,6 +172,7 @@ public class ParejaServiceImpl implements ParejaService {
         dto.setEstado(p.getEstado());
         dto.setIdUsuarioCliente(cliente.getIdUsuario());
         dto.setNombreClienteTitular(cliente.getPrimerNombre() + " " + cliente.getPrimerApellido());
+        dto.setContrasenia(p.getContrasenia());
 
         BigDecimal disponible = parejaRepository.calcularSaldoDisponible(p.getIdUsuario());
         dto.setCupoDisponible(disponible);

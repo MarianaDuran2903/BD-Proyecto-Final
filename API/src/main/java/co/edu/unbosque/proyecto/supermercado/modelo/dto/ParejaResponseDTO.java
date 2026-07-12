@@ -17,6 +17,7 @@ public class ParejaResponseDTO {
     private String nombreClienteTitular;
     private BigDecimal cupoGastado;
     private BigDecimal cupoDisponible;
+    private String contrasenia;
 
     public ParejaResponseDTO() {
     }
@@ -123,5 +124,13 @@ public class ParejaResponseDTO {
 
     public void setCupoDisponible(BigDecimal cupoDisponible) {
         this.cupoDisponible = cupoDisponible;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 }
