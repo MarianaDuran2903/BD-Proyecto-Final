@@ -45,11 +45,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    // 500 - cualquier otro error no controlado explicitamente
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> manejarGeneral(Exception ex) {
-        ApiError error = new ApiError(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocurrio un error inesperado: " + ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-    }
 }

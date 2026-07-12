@@ -23,9 +23,9 @@
             <td>{{ s.nombre_cliente_completo }}</td>
             <td>{{ s.nombre_pareja_completo }}</td>
             <td>$ {{ s.monto_solicitado }}</td>
-            <td><app-estado [valor]="s.estado" /></td>
+            <td><app-estado [valor]="etiquetaEstado(s.estado)" /></td>
             <td>
-              @if (s.estado === 'Pendiente') {
+              @if (s.estado === 'pendiente_supervisor') {
                 <div class="tabla__acciones">
                   <app-boton etiqueta="Aprobar" (click)="aprobar(s.cod_solicitud)" />
                   <app-boton etiqueta="Rechazar" variante="peligro" (click)="rechazar(s.cod_solicitud)" />

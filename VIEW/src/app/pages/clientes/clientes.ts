@@ -17,15 +17,15 @@ export class Clientes implements OnInit {
   editando = signal<ClienteResponseDTO | null>(null);
 
   form: ClienteRequestDTO = {
+    id_usuario: 0,
     nombre_usuario: '',
     contrasenia: '',
-    cedula: '',
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
     telefono: '',
-    cupo_total_autorizado: 0
+    cupo_propio: 0
   };
 
   constructor(private clienteService: ClienteService) {}
@@ -39,15 +39,15 @@ export class Clientes implements OnInit {
   abrirCrear(): void {
     this.editando.set(null);
     this.form = {
+      id_usuario: 0,
       nombre_usuario: '',
       contrasenia: '',
-      cedula: '',
       primer_nombre: '',
       segundo_nombre: '',
       primer_apellido: '',
       segundo_apellido: '',
       telefono: '',
-      cupo_total_autorizado: 0
+      cupo_propio: 0
     };
     this.formularioVisible.set(true);
   }
@@ -55,15 +55,15 @@ export class Clientes implements OnInit {
   abrirEditar(c: ClienteResponseDTO): void {
     this.editando.set(c);
     this.form = {
+      id_usuario: c.id_usuario,
       nombre_usuario: c.nombre_usuario,
       contrasenia: '',
-      cedula: String(c.id_usuario),
       primer_nombre: c.primer_nombre,
       segundo_nombre: c.segundo_nombre ?? '',
       primer_apellido: c.primer_apellido,
       segundo_apellido: c.segundo_apellido ?? '',
       telefono: c.telefono ?? '',
-      cupo_total_autorizado: c.cupo_total_autorizado
+      cupo_propio: c.cupo_propio
     };
     this.formularioVisible.set(true);
   }

@@ -35,4 +35,8 @@ export class Login {
       },
     });
   }
+
+  irARegistro(): void {
+    this.router.navigate(['/registro']);
+  }
 }

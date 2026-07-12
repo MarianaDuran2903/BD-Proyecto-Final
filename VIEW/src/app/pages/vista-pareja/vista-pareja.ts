@@ -33,7 +33,6 @@ export class VistaPareja implements OnInit {
     id_usuario_pareja: 0,
     id_usuario_cliente: 0,
     monto_solicitado: 0,
-    id_almacen: 0
   };
 
   constructor(

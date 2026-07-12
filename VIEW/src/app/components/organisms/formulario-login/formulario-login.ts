@@ -11,23 +11,21 @@ import { LoginRequestDTO } from '../../../models/model';
 })
 export class FormularioLogin {
   @Output() enviarFormulario = new EventEmitter<LoginRequestDTO>();
+  @Output() irARegistro = new EventEmitter<void>();
 
   idUsuario = '';
   contrasenia = '';
   error = '';
 
-alEnviar(): void {
-  console.log('idUsuario:', this.idUsuario);
-  console.log('contrasenia:', this.contrasenia);
-
-  if (!this.idUsuario || !this.contrasenia) {
-    this.error = 'Completa todos los campos.';
-    return;
+  alEnviar(): void {
+    if (!this.idUsuario || !this.contrasenia) {
+      this.error = 'Completa todos los campos.';
+      return;
+    }
+    this.error = '';
+    this.enviarFormulario.emit({
+      id_usuario: Number(this.idUsuario),
+      contrasenia: this.contrasenia
+    });
   }
-  this.error = '';
-  this.enviarFormulario.emit({
-    id_usuario: Number(this.idUsuario),
-    contrasenia: this.contrasenia
-  });
-}
 }

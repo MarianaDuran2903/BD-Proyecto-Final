@@ -1,0 +1,74 @@
+<div class="formulario-registro">
+  <h2 class="formulario-registro__titulo">Registrarse</h2>
+
+  <div class="formulario-registro__campos">
+    <app-campo-formulario
+      id="primerNombre"
+      etiqueta="Primer Nombre"
+      placeholder="Primer Nombre"
+      [valor]="primerNombre"
+      (valorChange)="primerNombre = $event"
+    />
+    <app-campo-formulario
+      id="segundoNombre"
+      etiqueta="Segundo Nombre"
+      placeholder="Segundo Nombre"
+      [valor]="segundoNombre"
+      (valorChange)="segundoNombre = $event"
+    />
+    <app-campo-formulario
+      id="primerApellido"
+      etiqueta="Primer Apellido"
+      placeholder="Primer Apellido"
+      [valor]="primerApellido"
+      (valorChange)="primerApellido = $event"
+    />
+    <app-campo-formulario
+      id="segundoApellido"
+      etiqueta="Segundo Apellido"
+      placeholder="Segundo Apellido"
+      [valor]="segundoApellido"
+      (valorChange)="segundoApellido = $event"
+    />
+    <app-campo-formulario
+      id="documento"
+      etiqueta="Documento"
+      tipo="number"
+      placeholder="No. de documento"
+      [valor]="documento"
+      (valorChange)="documento = $event"
+    />
+    <app-campo-formulario
+      id="contrasenia"
+      etiqueta="Contraseña"
+      tipo="password"
+      placeholder="Contraseña"
+      [valor]="contrasenia"
+      (valorChange)="contrasenia = $event"
+    />
+    <app-campo-formulario
+      id="cupoSolicitado"
+      etiqueta="Cupo total solicitado ($)"
+      tipo="number"
+      placeholder="Valor en COP"
+      [valor]="cupoSolicitado"
+      (valorChange)="cupoSolicitado = $event"
+    />
+  </div>
+
+  @if (error) {
+    <p class="formulario-registro__error">{{ error }}</p>
+  }
+
+  <app-boton
+    etiqueta="REGISTRAR CLIENTE"
+    tipo="submit"
+    [anchoCompleto]="true"
+    (click)="alEnviar()"
+  />
+
+  <p class="formulario-registro__footer">
+    ¿Ya tienes cuenta?
+    <button class="formulario-registro__enlace" (click)="irALogin.emit()">Inicia sesión</button>
+  </p>
+</div>

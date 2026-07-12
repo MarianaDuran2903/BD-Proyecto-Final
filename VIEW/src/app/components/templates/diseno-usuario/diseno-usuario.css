@@ -1,0 +1,57 @@
+.diseno-usuario {
+  min-height: 100vh;
+  background-color: #F5F0E8;
+}
+
+.diseno-usuario__navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2C4A3E;
+  color: white;
+  padding: 0 24px;
+  height: 52px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.diseno-usuario__titulo {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.diseno-usuario__acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.diseno-usuario__usuario {
+  font-size: 13px;
+  color: #B8D4CC;
+}
+
+.diseno-usuario__cerrar {
+  background: white;
+  color: #2C4A3E;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.diseno-usuario__cerrar:hover {
+  background: #E8F0ED;
+}
+
+.diseno-usuario__principal {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}

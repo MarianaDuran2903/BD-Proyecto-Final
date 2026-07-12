@@ -6,7 +6,7 @@
       id="idUsuario"
       etiqueta="No. Documento"
       tipo="number"
-      placeholder="Ingrese su número de documento"
+      placeholder="Ingrese su documento"
       [valor]="idUsuario"
       (valorChange)="idUsuario = $event"
     />
@@ -30,4 +30,9 @@
     [anchoCompleto]="true"
     (click)="alEnviar()"
   />
+
+  <p class="formulario-login__footer">
+    ¿No tienes cuenta?
+    <button class="formulario-login__enlace" (click)="irARegistro.emit()">Regístrate</button>
+  </p>
 </div>

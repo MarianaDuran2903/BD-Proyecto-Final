@@ -1,0 +1,12 @@
+<div class="diseno-usuario">
+  <nav class="diseno-usuario__navbar">
+    <span class="diseno-usuario__titulo">MercaCredit</span>
+    <div class="diseno-usuario__acciones">
+      <span class="diseno-usuario__usuario">{{ rol }}: {{ nombreUsuario }}</span>
+      <button class="diseno-usuario__cerrar" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </nav>
+  <main class="diseno-usuario__principal">
+    <ng-content />
+  </main>
+</div>

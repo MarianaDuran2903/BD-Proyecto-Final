@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 import { Login} from './pages/login/login';
+import { Registro } from './pages/registro/registro';
 import { Clientes } from './pages/clientes/clientes';
 import { Parejas } from './pages/parejas/parejas';
 import { Compras } from './pages/compras/compras';
@@ -12,6 +13,7 @@ import { VistaPareja} from './pages/vista-pareja/vista-pareja';
 export const routes: Routes = [
    { path: '', redirectTo: 'login', pathMatch: 'full' },
    { path: 'login', component: Login },
+   { path: 'registro', component: Registro },
    { path: 'clientes', component: Clientes, canActivate: [authGuard] },
    { path: 'parejas', component: Parejas, canActivate: [authGuard] },
    { path: 'compras', component: Compras, canActivate: [authGuard] },

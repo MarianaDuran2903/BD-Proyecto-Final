@@ -1,39 +1,39 @@
-.formulario-login {
+.formulario-registro {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
 }
 
-.formulario-login__titulo {
-  font-size: 20px;
-  font-weight: 700;
-  color: #2C4A3E;
-  text-align: center;
-}
-
-.formulario-login__campos {
+.formulario-registro__campos {
   display: flex;
   flex-direction: column;
   gap: 16px;
   width: 100%;
 }
 
-.formulario-login__campos ::ng-deep .campo__etiqueta {
+.formulario-registro__campos ::ng-deep .campo__etiqueta {
   text-align: center;
 }
 
-.formulario-login__campos ::ng-deep .campo__entrada-contenedor {
+.formulario-registro__campos ::ng-deep .campo__entrada-contenedor {
   justify-content: center;
 }
 
-.formulario-login__campos ::ng-deep .campo-entrada__input {
+.formulario-registro__campos ::ng-deep .campo-entrada__input {
   text-align: center;
   max-width: 280px;
   margin: 0 auto;
 }
 
-.formulario-login__error {
+.formulario-registro__titulo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2C4A3E;
+  text-align: center;
+}
+
+.formulario-registro__error {
   font-size: 13px;
   color: #C0392B;
   background: #FDECEA;
@@ -42,14 +42,14 @@
   border-left: 3px solid #C0392B;
 }
 
-.formulario-login__footer {
+.formulario-registro__footer {
   font-size: 13px;
   color: #6B7D75;
   text-align: center;
   margin: 0;
 }
 
-.formulario-login__enlace {
+.formulario-registro__enlace {
   background: none;
   border: none;
   cursor: pointer;

@@ -89,12 +89,12 @@
             (valorChange)="form.monto_solicitado = +$event"
           />
           <app-campo-formulario
-            etiqueta="ID Almacén"
-            id="almacen"
+            etiqueta="Valor Solicitado"
+            id="monto"
             tipo="number"
-            placeholder="ID del almacén"
-            [valor]="form.id_almacen"
-            (valorChange)="form.id_almacen = +$event"
+            placeholder="Ej. 200000"
+            [valor]="form.monto_solicitado"
+            (valorChange)="form.monto_solicitado = +$event"
           />
         </div>
         <div class="pagina__acciones">

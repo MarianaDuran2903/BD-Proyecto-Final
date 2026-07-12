@@ -14,7 +14,7 @@
         <div class="pagina__campos">
           <app-campo-formulario etiqueta="No. Documento *" id="idUsuario" tipo="number"
             tooltip="Número de cédula del cliente. Será su ID en el sistema."
-            [valor]="form.cedula" (valorChange)="form.cedula = $event" />
+            [valor]="form.id_usuario" (valorChange)="form.id_usuario = +$event" />
           <app-campo-formulario etiqueta="Nombre de Usuario *" id="usuario"
             tooltip="Nombre con el que el cliente iniciará sesión en MercaCredit."
             [valor]="form.nombre_usuario" (valorChange)="form.nombre_usuario = $event" />
@@ -36,9 +36,9 @@
           <app-campo-formulario etiqueta="Teléfono" id="telefono"
             tooltip="Número de contacto del cliente (opcional)."
             [valor]="form.telefono ?? ''" (valorChange)="form.telefono = $event" />
-          <app-campo-formulario etiqueta="Cupo Total Autorizado *" id="cupo" tipo="number"
-            tooltip="Monto máximo de crédito autorizado para este cliente."
-            [valor]="form.cupo_total_autorizado" (valorChange)="form.cupo_total_autorizado = +$event" />
+          <app-campo-formulario etiqueta="Cupo Propio *" id="cupo" tipo="number"
+           tooltip="Monto de crédito propio asignado a este cliente."
+          [valor]="form.cupo_propio" (valorChange)="form.cupo_propio = +$event" />
         </div>
         <div class="pagina__acciones">
           <app-boton etiqueta="GUARDAR" (click)="guardar()" />

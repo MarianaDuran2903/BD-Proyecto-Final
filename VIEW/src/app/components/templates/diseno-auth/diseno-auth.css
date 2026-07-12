@@ -8,14 +8,20 @@
 
 .diseno-auth__tarjeta {
   background: white;
-  padding: 44px 40px;
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(44, 74, 62, 0.12);
   width: 100%;
   max-width: 480px;
+  overflow: hidden;
+}
+
+.diseno-auth__encabezado {
+  background-color: #2C4A3E;
+  padding: 32px 40px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 8px;
 }
 
 .diseno-auth__logo {
@@ -39,14 +45,21 @@
 .diseno-auth__titulo {
   font-size: 26px;
   font-weight: 700;
-  color: #2C4A3E;
+  color: white;
   text-align: center;
   margin: 0;
 }
 
 .diseno-auth__subtitulo {
   font-size: 14px;
-  color: #6B7D75;
+  color: rgba(255, 255, 255, 0.75);
   text-align: center;
   margin: 0;
+}
+
+.diseno-auth__contenido {
+  padding: 32px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
