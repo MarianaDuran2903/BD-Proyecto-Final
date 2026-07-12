@@ -139,7 +139,7 @@ export interface SolicitudSobrecupoResponseDTO {
 }
 
 export interface DecisionSolicitudDTO {
-  decision: 'Aprobar' | 'Rechazar';
+  decision: 'Aprobar' | 'Escalar' | 'Rechazar';
 }
 
 export interface AlmacenDTO {
