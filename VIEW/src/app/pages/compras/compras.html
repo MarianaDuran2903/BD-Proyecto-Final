@@ -16,7 +16,7 @@
 
       <div class="pagina__campos">
         <div class="pagina__select">
-          <label class="campo__etiqueta">Tipo de Usuario</label>
+          <label class="campo__etiqueta">Tipo de Usuario <span class="requerido">*</span></label>
           <select (change)="cambiarTipoUsuario($any($event.target).value)">
             <option value="PAREJA" [selected]="tipoUsuario === 'PAREJA'">Pareja</option>
             <option value="CLIENTE" [selected]="tipoUsuario === 'CLIENTE'">Cliente</option>
@@ -24,7 +24,7 @@
         </div>
 
         <div class="pagina__select">
-          <label class="campo__etiqueta">{{ tipoUsuario === 'PAREJA' ? 'Pareja' : 'Cliente' }}</label>
+          <label class="campo__etiqueta">{{ tipoUsuario === 'PAREJA' ? 'Pareja' : 'Cliente' }} <span class="requerido">*</span></label>
           <select (change)="idUsuarioSeleccionado = +$any($event.target).value">
             <option value="0">Seleccionar</option>
             @if (tipoUsuario === 'PAREJA') {
@@ -40,7 +40,7 @@
         </div>
 
         <div class="pagina__select">
-          <label class="campo__etiqueta">Almacén</label>
+          <label class="campo__etiqueta">Almacén <span class="requerido">*</span></label>
           <select (change)="idAlmacenSeleccionado = +$any($event.target).value">
             <option value="0">Seleccionar almacén</option>
             @for (a of almacenes(); track a.id_almacen) {
@@ -50,7 +50,7 @@
         </div>
 
         <app-campo-formulario
-          etiqueta="Monto"
+          etiqueta="Monto *"
           id="monto"
           tipo="number"
           placeholder="0"
@@ -71,10 +71,10 @@
     <table class="tabla">
       <thead>
         <tr>
-          <th>Cliente</th>
-          <th>Pareja</th>
           <th>Fecha</th>
           <th>Hora</th>
+          <th>Usuario</th>
+          <th>Tipo</th>
           <th>Almacén</th>
           <th>Valor</th>
         </tr>
@@ -82,10 +82,14 @@
       <tbody>
         @for (c of compras(); track c.cod_compra) {
           <tr>
-            <td>{{ c.nombre_cliente_completo }}</td>
-            <td>{{ c.nombre_pareja_completo }}</td>
             <td>{{ c.fecha }}</td>
             <td>{{ c.hora }}</td>
+            <td>{{ c.nombre_pareja_completo ?? c.nombre_cliente_completo }}</td>
+            <td>
+              <span class="etiqueta-tipo" [class.etiqueta-tipo--cliente]="!c.nombre_pareja_completo">
+                {{ c.nombre_pareja_completo ? 'Pareja' : 'Cliente' }}
+              </span>
+            </td>
             <td>{{ c.nombre_almacen }}</td>
             <td>$ {{ c.monto }}</td>
           </tr>

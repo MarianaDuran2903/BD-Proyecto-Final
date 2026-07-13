@@ -132,3 +132,22 @@
   border-top: 2px solid #D4C9B8;
   border-bottom: none;
 }
+.requerido {
+  color: #C0392B;
+  margin-left: 2px;
+}
+
+.etiqueta-tipo {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #E1F0E9;
+  color: #1E6B4E;
+}
+
+.etiqueta-tipo--cliente {
+  background-color: #E4E9F1;
+  color: #2C3E8A;
+}

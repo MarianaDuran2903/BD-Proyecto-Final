@@ -21,15 +21,7 @@
               }
             </select>
           </div>
-          <div class="pagina__select">
-            <label class="campo__etiqueta">Día</label>
-            <select (change)="form.dia_bloqueo = $any($event.target).value">
-              <option value="">Seleccionar día</option>
-              @for (dia of dias; track dia) {
-                <option [value]="dia">{{ dia }}</option>
-              }
-            </select>
-          </div>
+          <app-campo-formulario etiqueta="Día" id="dia" tipo="date" [valor]="form.dia_bloqueo" (valorChange)="form.dia_bloqueo = $event" />
           <app-campo-formulario etiqueta="Hora de Inicio" id="horaInicio" tipo="time" [valor]="form.hora_bloqueo_inicio" (valorChange)="form.hora_bloqueo_inicio = $event" />
           <app-campo-formulario etiqueta="Hora de Fin" id="horaFin" tipo="time" [valor]="form.hora_bloqueo_fin" (valorChange)="form.hora_bloqueo_fin = $event" />
         </div>

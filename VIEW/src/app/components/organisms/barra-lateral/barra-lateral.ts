@@ -12,7 +12,6 @@ export class BarraLateral {
   readonly elementosNav = [
     { etiqueta: 'Clientes y Parejas', ruta: '/clientes' },
     { etiqueta: 'Aprobación Cupo Inicial', ruta: '/aprobacion-cupo-inicial' },
-    { etiqueta: 'Parejas', ruta: '/parejas' },
     { etiqueta: 'Compras', ruta: '/compras' },
     { etiqueta: 'Restricciones', ruta: '/restricciones' },
     { etiqueta: 'Solicitudes de Sobrecupo', ruta: '/solicitudes-sobrecupo' },

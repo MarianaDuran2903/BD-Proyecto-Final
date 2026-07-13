@@ -24,8 +24,6 @@ export class Restricciones implements OnInit {
     id_usuario_pareja: 0
   };
 
-  dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
   constructor(
     private restriccionService: RestriccionService,
     private parejaService: ParejaService

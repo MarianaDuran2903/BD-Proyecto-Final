@@ -113,3 +113,31 @@
   padding: 32px;
   font-size: 14px;
 }
+.pagina__filtro {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #D4C9B8;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #2C3E35;
+  background: white;
+}
+
+.pagina__filtro:focus {
+  outline: none;
+  border-color: #5C8D7D;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tarjeta__titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2C4A3E;
+  margin: 0;
+}
