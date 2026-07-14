@@ -1,5 +1,3 @@
--- PROYECTO FINAL - BASE DE DATOS I
-
 Drop Table COMPRA;
 Drop Table RESTRICCION_HORARIO;
 Drop Table SOLICITUD_SOBRECUPO;
@@ -9,7 +7,6 @@ Drop Table ALMACEN;
 Drop Table CLIENTE;
 
 
--- Tabla: CLIENTE
 CREATE TABLE CLIENTE (
                          id_usuario               BIGINT PRIMARY KEY,
                          nombre_usuario           VARCHAR(30) NOT NULL UNIQUE,
@@ -25,7 +22,6 @@ CREATE TABLE CLIENTE (
                          cupo_total_autorizado    DECIMAL(10,2) NOT NULL DEFAULT 0 CHECK (cupo_total_autorizado >= 0)
 );
 
--- Tabla: ALMACEN
 CREATE TABLE ALMACEN (
                          id_almacen               BIGSERIAL PRIMARY KEY,
                          nombre_almacen           VARCHAR(30) NOT NULL,
@@ -34,7 +30,6 @@ CREATE TABLE ALMACEN (
                          ubicacion_calle          VARCHAR(30)
 );
 
--- Tabla: PAREJA
 CREATE TABLE PAREJA (
                         id_usuario               BIGINT PRIMARY KEY,
                         nombre_usuario           VARCHAR(30) NOT NULL UNIQUE,
@@ -50,7 +45,6 @@ CREATE TABLE PAREJA (
                         FOREIGN KEY (id_usuario_cliente) REFERENCES CLIENTE (id_usuario)
 );
 
--- Tabla: SUPERVISOR
 CREATE TABLE SUPERVISOR (
                             id_usuario               BIGINT PRIMARY KEY,
                             nombre_usuario           VARCHAR(30) NOT NULL UNIQUE,
@@ -66,7 +60,6 @@ CREATE TABLE SUPERVISOR (
                             FOREIGN KEY (id_almacen) REFERENCES ALMACEN (id_almacen)
 );
 
--- Tabla: COMPRA
 CREATE TABLE COMPRA (
                         cod_compra               BIGSERIAL PRIMARY KEY,
                         monto                    DECIMAL(10,2) NOT NULL CHECK (monto >= 0),
@@ -86,7 +79,6 @@ CREATE TABLE COMPRA (
                             )
 );
 
--- Tabla: RESTRICCION_HORARIO
 CREATE TABLE RESTRICCION_HORARIO (
                                      id_restriccion           BIGSERIAL PRIMARY KEY,
                                      motivo                   VARCHAR(30),
@@ -98,7 +90,6 @@ CREATE TABLE RESTRICCION_HORARIO (
                                      CHECK (hora_bloqueo_fin > hora_bloqueo_inicio)
 );
 
--- Tabla: SOLICITUD_SOBRECUPO
 CREATE TABLE SOLICITUD_SOBRECUPO (
                                      cod_solicitud            BIGSERIAL PRIMARY KEY,
                                      fecha                    DATE NOT NULL,
@@ -114,14 +105,9 @@ CREATE TABLE SOLICITUD_SOBRECUPO (
                                      FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario)
 );
 
--- ============================================================
--- DATOS DE PRUEBA - MercaCredit
--- ============================================================
--- 1. ALMACEN
 INSERT INTO ALMACEN (nombre_almacen, ubicacion_ciudad, ubicacion_avenida, ubicacion_calle)
 VALUES ('Almacén Norte', 'Bogotá', 'Cra 15', 'Calle 100');
 
--- 2. SUPERVISOR (el "admin")
 INSERT INTO SUPERVISOR (id_usuario, nombre_usuario, contrasenia, estado, correo, telefono,
                         primer_nombre, primer_apellido, id_almacen)
 VALUES (1000000001, 'supervisor1', '1234', 'Activo', 'supervisor1@mercacredit.com', '3001234567',
@@ -134,13 +120,11 @@ VALUES (1023456789, 'juan1023456789', '1234', 'Activo',
         'Juan', 'Herrera', '3109876543',
         800000, 1100000, 1100000);
 
--- 4. PAREJA de Juan
 INSERT INTO PAREJA (id_usuario, nombre_usuario, contrasenia, estado,
                     primer_nombre, primer_apellido, telefono, cupo_asignado, id_usuario_cliente)
 VALUES (2001234567, 'maria2001234567', '1234', 'Activo',
         'María', 'González', '3201112233', 300000, 1023456789);
 
--- 5. COMPRAS (una hecha por la Pareja, otra hecha directo por el Cliente — arco exclusivo)
 INSERT INTO COMPRA (monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, id_almacen, id_usuario_supervisor)
 VALUES (120000, CURRENT_DATE, '14:30:00', 2001234567, NULL, 1, 1000000001);
 

@@ -199,7 +199,6 @@ export class VistaCliente implements OnInit {
 
     const idEditando = this.editandoId();
     if (idEditando) {
-      // Editando una pareja existente: no se regenera nombre_usuario, se conserva el que ya tenía.
       this.parejaService.actualizarPareja(idEditando, this.formPareja).subscribe({
         next: () => {
           this.formularioParejaVisible.set(false);
@@ -215,8 +214,6 @@ export class VistaCliente implements OnInit {
       return;
     }
 
-    // El mockup no pide "Nombre de Usuario" para la Pareja: se genera igual
-    // que en el registro público de Cliente (nombre + documento).
     this.formPareja.nombre_usuario = `${this.formPareja.primer_nombre.trim().toLowerCase()}${this.formPareja.id_usuario}`;
     this.parejaService.crearPareja(this.formPareja).subscribe({
       next: () => {

@@ -146,12 +146,6 @@ public class ParejaServiceImpl implements ParejaService {
         parejaRepository.deleteById(idUsuario);
     }
 
-    // Valida que el cliente tenga cupo_total_disponible suficiente para asignarle
-    // "montoAsignado" a una pareja. No toca cupo_propio: cupo_total_disponible ya
-    // descuenta el cupo asignado a parejas via sumarCupoAsignadoPorCliente, que lee
-    // la tabla PAREJA en vivo, asi que guardar la pareja con su cupo_asignado ya
-    // reduce el disponible por si solo. idParejaExcluida se usa al actualizar una
-    // pareja existente, para no contar su propio valor (todavia no persistido) dos veces.
     private void validarCupoDisponible(Cliente cliente, BigDecimal montoAsignado, Long idParejaExcluida) {
         if (montoAsignado.signum() <= 0) {
             return;

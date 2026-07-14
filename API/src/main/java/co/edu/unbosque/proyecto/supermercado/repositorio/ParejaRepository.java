@@ -78,9 +78,6 @@ public class ParejaRepository {
         return suma != null ? suma : BigDecimal.ZERO;
     }
 
-    // Igual que sumarCupoAsignadoPorCliente, pero sin contar una pareja puntual.
-    // Se usa al actualizar una pareja ya existente: su propio cupo_asignado (todavia
-    // no persistido con el valor nuevo) no debe contarse dos veces en la validacion.
     public BigDecimal sumarCupoAsignadoPorClienteExcluyendo(Long idUsuarioCliente, Long idParejaExcluida) {
         String sql = "SELECT COALESCE(SUM(cupo_asignado), 0) FROM pareja "
                 + "WHERE id_usuario_cliente = ? AND id_usuario <> ?";
