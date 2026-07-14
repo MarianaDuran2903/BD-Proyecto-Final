@@ -26,6 +26,10 @@
             <span class="tarjeta__label">Cupo Propio:</span>
             <span class="tarjeta__valor">$ {{ cliente()!.cupo_propio }}</span>
           </div>
+          <div>
+            <span class="tarjeta__label">Saldo Real:</span>
+            <span class="tarjeta__valor">$ {{ cliente()!.saldo_real }}</span>
+          </div>
         </div>
 
         @if (formularioCupoPropioVisible()) {

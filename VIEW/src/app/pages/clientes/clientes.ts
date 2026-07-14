@@ -40,6 +40,8 @@ export class Clientes implements OnInit {
     this.clientesFiltrados().reduce((suma, c) => suma + c.cupo_total_autorizado, 0));
   totalPropio = computed(() =>
     this.clientesFiltrados().reduce((suma, c) => suma + c.cupo_propio, 0));
+  totalSaldoReal = computed(() =>
+    this.clientesFiltrados().reduce((suma, c) => suma + c.saldo_real, 0));
   totalAsignadoParejas = computed(() =>
     this.clientesFiltrados().reduce((suma, c) => suma + c.cupo_asignado_parejas, 0));
   totalDisponible = computed(() =>

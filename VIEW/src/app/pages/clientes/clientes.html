@@ -24,6 +24,7 @@
             <th>Nombre</th>
             <th>Cupo Total Autorizado</th>
             <th>Cupo Propio</th>
+            <th>Saldo Real</th>
             <th>Cupo Asignado Parejas</th>
             <th>Cupo Total Disponible</th>
           </tr>
@@ -35,11 +36,12 @@
               <td>{{ c.primer_nombre }} {{ c.primer_apellido }}</td>
               <td>$ {{ c.cupo_total_autorizado }}</td>
               <td>$ {{ c.cupo_propio }}</td>
+              <td>$ {{ c.saldo_real }}</td>
               <td>$ {{ c.cupo_asignado_parejas }}</td>
               <td>$ {{ c.cupo_total_disponible }}</td>
             </tr>
           } @empty {
-            <tr><td colspan="6" class="tabla__vacio">No hay clientes registrados.</td></tr>
+            <tr><td colspan="7" class="tabla__vacio">No hay clientes registrados.</td></tr>
           }
         </tbody>
         @if (clientesFiltrados().length > 0) {
@@ -48,6 +50,7 @@
               <td colspan="2">Total</td>
               <td>$ {{ totalAutorizado() }}</td>
               <td>$ {{ totalPropio() }}</td>
+              <td>$ {{ totalSaldoReal() }}</td>
               <td>$ {{ totalAsignadoParejas() }}</td>
               <td>$ {{ totalDisponible() }}</td>
             </tr>

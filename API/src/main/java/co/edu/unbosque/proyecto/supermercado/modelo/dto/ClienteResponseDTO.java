@@ -12,6 +12,7 @@ public class ClienteResponseDTO {
     private String segundoApellido;
     private String telefono;
     private BigDecimal cupoPropio;
+    private BigDecimal saldoReal;
     private BigDecimal cupoTotalAutorizado;
     private BigDecimal cupoTotalSolicitado;
     private BigDecimal cupoAsignadoParejas;
@@ -83,6 +84,14 @@ public class ClienteResponseDTO {
 
     public void setCupoPropio(BigDecimal cupoPropio) {
         this.cupoPropio = cupoPropio;
+    }
+
+    public BigDecimal getSaldoReal() {
+        return saldoReal;
+    }
+
+    public void setSaldoReal(BigDecimal saldoReal) {
+        this.saldoReal = saldoReal;
     }
 
     public BigDecimal getCupoTotalAutorizado() {

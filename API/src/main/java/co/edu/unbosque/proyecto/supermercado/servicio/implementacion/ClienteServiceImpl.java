@@ -158,6 +158,17 @@ public class ClienteServiceImpl implements ClienteService {
                             + " (cupo total autorizado menos lo ya asignado a tus parejas).");
         }
 
+        // Piso: no se puede bajar el cupo propio por debajo de lo que ya se gasto en
+        // compras directas, o el saldo_real quedaria negativo. sumaCompras se deriva del
+        // saldo actual (cupo_propio vigente - saldo_real vigente) para no repetir el JOIN.
+        BigDecimal saldoRealActual = clienteRepository.calcularSaldoPropioDisponible(cliente.getIdUsuario());
+        BigDecimal sumaCompras = cliente.getCupoPropio().subtract(saldoRealActual);
+        if (dto.getCupoPropio().compareTo(sumaCompras) < 0) {
+            throw new ReglaNegocioException(
+                    "El cupo propio no puede ser menor a " + sumaCompras
+                            + " (lo que ya gastaste en compras directas).");
+        }
+
         cliente.setCupoPropio(dto.getCupoPropio());
         return toResponseDTO(clienteRepository.update(cliente));
     }
@@ -196,6 +207,9 @@ public class ClienteServiceImpl implements ClienteService {
         dto.setSegundoApellido(c.getSegundoApellido());
         dto.setTelefono(c.getTelefono());
         dto.setCupoPropio(c.getCupoPropio());
+        // Saldo real: lo que le queda al cliente de su cupo propio despues de sus
+        // compras directas (cupo_propio - historico de COMPRA con id_usuario_cliente = este cliente).
+        dto.setSaldoReal(clienteRepository.calcularSaldoPropioDisponible(c.getIdUsuario()));
 
         BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(c.getIdUsuario());
         dto.setCupoTotalAutorizado(c.getCupoTotalAutorizado());

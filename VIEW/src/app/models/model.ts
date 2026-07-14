@@ -61,6 +61,7 @@ export interface ClienteResponseDTO {
   segundo_apellido?: string;
   telefono?: string;
   cupo_propio: number;
+  saldo_real: number;
   cupo_total_solicitado?: number;
   cupo_total_autorizado: number;
   cupo_asignado_parejas: number;
