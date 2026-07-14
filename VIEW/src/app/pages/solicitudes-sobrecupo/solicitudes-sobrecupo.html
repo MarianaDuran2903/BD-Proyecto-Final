@@ -26,7 +26,7 @@
           <tr>
             <td>{{ s.nombre_cliente_completo }}</td>
             <td>{{ s.nombre_pareja_completo }}</td>
-            <td>$ {{ s.monto_solicitado }}</td>
+            <td>$ {{ s.monto_solicitado | number:'1.0-0' }}</td>
             <td><app-estado [valor]="etiquetaEstado(s.estado)" /></td>
             <td>
               @if (s.estado === 'pendiente_supervisor') {

@@ -15,15 +15,15 @@
           </div>
           <div>
             <span class="tarjeta__label">Cupo Asignado:</span>
-            <span class="tarjeta__valor">$ {{ pareja()!.cupo_asignado }}</span>
+            <span class="tarjeta__valor">$ {{ pareja()!.cupo_asignado | number:'1.0-0' }}</span>
           </div>
           <div>
             <span class="tarjeta__label">Cupo Gastado:</span>
-            <span class="tarjeta__valor">$ {{ pareja()!.cupo_gastado }}</span>
+            <span class="tarjeta__valor">$ {{ pareja()!.cupo_gastado | number:'1.0-0' }}</span>
           </div>
           <div>
             <span class="tarjeta__label">Cupo Disponible:</span>
-            <span class="tarjeta__valor">$ {{ pareja()!.cupo_disponible }}</span>
+            <span class="tarjeta__valor">$ {{ pareja()!.cupo_disponible | number:'1.0-0' }}</span>
           </div>
           <div>
             <span class="tarjeta__label">Estado:</span>
@@ -50,7 +50,7 @@
               <td>{{ c.fecha }}</td>
               <td>{{ c.hora }}</td>
               <td>{{ c.nombre_almacen }}</td>
-              <td>$ {{ c.monto }}</td>
+              <td>$ {{ c.monto | number:'1.0-0' }}</td>
             </tr>
           } @empty {
             <tr><td colspan="4" class="tabla__vacio">No hay compras registradas.</td></tr>
@@ -60,7 +60,7 @@
           <tfoot>
             <tr class="tabla__total">
               <td colspan="3">Total</td>
-              <td>$ {{ totalCompras() }}</td>
+              <td>$ {{ totalCompras() | number:'1.0-0' }}</td>
             </tr>
           </tfoot>
         }
@@ -105,7 +105,7 @@
           @for (s of solicitudes(); track s.cod_solicitud) {
             <tr>
               <td>{{ s.fecha }}</td>
-              <td>$ {{ s.monto_solicitado }}</td>
+              <td>$ {{ s.monto_solicitado | number:'1.0-0' }}</td>
               <td><app-estado [valor]="etiquetaEstado(s.estado)" /></td>
             </tr>
           } @empty {
@@ -116,7 +116,7 @@
           <tfoot>
             <tr class="tabla__total">
               <td>Total</td>
-              <td>$ {{ totalSolicitado() }}</td>
+              <td>$ {{ totalSolicitado() | number:'1.0-0' }}</td>
               <td></td>
             </tr>
           </tfoot>

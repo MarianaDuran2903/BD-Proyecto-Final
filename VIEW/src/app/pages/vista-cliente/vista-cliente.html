@@ -20,15 +20,15 @@
           </div>
           <div>
             <span class="tarjeta__label">Cupo Total Autorizado:</span>
-            <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_autorizado }}</span>
+            <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_autorizado | number:'1.0-0' }}</span>
           </div>
           <div>
             <span class="tarjeta__label">Cupo Propio:</span>
-            <span class="tarjeta__valor">$ {{ cliente()!.cupo_propio }}</span>
+            <span class="tarjeta__valor">$ {{ cliente()!.cupo_propio | number:'1.0-0' }}</span>
           </div>
           <div>
             <span class="tarjeta__label">Saldo Real:</span>
-            <span class="tarjeta__valor">$ {{ cliente()!.saldo_real }}</span>
+            <span class="tarjeta__valor">$ {{ cliente()!.saldo_real | number:'1.0-0' }}</span>
           </div>
         </div>
 
@@ -48,7 +48,7 @@
 
         <div class="tarjeta__destacado">
           <span class="tarjeta__label">Cupo Total Disponible:</span>
-          <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_disponible }}</span>
+          <span class="tarjeta__valor">$ {{ cliente()!.cupo_total_disponible | number:'1.0-0' }}</span>
         </div>
       </div>
     }
@@ -115,9 +115,9 @@
             <tr>
               <td>{{ p.id_usuario }}</td>
               <td>{{ p.primer_nombre }} {{ p.primer_apellido }}</td>
-              <td>$ {{ p.cupo_asignado }}</td>
-              <td>$ {{ p.cupo_gastado }}</td>
-              <td>$ {{ p.cupo_disponible }}</td>
+              <td>$ {{ p.cupo_asignado | number:'1.0-0' }}</td>
+              <td>$ {{ p.cupo_gastado | number:'1.0-0' }}</td>
+              <td>$ {{ p.cupo_disponible | number:'1.0-0' }}</td>
               <td>{{ p.contrasenia }}</td>
               <td><app-estado [valor]="p.estado" /></td>
               <td>
@@ -139,9 +139,9 @@
           <tfoot>
             <tr class="tabla__total">
               <td colspan="2">Total</td>
-              <td>$ {{ totalCupoAsignado() }}</td>
-              <td>$ {{ totalCupoGastadoParejas() }}</td>
-              <td>$ {{ totalCupoDisponible() }}</td>
+              <td>$ {{ totalCupoAsignado() | number:'1.0-0' }}</td>
+              <td>$ {{ totalCupoGastadoParejas() | number:'1.0-0' }}</td>
+              <td>$ {{ totalCupoDisponible() | number:'1.0-0' }}</td>
               <td colspan="3"></td>
             </tr>
           </tfoot>
@@ -170,7 +170,7 @@
               <td>{{ c.hora }}</td>
               <td>{{ c.nombre_almacen }}</td>
               <td>{{ c.nombre_pareja_completo ?? (c.nombre_cliente_completo + ' (titular)') }}</td>
-              <td>$ {{ c.monto }}</td>
+              <td>$ {{ c.monto | number:'1.0-0' }}</td>
             </tr>
           } @empty {
             <tr><td colspan="5" class="tabla__vacio">No hay compras registradas.</td></tr>
@@ -180,7 +180,7 @@
           <tfoot>
             <tr class="tabla__total">
               <td colspan="4">Total</td>
-              <td>$ {{ totalCompras() }}</td>
+              <td>$ {{ totalCompras() | number:'1.0-0' }}</td>
             </tr>
           </tfoot>
         }
@@ -213,7 +213,7 @@
           @for (s of solicitudes(); track s.cod_solicitud) {
             <tr>
               <td>{{ s.nombre_pareja_completo }}</td>
-              <td>$ {{ s.monto_solicitado }}</td>
+              <td>$ {{ s.monto_solicitado | number:'1.0-0' }}</td>
               <td>{{ s.fecha }}</td>
               <td><app-estado [valor]="etiquetaEstado(s.estado)" /></td>
               <td>
@@ -234,7 +234,7 @@
           <tfoot>
             <tr class="tabla__total">
               <td>Total</td>
-              <td>$ {{ totalSolicitado() }}</td>
+              <td>$ {{ totalSolicitado() | number:'1.0-0' }}</td>
               <td colspan="3"></td>
             </tr>
           </tfoot>

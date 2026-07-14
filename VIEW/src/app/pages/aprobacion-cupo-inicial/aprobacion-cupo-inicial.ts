@@ -1,4 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { DisenoAdmin } from '../../components/templates/diseno-admin/diseno-admin';
 import { Boton } from '../../components/atoms/boton/boton';
 import { ClienteService } from '../../services/cliente.service';
@@ -11,7 +12,7 @@ interface FilaPendiente {
 
 @Component({
   selector: 'app-aprobacion-cupo-inicial',
-  imports: [DisenoAdmin, Boton],
+  imports: [DisenoAdmin, Boton, DecimalPipe],
   templateUrl: './aprobacion-cupo-inicial.html',
   styleUrl: './aprobacion-cupo-inicial.css',
 })

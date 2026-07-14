@@ -1,4 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { DisenoAdmin } from '../../components/templates/diseno-admin/diseno-admin';
 import { Boton } from '../../components/atoms/boton/boton';
 import { Estado } from '../../components/atoms/estado/estado';
@@ -17,7 +18,7 @@ const ETIQUETAS_ESTADO: Record<EstadoSolicitudSobrecupo, string> = {
 
 @Component({
   selector: 'app-solicitudes-sobrecupo',
-  imports: [DisenoAdmin, Boton, Estado],
+  imports: [DisenoAdmin, Boton, Estado, DecimalPipe],
   templateUrl: './solicitudes-sobrecupo.html',
   styleUrl: './solicitudes-sobrecupo.css',
 })

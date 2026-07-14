@@ -31,7 +31,7 @@
           <tr>
             <td>{{ f.cliente.id_usuario }}</td>
             <td>{{ f.cliente.primer_nombre }} {{ f.cliente.primer_apellido }}</td>
-            <td>$ {{ f.cliente.cupo_total_solicitado }}</td>
+            <td>$ {{ f.cliente.cupo_total_solicitado | number:'1.0-0' }}</td>
             <td>
               <input
                 class="pagina__input-monto"

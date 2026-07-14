@@ -34,11 +34,11 @@
             <tr>
               <td>{{ c.id_usuario }}</td>
               <td>{{ c.primer_nombre }} {{ c.primer_apellido }}</td>
-              <td>$ {{ c.cupo_total_autorizado }}</td>
-              <td>$ {{ c.cupo_propio }}</td>
-              <td>$ {{ c.saldo_real }}</td>
-              <td>$ {{ c.cupo_asignado_parejas }}</td>
-              <td>$ {{ c.cupo_total_disponible }}</td>
+              <td>$ {{ c.cupo_total_autorizado | number:'1.0-0' }}</td>
+              <td>$ {{ c.cupo_propio | number:'1.0-0' }}</td>
+              <td>$ {{ c.saldo_real | number:'1.0-0' }}</td>
+              <td>$ {{ c.cupo_asignado_parejas | number:'1.0-0' }}</td>
+              <td>$ {{ c.cupo_total_disponible | number:'1.0-0' }}</td>
             </tr>
           } @empty {
             <tr><td colspan="7" class="tabla__vacio">No hay clientes registrados.</td></tr>
@@ -48,11 +48,11 @@
           <tfoot>
             <tr class="tabla__total">
               <td colspan="2">Total</td>
-              <td>$ {{ totalAutorizado() }}</td>
-              <td>$ {{ totalPropio() }}</td>
-              <td>$ {{ totalSaldoReal() }}</td>
-              <td>$ {{ totalAsignadoParejas() }}</td>
-              <td>$ {{ totalDisponible() }}</td>
+              <td>$ {{ totalAutorizado() | number:'1.0-0' }}</td>
+              <td>$ {{ totalPropio() | number:'1.0-0' }}</td>
+              <td>$ {{ totalSaldoReal() | number:'1.0-0' }}</td>
+              <td>$ {{ totalAsignadoParejas() | number:'1.0-0' }}</td>
+              <td>$ {{ totalDisponible() | number:'1.0-0' }}</td>
             </tr>
           </tfoot>
         }
@@ -78,9 +78,9 @@
               <td>{{ p.id_usuario }}</td>
               <td>{{ p.primer_nombre }} {{ p.primer_apellido }}</td>
               <td>{{ p.nombre_cliente_titular }}</td>
-              <td>$ {{ p.cupo_asignado }}</td>
-              <td>$ {{ p.cupo_gastado }}</td>
-              <td>$ {{ p.cupo_disponible }}</td>
+              <td>$ {{ p.cupo_asignado | number:'1.0-0' }}</td>
+              <td>$ {{ p.cupo_gastado | number:'1.0-0' }}</td>
+              <td>$ {{ p.cupo_disponible | number:'1.0-0' }}</td>
             </tr>
           } @empty {
             <tr><td colspan="6" class="tabla__vacio">No hay parejas registradas.</td></tr>
@@ -90,9 +90,9 @@
           <tfoot>
             <tr class="tabla__total">
               <td colspan="3">Total</td>
-              <td>$ {{ totalCupoAsignado() }}</td>
-              <td>$ {{ totalCupoGastado() }}</td>
-              <td>$ {{ totalCupoDisponibleParejas() }}</td>
+              <td>$ {{ totalCupoAsignado() | number:'1.0-0' }}</td>
+              <td>$ {{ totalCupoGastado() | number:'1.0-0' }}</td>
+              <td>$ {{ totalCupoDisponibleParejas() | number:'1.0-0' }}</td>
             </tr>
           </tfoot>
         }

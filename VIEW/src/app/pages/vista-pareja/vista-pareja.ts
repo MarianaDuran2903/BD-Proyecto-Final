@@ -1,4 +1,5 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { DisenoUsuario } from '../../components/templates/diseno-usuario/diseno-usuario';
 import { Estado } from '../../components/atoms/estado/estado';
 import { Boton } from '../../components/atoms/boton/boton';
@@ -28,7 +29,7 @@ const ETIQUETAS_ESTADO: Record<EstadoSolicitudSobrecupo, string> = {
 
 @Component({
   selector: 'app-vista-pareja',
-  imports: [DisenoUsuario, Estado, Boton, CampoFormulario],
+  imports: [DisenoUsuario, Estado, Boton, CampoFormulario, DecimalPipe],
   templateUrl: './vista-pareja.html',
   styleUrl: './vista-pareja.css',
 })

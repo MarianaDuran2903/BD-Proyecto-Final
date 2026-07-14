@@ -91,7 +91,7 @@
               </span>
             </td>
             <td>{{ c.nombre_almacen }}</td>
-            <td>$ {{ c.monto }}</td>
+            <td>$ {{ c.monto | number:'1.0-0' }}</td>
           </tr>
         } @empty {
           <tr><td colspan="6" class="tabla__vacio">No hay compras registradas.</td></tr>
@@ -101,7 +101,7 @@
         <tfoot>
           <tr class="tabla__total">
             <td colspan="5">Total</td>
-            <td>$ {{ totalCompras() }}</td>
+            <td>$ {{ totalCompras() | number:'1.0-0' }}</td>
           </tr>
         </tfoot>
       }

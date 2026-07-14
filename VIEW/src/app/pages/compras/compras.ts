@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { DisenoAdmin } from '../../components/templates/diseno-admin/diseno-admin';
 import { CampoFormulario } from '../../components/molecules/campo-formulario/campo-formulario';
 import { Boton } from '../../components/atoms/boton/boton';
@@ -17,7 +18,7 @@ import {
 
 @Component({
   selector: 'app-compras',
-  imports: [DisenoAdmin, CampoFormulario, Boton],
+  imports: [DisenoAdmin, CampoFormulario, Boton, DecimalPipe],
   templateUrl: './compras.html',
   styleUrl: './compras.css',
 })

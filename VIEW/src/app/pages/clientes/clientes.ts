@@ -1,4 +1,5 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { DisenoAdmin } from '../../components/templates/diseno-admin/diseno-admin';
 import { ClienteService } from '../../services/cliente.service';
 import { ParejaService } from '../../services/pareja.service';
@@ -6,7 +7,7 @@ import { ClienteResponseDTO, ParejaResponseDTO } from '../../models/model';
 
 @Component({
   selector: 'app-clientes',
-  imports: [DisenoAdmin],
+  imports: [DisenoAdmin, DecimalPipe],
   templateUrl: './clientes.html',
   styleUrl: './clientes.css',
 })
