@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class LoginResponseDTO {
 
-    private String tipo; // "CLIENTE", "PAREJA" o "SUPERVISOR"
+    private String tipo;
     private Long idUsuario;
     private String nombreUsuario;
     private String primerNombre;
@@ -13,15 +13,12 @@ public class LoginResponseDTO {
     private String segundoApellido;
     private String estado;
 
-    // Solo para CLIENTE
     private BigDecimal cupoPropio;
     private BigDecimal cupoTotalAutorizado;
 
-    // Solo para PAREJA
     private BigDecimal cupoAsignado;
     private Long idUsuarioCliente;
 
-    // Solo para SUPERVISOR
     private Long idAlmacen;
     private String nombreAlmacen;
 

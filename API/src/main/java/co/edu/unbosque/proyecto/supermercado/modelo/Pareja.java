@@ -2,7 +2,6 @@ package co.edu.unbosque.proyecto.supermercado.modelo;
 
 import java.math.BigDecimal;
 
-// idUsuario (heredado de Usuario) ES la cedula de la pareja
 public class Pareja extends Usuario {
 
     private String primerNombre;

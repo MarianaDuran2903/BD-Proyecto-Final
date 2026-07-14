@@ -93,7 +93,6 @@ public class ParejaServiceImpl implements ParejaService {
                 ? clienteAnterior
                 : buscarClienteOLanzarError(dto.getIdUsuarioCliente());
 
-        // Se devuelve el cupo que tenia asignado antes de descontar el nuevo monto
         transferirCupoPropio(clienteAnterior, pareja.getCupoAsignado().negate());
         transferirCupoPropio(cliente, dto.getCupoAsignado());
 
@@ -120,9 +119,6 @@ public class ParejaServiceImpl implements ParejaService {
             throw new ReglaNegocioException("La pareja ya esta inactiva.");
         }
 
-        // El cupo que tenia asignado vuelve al cupo propio del cliente, quedando
-        // disponible (Cupo Propio y Cupo Total Disponible suben) para reutilizarse
-        // en otra pareja o para gasto directo del cliente.
         transferirCupoPropio(cliente, pareja.getCupoAsignado().negate());
 
         pareja.setCupoAsignado(BigDecimal.ZERO);
@@ -141,10 +137,6 @@ public class ParejaServiceImpl implements ParejaService {
             throw new ReglaNegocioException("La pareja ya esta activa.");
         }
 
-        // No mueve cupo: al inactivarse el cupo_asignado ya quedo en 0 y volvio
-        // al cupo_propio del cliente. Reactivar solo habilita a la pareja de
-        // nuevo; para asignarle cupo otra vez se usa "Editar" como con cualquier
-        // otra pareja activa.
         pareja.setEstado("Activo");
 
         return toResponseDTO(parejaRepository.update(pareja), cliente);
@@ -156,19 +148,10 @@ public class ParejaServiceImpl implements ParejaService {
         Pareja pareja = buscarOLanzarError(idUsuario);
         Cliente cliente = buscarClienteOLanzarError(pareja.getIdUsuarioCliente());
 
-        // El cupo asignado que tenia la pareja vuelve al cupo propio del cliente
         transferirCupoPropio(cliente, pareja.getCupoAsignado().negate());
         parejaRepository.deleteById(idUsuario);
     }
 
-    // Mueve "monto" del cupo_propio del cliente hacia una pareja (monto negativo = devolucion)
-    // Antes esta validacion usaba clienteRepository.calcularSaldoPropioDisponible(),
-    // que resta las COMPRAS DIRECTAS del cliente sobre su cupo_propio -- esa metrica
-    // sirve para "cuanto le queda al cliente para gastar el mismo", no para saber si
-    // hay espacio para asignarle mas cupo a una pareja nueva. Por eso dejaba crear
-    // parejas con cupo aunque el Cupo Total Disponible ya estuviera en $0 (bug
-    // reportado: cliente con disponible $0 pudo crear una pareja con cupo $1).
-    // La metrica correcta es el techo real: autorizado - propio - ya asignado a parejas.
     private void transferirCupoPropio(Cliente cliente, BigDecimal monto) {
         if (monto.signum() > 0) {
             BigDecimal sumaAsignadaActual = parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
@@ -185,7 +168,6 @@ public class ParejaServiceImpl implements ParejaService {
         clienteRepository.update(cliente);
     }
 
-    // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario
     private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
         if (clienteRepository.existsById(idUsuario)) {
             throw new ReglaNegocioException(

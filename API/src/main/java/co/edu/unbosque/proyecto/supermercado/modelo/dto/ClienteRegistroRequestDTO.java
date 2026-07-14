@@ -7,9 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-// DTO del autoregistro publico de Cliente (POST /api/clientes/registro).
-// No lleva cupoPropio ni cupoTotalAutorizado: esos los fuerza el backend
-// (arrancan en 0 hasta que el Supervisor aprueba el cupo inicial).
 public class ClienteRegistroRequestDTO {
 
     @NotNull(message = "La cedula (id de usuario) es obligatoria")

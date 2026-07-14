@@ -17,7 +17,6 @@ public class SupervisorRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // id_usuario ES la cedula del supervisor (BIGINT proporcionado por el usuario)
     private static final String COLUMNAS =
             "id_usuario, nombre_usuario, contrasenia, estado, correo, telefono, "
                     + "primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_almacen";
@@ -64,7 +63,6 @@ public class SupervisorRepository {
         return jdbcTemplate.query(sql, mapper, idAlmacen);
     }
 
-    // id_usuario (cedula) lo provee el cliente del API, no se auto-genera
     public Supervisor save(Supervisor supervisor) {
         String sql = "INSERT INTO supervisor (id_usuario, nombre_usuario, contrasenia, estado, "
                 + "correo, telefono, primer_nombre, segundo_nombre, "

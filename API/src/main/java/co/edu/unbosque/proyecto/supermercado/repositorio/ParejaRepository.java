@@ -18,7 +18,6 @@ public class ParejaRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // id_usuario ES la cedula de la pareja (BIGINT proporcionado por el usuario)
     private static final String COLUMNAS =
             "id_usuario, nombre_usuario, contrasenia, estado, primer_nombre, segundo_nombre, "
                     + "primer_apellido, segundo_apellido, telefono, cupo_asignado, id_usuario_cliente";
@@ -65,7 +64,6 @@ public class ParejaRepository {
         return jdbcTemplate.query(sql, mapper, idUsuarioCliente);
     }
 
-    // Saldo disponible de la pareja = cupo_asignado - suma de sus compras
     public BigDecimal calcularSaldoDisponible(Long idPareja) {
         String sql = "SELECT p.cupo_asignado - COALESCE(SUM(c.monto), 0) "
                 + "FROM pareja p LEFT JOIN compra c ON c.id_usuario_pareja = p.id_usuario "
@@ -74,14 +72,12 @@ public class ParejaRepository {
         return saldo != null ? saldo : BigDecimal.ZERO;
     }
 
-    // Suma total de cupos asignados a las parejas de un cliente (regla de integridad)
     public BigDecimal sumarCupoAsignadoPorCliente(Long idUsuarioCliente) {
         String sql = "SELECT COALESCE(SUM(cupo_asignado), 0) FROM pareja WHERE id_usuario_cliente = ?";
         BigDecimal suma = jdbcTemplate.queryForObject(sql, BigDecimal.class, idUsuarioCliente);
         return suma != null ? suma : BigDecimal.ZERO;
     }
 
-    // id_usuario (cedula) lo provee el cliente del API, no se auto-genera
     public Pareja save(Pareja pareja) {
         String sql = "INSERT INTO pareja (id_usuario, nombre_usuario, contrasenia, estado, "
                 + "primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, "
@@ -111,7 +107,6 @@ public class ParejaRepository {
         return pareja;
     }
 
-    // Usado cuando se aprueba un sobrecupo: se aumenta el cupo_asignado de la pareja
     public void actualizarCupoAsignado(Long idPareja, BigDecimal nuevoCupoAsignado) {
         String sql = "UPDATE pareja SET cupo_asignado = ? WHERE id_usuario = ?";
         jdbcTemplate.update(sql, nuevoCupoAsignado, idPareja);

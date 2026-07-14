@@ -29,7 +29,7 @@ public class SolicitudSobrecupoRepository {
         s.setFecha(rs.getObject("fecha", LocalDate.class));
         s.setHora(rs.getObject("hora", LocalTime.class));
         s.setMontoSolicitado(rs.getBigDecimal("monto_solicitado"));
-        s.setMontoAutorizado(rs.getBigDecimal("monto_autorizado")); // null si aun no fue aprobada
+        s.setMontoAutorizado(rs.getBigDecimal("monto_autorizado"));
 
         s.setEstado(rs.getString("estado"));
 
@@ -64,21 +64,18 @@ public class SolicitudSobrecupoRepository {
         return jdbcTemplate.query(sql, mapper, idPareja);
     }
 
-    // Solicitudes que el cliente aun debe revisar
     public List<SolicitudSobrecupo> findPendientesByCliente(Long idCliente) {
         String sql = "SELECT " + COLUMNAS + " FROM solicitud_sobrecupo "
                 + "WHERE id_usuario_cliente = ? AND estado = 'pendiente_cliente' ORDER BY fecha, hora";
         return jdbcTemplate.query(sql, mapper, idCliente);
     }
 
-    // Solicitudes que el supervisor debe revisar
     public List<SolicitudSobrecupo> findPendientesBySupervisor(Long idSupervisor) {
         String sql = "SELECT " + COLUMNAS + " FROM solicitud_sobrecupo "
                 + "WHERE id_usuario_supervisor = ? AND estado = 'pendiente_supervisor' ORDER BY fecha, hora";
         return jdbcTemplate.query(sql, mapper, idSupervisor);
     }
 
-    // cod_solicitud es BIGSERIAL: se genera automáticamente en la BD
     public SolicitudSobrecupo save(SolicitudSobrecupo solicitud) {
         String sql = "INSERT INTO solicitud_sobrecupo "
                 + "(fecha, hora, monto_solicitado, monto_autorizado, estado, "
@@ -96,7 +93,6 @@ public class SolicitudSobrecupoRepository {
         return solicitud;
     }
 
-    // Actualiza los campos que cambian durante el flujo de aprobacion/rechazo
     public SolicitudSobrecupo update(SolicitudSobrecupo solicitud) {
         String sql = "UPDATE solicitud_sobrecupo SET estado = ?, monto_autorizado = ?, "
                 + "id_usuario_supervisor = ? WHERE cod_solicitud = ?";

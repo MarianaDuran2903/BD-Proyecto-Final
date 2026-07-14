@@ -3,17 +3,12 @@ package co.edu.unbosque.proyecto.supermercado.controlador;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-/**
- * Estructura estándar de respuesta cuando ocurre un error, para que
- * el frontend siempre reciba el mismo formato sin importar qué
- * excepción se haya lanzado.
- */
 public class ApiError {
 
     private LocalDateTime fecha;
     private int status;
     private String mensaje;
-    private Map<String, String> errores; // solo se usa en errores de validación
+    private Map<String, String> errores;
 
     public ApiError() {
         this.fecha = LocalDateTime.now();

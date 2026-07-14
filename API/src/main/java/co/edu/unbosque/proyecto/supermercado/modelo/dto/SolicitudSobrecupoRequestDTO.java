@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
-// La pareja envía esto cuando quiere solicitar un sobrecupo
-// fecha y hora las asigna el servidor automáticamente
 public class SolicitudSobrecupoRequestDTO {
 
     @NotNull(message = "Debe indicar la pareja que solicita el sobrecupo")

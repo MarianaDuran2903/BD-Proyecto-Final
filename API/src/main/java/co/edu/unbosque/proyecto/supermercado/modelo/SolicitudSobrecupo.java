@@ -10,12 +10,11 @@ public class SolicitudSobrecupo {
     private LocalDate fecha;
     private LocalTime hora;
     private BigDecimal montoSolicitado;
-    private BigDecimal montoAutorizado;  // null mientras este pendiente_cliente
-    // pendiente_cliente | aprobada_directa | pendiente_supervisor | aprobada_supervisor | rechazada_cliente | rechazada_supervisor
+    private BigDecimal montoAutorizado;
     private String estado;
     private Long idUsuarioCliente;
     private Long idUsuarioPareja;
-    private Long idUsuarioSupervisor;    // null si el cliente aprueba directamente
+    private Long idUsuarioSupervisor;
 
     public SolicitudSobrecupo() {
     }

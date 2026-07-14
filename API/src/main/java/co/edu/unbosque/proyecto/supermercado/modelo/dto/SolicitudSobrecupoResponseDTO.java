@@ -10,7 +10,7 @@ public class SolicitudSobrecupoResponseDTO {
     private LocalDate fecha;
     private LocalTime hora;
     private BigDecimal montoSolicitado;
-    private BigDecimal montoAutorizado;  // null si todavia no fue aprobada
+    private BigDecimal montoAutorizado;
     private String estado;
 
     private Long idUsuarioCliente;
@@ -19,7 +19,7 @@ public class SolicitudSobrecupoResponseDTO {
     private Long idUsuarioPareja;
     private String nombreParejaCompleto;
 
-    private Long idUsuarioSupervisor;    // null si no intervino supervisor
+    private Long idUsuarioSupervisor;
     private String nombreSupervisorCompleto;
 
     public SolicitudSobrecupoResponseDTO() {

@@ -49,7 +49,6 @@ public class RestriccionHorarioRepository {
         return jdbcTemplate.query(sql, mapper, idUsuarioPareja);
     }
 
-    // Verifica si la pareja tiene una restriccion que cubra la fecha y hora del intento de compra
     public boolean existeBloqueoActivo(Long idUsuarioPareja, LocalDate diaCompra, LocalTime horaCompra) {
         String sql = "SELECT COUNT(*) FROM restriccion_horario "
                 + "WHERE id_usuario_pareja = ? AND dia_bloqueo = ? "
@@ -60,7 +59,6 @@ public class RestriccionHorarioRepository {
         return total != null && total > 0;
     }
 
-    // id_restriccion es BIGSERIAL: se genera automáticamente en la BD
     public RestriccionHorario save(RestriccionHorario restriccion) {
         String sql = "INSERT INTO restriccion_horario (motivo, dia_bloqueo, hora_bloqueo_inicio, "
                 + "hora_bloqueo_fin, id_usuario_pareja) VALUES (?, ?, ?, ?, ?) RETURNING id_restriccion";

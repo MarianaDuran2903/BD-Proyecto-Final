@@ -5,9 +5,6 @@ import java.math.BigDecimal;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
-// DTO que usa el Supervisor para aprobar (o editar) el cupo inicial
-// de un Cliente en estado 'Pendiente'. cupoAutorizado puede ser $0
-// (equivale a "casi-rechazar", no hay un estado de rechazo aparte).
 public class AprobacionCupoInicialDTO {
 
     @NotNull

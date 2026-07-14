@@ -30,8 +30,6 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-        <!-- Reemplaza a spring-boot-starter-data-jpa: sin Hibernate,
-             solo trae JdbcTemplate y el manejo de DataSource -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>

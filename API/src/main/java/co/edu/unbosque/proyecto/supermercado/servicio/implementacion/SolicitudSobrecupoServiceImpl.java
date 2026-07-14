@@ -121,11 +121,7 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
         }
 
         if ("Aprobar".equals(dto.getDecision())) {
-            // Caso 1: el cliente decide asignar de su propio cupo.
-            // Ahora SI se valida que le alcance (antes esto no fallaba,
-            // simplemente escalaba solo; ahora "Aprobar" implica que el
-            // cliente ya eligio usar su cupo propio, asi que si no le
-            // alcanza es un error, no un fallback silencioso).
+
             Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
                     .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
 
@@ -150,8 +146,6 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
 
-        // Unica opcion que queda: "Escalar" (Caso 2). El cliente elige
-        // pedir cupo nuevo, sin mirar si tiene o no cupo propio disponible.
         Supervisor supervisor = supervisorRepository.findAll().stream()
                 .filter(sv -> "Activo".equals(sv.getEstado()))
                 .findFirst()
@@ -179,16 +173,12 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
             return toResponseDTOConEntidades(solicitudRepository.update(solicitud));
         }
 
-        // Supervisor aprueba: es dinero nuevo, solo aumenta el cupo asignado de la pareja.
-        // No se toca el cupo_propio del cliente.
         Pareja pareja = parejaRepository.findById(solicitud.getIdUsuarioPareja())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Pareja no encontrada"));
 
         BigDecimal monto = solicitud.getMontoSolicitado();
         parejaRepository.actualizarCupoAsignado(pareja.getIdUsuario(), pareja.getCupoAsignado().add(monto));
 
-        // cupo_total_autorizado ya no se recalcula solo (viene de la NOTA 4):
-        // hay que subirle el techo al cliente para que no quede "disponible" negativo.
         Cliente cliente = clienteRepository.findById(solicitud.getIdUsuarioCliente())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
         cliente.setCupoTotalAutorizado(cliente.getCupoTotalAutorizado().add(monto));
@@ -205,7 +195,6 @@ public class SolicitudSobrecupoServiceImpl implements SolicitudSobrecupoService 
                         "No se encontro la solicitud con codigo " + codSolicitud));
     }
 
-    // Resuelve todas las entidades relacionadas y construye el DTO de respuesta
     private SolicitudSobrecupoResponseDTO toResponseDTOConEntidades(SolicitudSobrecupo s) {
         Cliente cliente = clienteRepository.findById(s.getIdUsuarioCliente()).orElse(null);
         Pareja pareja = parejaRepository.findById(s.getIdUsuarioPareja()).orElse(null);

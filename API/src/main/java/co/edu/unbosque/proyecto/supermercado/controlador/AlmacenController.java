@@ -39,7 +39,7 @@ public class AlmacenController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AlmacenDTO>> listarTodos() {
+    public ResponseEntity<List<AlmacenDTO>> listarTodoslistarTodos() {
         return ResponseEntity.ok(almacenService.listarTodos());
     }
 

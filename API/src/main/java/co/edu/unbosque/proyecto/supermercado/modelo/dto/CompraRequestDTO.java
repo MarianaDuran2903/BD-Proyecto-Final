@@ -18,7 +18,6 @@ public class CompraRequestDTO {
     @NotNull(message = "La hora es obligatoria")
     private LocalTime hora;
 
-    // Exactamente uno de los dos debe venir informado: la compra la hace una Pareja o un Cliente
     private Long idUsuarioPareja;
 
     private Long idUsuarioCliente;

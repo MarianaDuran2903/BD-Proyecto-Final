@@ -85,7 +85,6 @@ public class ClienteResponseDTO {
         this.cupoPropio = cupoPropio;
     }
 
-    // Techo de credito autorizado por el Supervisor (ya no se calcula, se lee directo de la columna)
     public BigDecimal getCupoTotalAutorizado() {
         return cupoTotalAutorizado;
     }
@@ -102,7 +101,6 @@ public class ClienteResponseDTO {
         this.cupoTotalSolicitado = cupoTotalSolicitado;
     }
 
-    // Suma de cupo_asignado de todas las Parejas del Cliente
     public BigDecimal getCupoAsignadoParejas() {
         return cupoAsignadoParejas;
     }
@@ -111,7 +109,6 @@ public class ClienteResponseDTO {
         this.cupoAsignadoParejas = cupoAsignadoParejas;
     }
 
-    // cupo_total_autorizado - cupo_propio - cupo_asignado_parejas
     public BigDecimal getCupoTotalDisponible() {
         return cupoTotalDisponible;
     }

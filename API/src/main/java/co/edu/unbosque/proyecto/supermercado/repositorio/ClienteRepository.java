@@ -18,7 +18,6 @@ public class ClienteRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // id_usuario ES la cedula del cliente (BIGINT proporcionado por el usuario)
     private static final String COLUMNAS =
             "id_usuario, nombre_usuario, contrasenia, estado, primer_nombre, "
                     + "segundo_nombre, primer_apellido, segundo_apellido, telefono, cupo_propio, "
@@ -67,7 +66,6 @@ public class ClienteRepository {
         return total != null && total > 0;
     }
 
-    // id_usuario (cedula) lo provee el cliente del API, no se auto-genera
     public Cliente save(Cliente cliente) {
         String sql = "INSERT INTO cliente (id_usuario, nombre_usuario, contrasenia, estado, "
                 + "primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, "
@@ -101,7 +99,6 @@ public class ClienteRepository {
         return cliente;
     }
 
-    // Saldo disponible del cupo propio del cliente = cupo_propio - suma de sus compras directas
     public BigDecimal calcularSaldoPropioDisponible(Long idCliente) {
         String sql = "SELECT c.cupo_propio - COALESCE(SUM(co.monto), 0) "
                 + "FROM cliente c LEFT JOIN compra co ON co.id_usuario_cliente = c.id_usuario "

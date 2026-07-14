@@ -54,7 +54,6 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setSegundoApellido(dto.getSegundoApellido());
         cliente.setTelefono(dto.getTelefono());
         cliente.setCupoPropio(dto.getCupoPropio());
-        // El cliente todavia no tiene Parejas al crearse: propio = autorizado
         cliente.setCupoTotalAutorizado(dto.getCupoPropio());
 
         return toResponseDTO(clienteRepository.save(cliente));
@@ -151,7 +150,6 @@ public class ClienteServiceImpl implements ClienteService {
                     "El cliente aun no tiene un cupo inicial aprobado por el Supervisor.");
         }
 
-        // El nuevo cupo_propio + lo ya asignado a parejas no puede superar el techo autorizado.
         BigDecimal sumaAsignada = parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
         BigDecimal maximoPermitido = cliente.getCupoTotalAutorizado().subtract(sumaAsignada);
         if (dto.getCupoPropio().compareTo(maximoPermitido) > 0) {
@@ -171,7 +169,6 @@ public class ClienteServiceImpl implements ClienteService {
         clienteRepository.deleteById(idUsuario);
     }
 
-    // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario
     private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
         if (parejaRepository.existsById(idUsuario)) {
             throw new ReglaNegocioException(

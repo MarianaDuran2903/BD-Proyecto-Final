@@ -57,7 +57,6 @@ public class CompraRepository {
         return jdbcTemplate.query(sql, mapper, idUsuarioPareja);
     }
 
-    // Compras directas del cliente + compras de todas sus parejas (JOIN con pareja)
     public List<Compra> findByIdUsuarioCliente(Long idUsuarioCliente) {
         String sql = "SELECT cod_compra, monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, "
                 + "id_almacen, id_usuario_supervisor FROM compra WHERE id_usuario_cliente = ? "
@@ -71,7 +70,6 @@ public class CompraRepository {
         return jdbcTemplate.query(sql, mapper, idUsuarioCliente, idUsuarioCliente);
     }
 
-    // cod_compra es BIGSERIAL: se genera automáticamente en la BD
     public Compra save(Compra compra) {
         String sql = "INSERT INTO compra (monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, "
                 + "id_almacen, id_usuario_supervisor) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING cod_compra";

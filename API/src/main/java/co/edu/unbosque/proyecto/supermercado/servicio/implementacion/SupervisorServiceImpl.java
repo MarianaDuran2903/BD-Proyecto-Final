@@ -113,7 +113,6 @@ public class SupervisorServiceImpl implements SupervisorService {
         supervisorRepository.deleteById(idUsuario);
     }
 
-    // Una misma cedula (id_usuario) no puede existir simultaneamente en mas de una tabla de usuario
     private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
         if (clienteRepository.existsById(idUsuario)) {
             throw new ReglaNegocioException(

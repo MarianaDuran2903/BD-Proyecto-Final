@@ -14,13 +14,15 @@ CREATE TABLE CLIENTE (
                          id_usuario               BIGINT PRIMARY KEY,
                          nombre_usuario           VARCHAR(30) NOT NULL UNIQUE,
                          contrasenia              VARCHAR(30) NOT NULL,
-                         estado                   VARCHAR(30) NOT NULL CHECK (estado IN ('Activo', 'Inactivo')),
+                         estado                   VARCHAR(30) NOT NULL CHECK (estado IN ('Activo', 'Inactivo', 'Pendiente')),
                          primer_nombre            VARCHAR(30) NOT NULL,
                          segundo_nombre           VARCHAR(30),
                          primer_apellido          VARCHAR(30) NOT NULL,
                          segundo_apellido         VARCHAR(30),
                          telefono                 VARCHAR(30),
-                         cupo_propio              DECIMAL(10,2) NOT NULL CHECK (cupo_propio >= 0)
+                         cupo_propio              DECIMAL(10,2) NOT NULL CHECK (cupo_propio >= 0),
+                         cupo_total_solicitado    DECIMAL(10,2) CHECK (cupo_total_solicitado >= 0),
+                         cupo_total_autorizado    DECIMAL(10,2) NOT NULL DEFAULT 0 CHECK (cupo_total_autorizado >= 0)
 );
 
 -- Tabla: ALMACEN
@@ -65,7 +67,6 @@ CREATE TABLE SUPERVISOR (
 );
 
 -- Tabla: COMPRA
--- id_usuario_pareja / id_usuario_cliente: arco exclusivo, exactamente uno de los dos debe estar lleno
 CREATE TABLE COMPRA (
                         cod_compra               BIGSERIAL PRIMARY KEY,
                         monto                    DECIMAL(10,2) NOT NULL CHECK (monto >= 0),
@@ -81,8 +82,8 @@ CREATE TABLE COMPRA (
                         FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario),
                         CHECK (
                             (id_usuario_pareja IS NOT NULL AND id_usuario_cliente IS NULL)
-                            OR (id_usuario_pareja IS NULL AND id_usuario_cliente IS NOT NULL)
-                        )
+                                OR (id_usuario_pareja IS NULL AND id_usuario_cliente IS NOT NULL)
+                            )
 );
 
 -- Tabla: RESTRICCION_HORARIO
@@ -98,9 +99,6 @@ CREATE TABLE RESTRICCION_HORARIO (
 );
 
 -- Tabla: SOLICITUD_SOBRECUPO
--- id_usuario_supervisor es nullable porque el supervisor no siempre interviene
--- monto_autorizado es nullable porque es NULL mientras la solicitud esta pendiente
--- no tiene id_compra: aprobar una solicitud nunca crea una Compra, solo reasigna cupo
 CREATE TABLE SOLICITUD_SOBRECUPO (
                                      cod_solicitud            BIGSERIAL PRIMARY KEY,
                                      fecha                    DATE NOT NULL,
@@ -116,7 +114,38 @@ CREATE TABLE SOLICITUD_SOBRECUPO (
                                      FOREIGN KEY (id_usuario_supervisor) REFERENCES SUPERVISOR (id_usuario)
 );
 
+-- ============================================================
+-- DATOS DE PRUEBA - MercaCredit
+-- ============================================================
+-- 1. ALMACEN
+INSERT INTO ALMACEN (nombre_almacen, ubicacion_ciudad, ubicacion_avenida, ubicacion_calle)
+VALUES ('Almacén Norte', 'Bogotá', 'Cra 15', 'Calle 100');
 
+-- 2. SUPERVISOR (el "admin")
+INSERT INTO SUPERVISOR (id_usuario, nombre_usuario, contrasenia, estado, correo, telefono,
+                        primer_nombre, primer_apellido, id_almacen)
+VALUES (1000000001, 'supervisor1', '1234', 'Activo', 'supervisor1@mercacredit.com', '3001234567',
+        'Carlos', 'Ramírez', 1);
+
+INSERT INTO CLIENTE (id_usuario, nombre_usuario, contrasenia, estado,
+                     primer_nombre, primer_apellido, telefono,
+                     cupo_propio, cupo_total_solicitado, cupo_total_autorizado)
+VALUES (1023456789, 'juan1023456789', '1234', 'Activo',
+        'Juan', 'Herrera', '3109876543',
+        800000, 1100000, 1100000);
+
+-- 4. PAREJA de Juan
+INSERT INTO PAREJA (id_usuario, nombre_usuario, contrasenia, estado,
+                    primer_nombre, primer_apellido, telefono, cupo_asignado, id_usuario_cliente)
+VALUES (2001234567, 'maria2001234567', '1234', 'Activo',
+        'María', 'González', '3201112233', 300000, 1023456789);
+
+-- 5. COMPRAS (una hecha por la Pareja, otra hecha directo por el Cliente — arco exclusivo)
+INSERT INTO COMPRA (monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, id_almacen, id_usuario_supervisor)
+VALUES (120000, CURRENT_DATE, '14:30:00', 2001234567, NULL, 1, 1000000001);
+
+INSERT INTO COMPRA (monto, fecha, hora, id_usuario_pareja, id_usuario_cliente, id_almacen, id_usuario_supervisor)
+VALUES (85000, CURRENT_DATE, '10:15:00', NULL, 1023456789, 1, 1000000001);
 
 
 
