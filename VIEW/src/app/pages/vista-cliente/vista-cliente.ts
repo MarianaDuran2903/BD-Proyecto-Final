@@ -225,14 +225,14 @@ export class VistaCliente implements OnInit {
       },
       error: (e) => {
         this.errorPareja = e.status === 400
-          ? (e.error?.mensaje ?? 'El cupo asignado excede el cupo propio disponible.')
+          ? (e.error?.mensaje ?? 'El cupo asignado excede el cupo total disponible.')
           : 'Error al crear la pareja.';
       }
     });
   }
 
   inactivarPareja(id: number): void {
-    if (!confirm('¿Inactivar esta pareja? Su cupo asignado volverá a tu cupo propio.')) return;
+    if (!confirm('¿Inactivar esta pareja? Su cupo asignado volverá a tu cupo total disponible.')) return;
     this.parejaService.inactivarPareja(id).subscribe({
       next: () => this.cargarTodo(),
       error: (e) => this.errorPareja = e.error?.mensaje ?? 'No se pudo inactivar la pareja.'

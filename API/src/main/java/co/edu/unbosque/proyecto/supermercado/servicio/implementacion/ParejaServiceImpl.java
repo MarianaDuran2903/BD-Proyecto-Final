@@ -41,7 +41,7 @@ public class ParejaServiceImpl implements ParejaService {
         validarCedulaNoRegistradaEnOtroRol(dto.getIdUsuario());
 
         Cliente cliente = buscarClienteOLanzarError(dto.getIdUsuarioCliente());
-        transferirCupoPropio(cliente, dto.getCupoAsignado());
+        validarCupoDisponible(cliente, dto.getCupoAsignado(), null);
 
         Pareja pareja = new Pareja();
         pareja.setIdUsuario(dto.getIdUsuario());
@@ -93,8 +93,7 @@ public class ParejaServiceImpl implements ParejaService {
                 ? clienteAnterior
                 : buscarClienteOLanzarError(dto.getIdUsuarioCliente());
 
-        transferirCupoPropio(clienteAnterior, pareja.getCupoAsignado().negate());
-        transferirCupoPropio(cliente, dto.getCupoAsignado());
+        validarCupoDisponible(cliente, dto.getCupoAsignado(), pareja.getIdUsuario());
 
         pareja.setNombreUsuario(dto.getNombreUsuario());
         pareja.setContrasenia(dto.getContrasenia());
@@ -118,8 +117,6 @@ public class ParejaServiceImpl implements ParejaService {
         if ("Inactivo".equals(pareja.getEstado())) {
             throw new ReglaNegocioException("La pareja ya esta inactiva.");
         }
-
-        transferirCupoPropio(cliente, pareja.getCupoAsignado().negate());
 
         pareja.setCupoAsignado(BigDecimal.ZERO);
         pareja.setEstado("Inactivo");
@@ -145,27 +142,32 @@ public class ParejaServiceImpl implements ParejaService {
     @Override
     @Transactional
     public void eliminar(Long idUsuario) {
-        Pareja pareja = buscarOLanzarError(idUsuario);
-        Cliente cliente = buscarClienteOLanzarError(pareja.getIdUsuarioCliente());
-
-        transferirCupoPropio(cliente, pareja.getCupoAsignado().negate());
+        buscarOLanzarError(idUsuario);
         parejaRepository.deleteById(idUsuario);
     }
 
-    private void transferirCupoPropio(Cliente cliente, BigDecimal monto) {
-        if (monto.signum() > 0) {
-            BigDecimal sumaAsignadaActual = parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
-            BigDecimal disponible = cliente.getCupoTotalAutorizado()
-                    .subtract(cliente.getCupoPropio())
-                    .subtract(sumaAsignadaActual);
-            if (disponible.compareTo(monto) < 0) {
-                throw new ReglaNegocioException(
-                        "Cupo total disponible insuficiente. Disponible: " + disponible
-                                + ", cupo asignado solicitado: " + monto);
-            }
+    // Valida que el cliente tenga cupo_total_disponible suficiente para asignarle
+    // "montoAsignado" a una pareja. No toca cupo_propio: cupo_total_disponible ya
+    // descuenta el cupo asignado a parejas via sumarCupoAsignadoPorCliente, que lee
+    // la tabla PAREJA en vivo, asi que guardar la pareja con su cupo_asignado ya
+    // reduce el disponible por si solo. idParejaExcluida se usa al actualizar una
+    // pareja existente, para no contar su propio valor (todavia no persistido) dos veces.
+    private void validarCupoDisponible(Cliente cliente, BigDecimal montoAsignado, Long idParejaExcluida) {
+        if (montoAsignado.signum() <= 0) {
+            return;
         }
-        cliente.setCupoPropio(cliente.getCupoPropio().subtract(monto));
-        clienteRepository.update(cliente);
+        BigDecimal sumaAsignada = idParejaExcluida != null
+                ? parejaRepository.sumarCupoAsignadoPorClienteExcluyendo(cliente.getIdUsuario(), idParejaExcluida)
+                : parejaRepository.sumarCupoAsignadoPorCliente(cliente.getIdUsuario());
+        BigDecimal disponible = cliente.getCupoTotalAutorizado()
+                .subtract(cliente.getCupoPropio())
+                .subtract(sumaAsignada);
+        if (disponible.compareTo(montoAsignado) < 0) {
+            throw new ReglaNegocioException(
+                    "Cupo total disponible insuficiente. Disponible: " + disponible
+                            + ", cupo asignado solicitado: " + montoAsignado
+                            + ". Si necesitas mas, gestiona una solicitud de sobrecupo.");
+        }
     }
 
     private void validarCedulaNoRegistradaEnOtroRol(Long idUsuario) {
